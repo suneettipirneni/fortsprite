@@ -315,3 +315,58 @@ test("rapid collection actions stay optimistic and coalesce to the last intent",
   await page.reload()
   await expect(captured(page)).toHaveAttribute("aria-pressed", "false")
 })
+
+test("collection switches between list and three grid sizes", async ({ page }, testInfo) => {
+  const width = () => tile(page).evaluate((element) => element.getBoundingClientRect().width)
+  await page.getByRole("radio", { name: "Small grid", exact: true }).click()
+  const screenshot = async (view: string) => {
+    if (!process.env.COLLECTION_SCREENSHOT_DIR) return
+    const viewControl = page.getByRole("radiogroup", { name: "Collection view", exact: true })
+    if (testInfo.project.name === "mobile") {
+      await viewControl.evaluate((element) => {
+        window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 96)
+      })
+    }
+    await page.screenshot({
+      path: `${process.env.COLLECTION_SCREENSHOT_DIR}/${testInfo.project.name}-${view}.png`,
+      animations: "disabled",
+      scale: "css",
+    })
+  }
+  const smallWidth = await width()
+  await screenshot("grid-small")
+  await assertFits(page)
+  await page.getByRole("radio", { name: "Medium grid", exact: true }).click()
+  const mediumWidth = await width()
+  await screenshot("grid-medium")
+  expect(mediumWidth).toBeGreaterThanOrEqual(smallWidth)
+  await page.getByRole("radio", { name: "Large grid", exact: true }).click()
+  expect(await width()).toBeGreaterThan(mediumWidth)
+  await screenshot("grid-large")
+  await assertFits(page)
+  await page.getByRole("radio", { name: "List view", exact: true }).click()
+  await expect(page.getByRole("radiogroup", { name: "Grid size", exact: true })).toHaveCount(0)
+  expect(await tile(page).evaluate((element) => getComputedStyle(element).flexDirection)).toBe("row")
+  await expect(captured(page)).toBeVisible()
+  await captured(page).click()
+  await expect(captured(page)).toHaveAttribute("aria-pressed", "true")
+  await mastered(page).click()
+  await expect(mastered(page)).toHaveAttribute("aria-pressed", "true")
+  await expect(tile(page).getByRole("status")).toHaveCount(0)
+  await assertPersisted(page, { owned: true, mastered: true })
+  await screenshot("list")
+  await assertFits(page)
+  await details(page).click()
+  await expect(page.getByRole("dialog")).toBeVisible()
+  await page.getByRole("button", { name: "Done", exact: true }).click()
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
+  const largeGrid = page.getByRole("radio", { name: "Large grid", exact: true })
+  await expect(largeGrid).toHaveAttribute("aria-checked", "true")
+  await largeGrid.click()
+  await expect(largeGrid).toHaveAttribute("aria-checked", "true")
+  await largeGrid.press("ArrowLeft")
+  const mediumGrid = page.getByRole("radio", { name: "Medium grid", exact: true })
+  await expect(mediumGrid).toBeFocused()
+  await mediumGrid.press("Space")
+  await expect(mediumGrid).toHaveAttribute("aria-checked", "true")
+})

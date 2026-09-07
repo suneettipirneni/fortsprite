@@ -9,7 +9,15 @@ import {
   useState,
   useSyncExternalStore,
 } from "react"
-import { SearchIcon } from "lucide-react"
+import { Grid2X2Icon, Grid3X3Icon, ListIcon, SearchIcon, SquareIcon } from "lucide-react"
+
+import { cn } from "@workspace/ui/lib/utils"
+import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
 
 import { FilterSelect } from "@/components/filter-select"
 import { Button } from "@workspace/ui/components/button"
@@ -44,6 +52,18 @@ import {
   type Sprite,
 } from "@/lib/catalog-presentation"
 import { updateCollectionAction } from "@/app/actions/collection"
+
+const gridSizes = {
+  small: "grid-cols-2 @[400px]:grid-cols-3 @xl:grid-cols-4 @3xl:grid-cols-6 @5xl:grid-cols-8",
+  medium: "grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-5 @5xl:grid-cols-6",
+  large: "grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-4",
+} as const
+
+const gridSizeOptions = [
+  { value: "small", label: "Small grid", icon: Grid3X3Icon },
+  { value: "medium", label: "Medium grid", icon: Grid2X2Icon },
+  { value: "large", label: "Large grid", icon: SquareIcon },
+] as const
 
 const verifiedDateFormatter = new Intl.DateTimeFormat("en-US", {
   dateStyle: "medium",
@@ -126,6 +146,8 @@ export function CollectionExplorer({
   }
   const variantOptions = [...new Set(sprites.map((sprite) => sprite.variant))]
   const rarityOptions = [...new Set(sprites.map((sprite) => sprite.rarity))]
+  const [view, setView] = useState<"list" | "grid">("grid")
+  const [gridSize, setGridSize] = useState<keyof typeof gridSizes>("medium")
   const [query, setQuery] = useState("")
   const [ownership, setOwnership] = useState<OwnershipFilter>("all")
   const [variant, setVariant] = useState("all")
@@ -314,17 +336,68 @@ export function CollectionExplorer({
             .
           </p>
         ) : null}
-        <p role="status" className="text-xs text-muted-foreground">
-          Showing {filteredSprites.length} of {sprites.length} Sprites
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p role="status" className="text-xs text-muted-foreground">
+            Showing {filteredSprites.length} of {sprites.length} Sprites
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <ToggleGroup
+              type="single"
+              value={view}
+              onValueChange={(value) => {
+                if (value === "list" || value === "grid") setView(value)
+              }}
+              aria-label="Collection view"
+              variant="outline"
+              spacing={0}
+            >
+              <ToggleGroupItem value="list" aria-label="List view" className="h-11 px-3">
+                <ListIcon aria-hidden="true" /> List
+              </ToggleGroupItem>
+              <ToggleGroupItem value="grid" aria-label="Grid view" className="h-11 px-3">
+                <Grid2X2Icon aria-hidden="true" /> Grid
+              </ToggleGroupItem>
+            </ToggleGroup>
+            {view === "grid" ? (
+              <ToggleGroup
+                type="single"
+                value={gridSize}
+                onValueChange={(value) => {
+                  if (value === "small" || value === "medium" || value === "large") {
+                    setGridSize(value)
+                  }
+                }}
+                aria-label="Grid size"
+                variant="outline"
+                spacing={0}
+              >
+                {gridSizeOptions.map(({ value, label, icon: Icon }) => (
+                  <Tooltip key={value}>
+                    <TooltipTrigger asChild>
+                      <ToggleGroupItem
+                        value={value}
+                        aria-label={label}
+                        className="size-11 aria-checked:bg-muted"
+                      >
+                        <Icon aria-hidden="true" />
+                      </ToggleGroupItem>
+                    </TooltipTrigger>
+                    <TooltipContent>{label}</TooltipContent>
+                  </Tooltip>
+                ))}
+              </ToggleGroup>
+            ) : null}
+          </div>
+        </div>
 
         {filteredSprites.length > 0 ? (
           <div className="@container">
-            <div className="grid grid-cols-1 gap-3 @[300px]:grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-5">
+            <div className={cn("grid gap-3", view === "list" ? "grid-cols-1" : gridSizes[gridSize])}>
               {filteredSprites.map((sprite) => (
                 <SpriteTile
                   key={sprite.id}
                   sprite={sprite}
+                  view={view}
                   pending={pendingIds.has(sprite.id)}
                   availabilityKnown={
                     initialCollection.friendAvailability.status === "ready"

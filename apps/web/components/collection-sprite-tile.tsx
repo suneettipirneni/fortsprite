@@ -3,6 +3,8 @@
 import { useRef, useState } from "react"
 import { CheckIcon, CircleIcon, SparklesIcon } from "lucide-react"
 
+import { cn } from "@workspace/ui/lib/utils"
+
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -47,6 +49,7 @@ const quickToggleClassName =
 
 export function SpriteTile({
   sprite,
+  view = "grid",
   onChange,
   pending,
   notice,
@@ -54,6 +57,7 @@ export function SpriteTile({
   availabilityKnown,
 }: {
   sprite: Sprite
+  view?: "list" | "grid"
   pending: boolean
   availabilityKnown: boolean
   notice: CollectionNotice | null
@@ -76,7 +80,7 @@ export function SpriteTile({
         onOpenChange={setPreviewOpen}
       >
         <article
-          className="flex min-w-0 flex-col overflow-hidden rounded-xl bg-background shadow-sm ring-1 ring-inset ring-white/15"
+          className={cn("flex min-w-0 overflow-hidden rounded-xl bg-background shadow-sm ring-1 ring-inset ring-white/15", view === "list" ? "flex-row items-center" : "flex-col")}
           data-sprite-id={sprite.id}
           data-mastered={sprite.mastered || undefined}
           aria-busy={pending}
@@ -96,16 +100,17 @@ export function SpriteTile({
                 onBlur={() => setPreviewOpen(false)}
                 onClick={() => setPreviewOpen(false)}
                 aria-label={`Open ${sprite.variant} ${sprite.baseName} details. ${sprite.rarity} rarity, ${sprite.owned ? "captured" : "missing"}, ${sprite.mastered ? "mastered" : "not mastered"}, ${helperLabel}.`}
-                className="group block w-full min-w-0 overflow-hidden text-left outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring"
+                className={cn("group w-full min-w-0 overflow-hidden text-left outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring", view === "list" ? "flex flex-1 items-center" : "block")}
               >
                 <SpritePortrait
                   tone={sprite.tone}
                   variant={sprite.variant}
                   label={`${sprite.variant} ${sprite.baseName}`}
                   src={sprite.imagePath ?? undefined}
-                  className="aspect-[4/3] w-full rounded-none"
+                  className={view === "list" ? "aspect-square w-16 shrink-0 rounded-none sm:w-20" : "aspect-[4/3] w-full rounded-none"}
+                  sizes={view === "list" ? "80px" : undefined}
                 />
-                <div className="min-w-0 border-t border-white/10 p-2 sm:p-3">
+                <div className={cn("min-w-0 p-2 sm:p-3", view === "grid" && "border-t border-white/10", view === "list" && "flex-1")}>
                   <div className="flex items-center justify-between gap-1 sm:gap-2">
                     <h3 className="min-w-0 flex-1 truncate text-sm font-semibold sm:text-base">
                       {sprite.baseName}
@@ -166,7 +171,7 @@ export function SpriteTile({
               </div>
             </div>
           </HoverCardContent>
-          <div className="mt-auto px-3 pb-3">
+          <div className={view === "list" ? "w-28 shrink-0 px-2 sm:w-36 sm:px-3" : "mt-auto px-3 pb-3"}>
             {pending ? (
               <p className="sr-only" role="status">
                 Saving changes…
