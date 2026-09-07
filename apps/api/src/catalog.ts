@@ -74,25 +74,7 @@ export const catalogSourceSchema = z
     message: "Source id and slug must match",
   })
 
-export const assetApprovalSchema = z
-  .object({
-    assets: z.array(
-      z
-        .object({
-          imagePath: imagePathSchema,
-          sourceUrl: sourceUrlSchema,
-          usageBasis: z.string().trim().min(10),
-          approvedAt: sourceDateSchema,
-        })
-        .strict(),
-    ),
-  })
-  .strict()
-
 export function catalogItem(row: typeof sprites.$inferSelect): CatalogItem {
-  const approved =
-    row.imageApproval?.imagePath === row.imageUrl &&
-    row.imageApproval?.sourceUrl === row.sourceImage
   return {
     id: row.id,
     slug: row.slug,
@@ -105,8 +87,7 @@ export function catalogItem(row: typeof sprites.$inferSelect): CatalogItem {
     displayOrder: row.displayOrder,
     season: row.season,
     sourceSeasonId: row.sourceSeasonId,
-    imagePath:
-      process.env.NODE_ENV === "production" && !approved ? null : row.imageUrl,
+    imagePath: row.imageUrl,
     description: row.description,
     descriptionLines: row.descriptionLines,
     levelProgression: row.levelProgression,
@@ -143,8 +124,6 @@ export function parseCatalogSnapshot(
 
 export interface CatalogImportOptions {
   allowedRarities?: unknown
-  approvals?: unknown
-  allowSourceArtwork?: boolean
 }
 
 export async function importCatalogSnapshot(
@@ -153,20 +132,6 @@ export async function importCatalogSnapshot(
   database = db,
 ) {
   const items = parseCatalogSnapshot(input, options.allowedRarities)
-  if (options.allowSourceArtwork && process.env.NODE_ENV === "production") {
-    throw new Error(
-      "Source artwork without approval is only available in development",
-    )
-  }
-  const approvals = assetApprovalSchema.parse(
-    options.approvals ?? { assets: [] },
-  ).assets
-  const approvedImages = new Map(
-    approvals.map((asset) => [asset.imagePath, asset]),
-  )
-  if (approvedImages.size !== approvals.length)
-    throw new Error("Artwork approvals contain duplicate paths")
-
   return database.transaction(async (transaction) => {
     await transaction.execute(
       sql`select pg_advisory_xact_lock(hashtext('fortsprite-catalog-import'))`,
@@ -186,18 +151,6 @@ export async function importCatalogSnapshot(
           throw new Error(`Multiple source items resolve to ${item.slug}`)
         claimedIds.add(existing.id)
       }
-      const providedApproval = item.localPath
-        ? approvedImages.get(item.localPath)
-        : undefined
-      if (providedApproval && providedApproval.sourceUrl !== item.sourceImage)
-        throw new Error(`Artwork approval source does not match ${item.slug}`)
-      const priorApproval = existing?.imageApproval
-      const approval =
-        providedApproval ??
-        (priorApproval?.imagePath === item.localPath &&
-        priorApproval?.sourceUrl === item.sourceImage
-          ? priorApproval
-          : null)
       const values = {
         stableKey: item.stableKey,
         slug: item.slug,
@@ -209,11 +162,7 @@ export async function importCatalogSnapshot(
         displayOrder: item.displayOrder,
         season: item.season ?? null,
         sourceSeasonId: item.sourceSeasonId ?? null,
-        imageUrl:
-          approval || options.allowSourceArtwork
-            ? (item.localPath ?? null)
-            : null,
-        imageApproval: approval,
+        imageUrl: item.localPath ?? null,
         sourceName: item.name,
         sourceLocalPath: item.localPath ?? null,
         sourceImage: item.sourceImage ?? null,

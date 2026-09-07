@@ -78,9 +78,7 @@ test("the checked-in snapshot matches the import schema", async () => {
 
 test("unchanged imports preserve IDs, timestamps, exact metadata and collection history", async () => {
   const item = source("stable")
-  const first = await importCatalogSnapshot([item], {
-    allowSourceArtwork: true,
-  })
+  const first = await importCatalogSnapshot([item])
   assert.equal(first.inserted, 1)
   const saved = await record(item.stableKey)
   assert.match(saved.id, /^[0-9a-f-]{36}$/)
@@ -111,9 +109,7 @@ test("unchanged imports preserve IDs, timestamps, exact metadata and collection 
       mastered: true,
     })
     .returning()
-  const repeated = await importCatalogSnapshot([item], {
-    allowSourceArtwork: true,
-  })
+  const repeated = await importCatalogSnapshot([item])
   assert.deepEqual(repeated, {
     imported: 1,
     inserted: 0,
@@ -133,7 +129,7 @@ test("unchanged imports preserve IDs, timestamps, exact metadata and collection 
     releaseStatus: "retired",
     description: "Corrected description",
   }
-  await importCatalogSnapshot([renamed], { allowSourceArtwork: true })
+  await importCatalogSnapshot([renamed])
   const updated = await record(item.stableKey)
   assert.equal(updated.id, saved.id)
   assert.equal(updated.slug, renamed.slug)
@@ -202,55 +198,18 @@ test("two source items cannot silently overwrite the same existing row", async (
   assert.equal((await record(item.stableKey)).slug, item.slug)
 })
 
-test("production artwork requires approval and approvals survive unchanged imports", async () => {
+test("production imports retain artwork paths and repeated imports preserve IDs", async () => {
   const item = source("artwork")
-  await importCatalogSnapshot([item])
-  assert.equal((await record(item.stableKey)).imageUrl, null)
-  await importCatalogSnapshot([item], { allowSourceArtwork: true })
-  const development = await record(item.stableKey)
-  assert.equal(catalogItem(development).imagePath, item.localPath)
   const oldEnvironment = process.env.NODE_ENV
   try {
     process.env.NODE_ENV = "production"
-    assert.equal(catalogItem(development).imagePath, null)
-    await assert.rejects(
-      importCatalogSnapshot([item], { allowSourceArtwork: true }),
-      /only available in development/,
-    )
-    const approval = {
-      imagePath: item.localPath,
-      sourceUrl: item.sourceImage,
-      usageBasis: "Test fixture approval. No production rights asserted.",
-      approvedAt: "2026-09-05",
-    }
-    await importCatalogSnapshot([item], { approvals: { assets: [approval] } })
-    const approved = await record(item.stableKey)
-    assert.equal(catalogItem(approved).imagePath, item.localPath)
-    assert.deepEqual(approved.imageApproval, approval)
-    assert.equal(
-      (
-        await importCatalogSnapshot([item], {
-          approvals: { assets: [approval] },
-        })
-      ).unchanged,
-      1,
-    )
-    const repeated = await importCatalogSnapshot([item])
-    assert.equal(repeated.unchanged, 1)
-    assert.equal(
-      catalogItem(await record(item.stableKey)).imagePath,
-      item.localPath,
-    )
-    await assert.rejects(
-      importCatalogSnapshot([item], {
-        approvals: {
-          assets: [
-            { ...approval, sourceUrl: "https://example.com/other.webp" },
-          ],
-        },
-      }),
-      /does not match/,
-    )
+    await importCatalogSnapshot([item])
+    const imported = await record(item.stableKey)
+    assert.equal(catalogItem(imported).imagePath, item.localPath)
+    assert.equal((await importCatalogSnapshot([item])).unchanged, 1)
+    assert.equal((await record(item.stableKey)).id, imported.id)
+    await importCatalogSnapshot([{ ...item, localPath: null }])
+    assert.equal(catalogItem(await record(item.stableKey)).imagePath, null)
   } finally {
     if (oldEnvironment === undefined) delete process.env.NODE_ENV
     else process.env.NODE_ENV = oldEnvironment

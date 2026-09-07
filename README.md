@@ -28,7 +28,7 @@ Migration and import commands run in the API package. Supply those commands with
 
 ```bash
 pnpm --filter @fortsprite/api db:migrate
-pnpm --filter @fortsprite/api catalog:import --allow-source-artwork
+pnpm --filter @fortsprite/api catalog:import
 pnpm dev
 ```
 
@@ -66,9 +66,9 @@ pnpm --filter @fortsprite/web catalog:sync-assets
 
 Pass `--rarities=path/to/rarities.json` to approve a changed rarity vocabulary without an application release. The file is a JSON array of unique, nonempty labels. Unlisted values are rejected.
 
-Catalog import is transactional and preserves database IDs on repeated imports. It rejects conflicting identities and does not delete missing records. Production artwork requires a documented approval manifest. Source attribution alone does not establish permission to use an image.
+Catalog import is transactional and preserves database IDs on repeated imports. It rejects conflicting identities and does not delete missing records. Builds publish the source images referenced by the catalog in both development and production.
 
-See [Deploy FortSprite to Vercel](docs/vercel.md) for deployment configuration and artwork approval.
+See [Deploy FortSprite to Vercel](docs/vercel.md) for deployment configuration and catalog artwork.
 
 Browser tests use a separate authenticated fixture and an isolated Next build directory. Install Chromium once, then run them against the migrated test database.
 

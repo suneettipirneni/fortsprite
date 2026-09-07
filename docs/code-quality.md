@@ -56,4 +56,4 @@ The performance gate remains unresolved. The latest run measured p95 524.21 ms a
 
 Helper discovery intentionally returns an unavailable state on failure so collection tracking remains usable. Its catch-all fallback still provides limited diagnostic detail. A separate observability change can add safe error classification without leaking provider data or changing fallback behavior.
 
-Live Epic callback verification, deployment configuration, production artwork approvals and the supported browser-version release matrix remain release tasks described in `docs/vercel.md`.
+Live Epic callback verification, deployment configuration, production artwork availability and the supported browser-version release matrix remain release tasks described in `docs/vercel.md`.

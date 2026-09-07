@@ -56,7 +56,7 @@ try {
         "utf8",
       ),
     )
-    await importCatalogSnapshot(catalog, { allowSourceArtwork: true })
+    await importCatalogSnapshot(catalog)
     const baseURL = process.env.WEB_ORIGIN!
     const actors = Object.fromEntries(
       ["a", "b"].map((key, index) => {
