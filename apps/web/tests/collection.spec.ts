@@ -370,3 +370,44 @@ test("collection switches between list and three grid sizes", async ({ page }, t
   await mediumGrid.press("Space")
   await expect(mediumGrid).toHaveAttribute("aria-checked", "true")
 })
+
+test("grouped view keeps each base Sprite and its variants in one section", async ({ page }, testInfo) => {
+  const collection = await snapshot(page)
+  const expected = collection.items.filter((item) => item.baseName === first.baseName)
+  await page.getByRole("radio", { name: "Grouped view", exact: true }).click()
+  const section = page.getByRole("region", { name: first.baseName, exact: true })
+  await expect(section.getByRole("heading", { name: first.baseName, exact: true, level: 2 })).toBeVisible()
+  await expect(page.locator("section")).toHaveCount(new Set(collection.items.map((item) => item.baseName)).size)
+  await expect(section.locator("article")).toHaveCount(expected.length)
+  expect(await section.locator("article").evaluateAll((elements) =>
+    elements.map((element) => element.getAttribute("data-sprite-id")).sort()
+  )).toEqual(expected.map((item) => item.id).sort())
+  await page.getByRole("radio", { name: "Small grid", exact: true }).click()
+  await assertFits(page)
+  if (process.env.COLLECTION_SCREENSHOT_DIR) {
+    if (testInfo.project.name === "mobile") {
+      await page.getByRole("radiogroup", { name: "Collection view", exact: true }).evaluate((element) => {
+        window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 96)
+      })
+    }
+    await page.screenshot({
+      path: `${process.env.COLLECTION_SCREENSHOT_DIR}/${testInfo.project.name}-grouped.png`,
+      animations: "disabled",
+      scale: "css",
+    })
+  }
+  await captured(page).click()
+  await expect(captured(page)).toHaveAttribute("aria-pressed", "true")
+  await expect(tile(page).getByRole("status")).toHaveCount(0)
+  await assertPersisted(page, { owned: true, mastered: false })
+  await page.getByRole("textbox", { name: "Search collection", exact: true }).fill(first.baseName)
+  await expect(section.locator("article")).toHaveCount(expected.length)
+  await page.getByRole("textbox", { name: "Search collection", exact: true }).fill("no-such-sprite-123")
+  await expect(page.getByText("No Sprites match these filters", { exact: true })).toBeVisible()
+  await expect(page.locator("section")).toHaveCount(0)
+  await page.getByRole("button", { name: "Clear filters", exact: true }).click()
+  await expect(section).toBeVisible()
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
+  await expect(page.locator("section")).toHaveCount(0)
+  await expect(page.getByRole("radio", { name: "Small grid", exact: true })).toHaveAttribute("aria-checked", "true")
+})

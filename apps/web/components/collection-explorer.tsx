@@ -9,7 +9,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react"
-import { Grid2X2Icon, Grid3X3Icon, ListIcon, SearchIcon, SquareIcon } from "lucide-react"
+import { Grid2X2Icon, Grid3X3Icon, ListIcon, Rows3Icon, SearchIcon, SquareIcon } from "lucide-react"
 
 import { cn } from "@workspace/ui/lib/utils"
 import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group"
@@ -146,7 +146,7 @@ export function CollectionExplorer({
   }
   const variantOptions = [...new Set(sprites.map((sprite) => sprite.variant))]
   const rarityOptions = [...new Set(sprites.map((sprite) => sprite.rarity))]
-  const [view, setView] = useState<"list" | "grid">("grid")
+  const [view, setView] = useState<"list" | "grid" | "grouped">("grid")
   const [gridSize, setGridSize] = useState<keyof typeof gridSizes>("medium")
   const [query, setQuery] = useState("")
   const [ownership, setOwnership] = useState<OwnershipFilter>("all")
@@ -163,6 +163,15 @@ export function CollectionExplorer({
     rarity,
     sort,
   })
+
+  const spriteGroups = new Map<string, Sprite[]>()
+  if (view === "grouped") {
+    for (const sprite of filteredSprites) {
+      const group = spriteGroups.get(sprite.baseName)
+      if (group) group.push(sprite)
+      else spriteGroups.set(sprite.baseName, [sprite])
+    }
+  }
 
   const ownedCount = sprites.filter((sprite) => sprite.owned).length
   const masteredCount = sprites.filter((sprite) => sprite.mastered).length
@@ -182,6 +191,16 @@ export function CollectionExplorer({
       (ownership === "mastered" && !updated.mastered)
 
     if (leavesFilter) activeFilterRef.current?.focus()
+  }
+
+  const gridProps = {
+    view: view === "list" ? "list" as const : "grid" as const,
+    gridSize,
+    pendingIds,
+    availabilityKnown: initialCollection.friendAvailability.status === "ready",
+    notice,
+    onRemovedFocus: () => activeFilterRef.current?.focus(),
+    onChange: updateSprite,
   }
 
   return (
@@ -345,7 +364,7 @@ export function CollectionExplorer({
               type="single"
               value={view}
               onValueChange={(value) => {
-                if (value === "list" || value === "grid") setView(value)
+                if (value === "list" || value === "grid" || value === "grouped") setView(value)
               }}
               aria-label="Collection view"
               variant="outline"
@@ -357,8 +376,11 @@ export function CollectionExplorer({
               <ToggleGroupItem value="grid" aria-label="Grid view" className="h-11 px-3">
                 <Grid2X2Icon aria-hidden="true" /> Grid
               </ToggleGroupItem>
+              <ToggleGroupItem value="grouped" aria-label="Grouped view" className="h-11 px-3">
+                <Rows3Icon aria-hidden="true" /> Grouped
+              </ToggleGroupItem>
             </ToggleGroup>
-            {view === "grid" ? (
+            {view !== "list" ? (
               <ToggleGroup
                 type="single"
                 value={gridSize}
@@ -392,22 +414,21 @@ export function CollectionExplorer({
 
         {filteredSprites.length > 0 ? (
           <div className="@container">
-            <div className={cn("grid gap-3", view === "list" ? "grid-cols-1" : gridSizes[gridSize])}>
-              {filteredSprites.map((sprite) => (
-                <SpriteTile
-                  key={sprite.id}
-                  sprite={sprite}
-                  view={view}
-                  pending={pendingIds.has(sprite.id)}
-                  availabilityKnown={
-                    initialCollection.friendAvailability.status === "ready"
-                  }
-                  onRemovedFocus={() => activeFilterRef.current?.focus()}
-                  notice={notice?.spriteId === sprite.id ? notice : null}
-                  onChange={(change) => updateSprite(sprite, change)}
-                />
-              ))}
-            </div>
+            {view === "grouped" ? (
+              <div className="space-y-8">
+                {[...spriteGroups].map(([baseName, items]) => (
+                  <section key={baseName} aria-label={baseName} className="space-y-4">
+                    <div className="flex items-baseline justify-between gap-3 border-b border-white/15 pb-3">
+                      <h2 className="text-lg font-semibold">{baseName}</h2>
+                      <span className="text-xs text-muted-foreground">
+                        {items.length} {items.length === 1 ? "variant" : "variants"}
+                      </span>
+                    </div>
+                    <SpriteGrid items={items} {...gridProps} />
+                  </section>
+                ))}
+              </div>
+            ) : <SpriteGrid items={filteredSprites} {...gridProps} />}
           </div>
         ) : (
           <Empty className="min-h-64 border border-white/14 bg-card">
@@ -458,5 +479,43 @@ export function CollectionExplorer({
         ) : null}
       </div>
     </>
+  )
+}
+
+
+function SpriteGrid({
+  items,
+  view,
+  gridSize,
+  pendingIds,
+  availabilityKnown,
+  notice,
+  onRemovedFocus,
+  onChange,
+}: {
+  items: Sprite[]
+  view: "list" | "grid"
+  gridSize: keyof typeof gridSizes
+  pendingIds: Set<string>
+  availabilityKnown: boolean
+  notice: CollectionNotice | null
+  onRemovedFocus: () => void
+  onChange: (sprite: Sprite, change: CollectionChange) => void
+}) {
+  return (
+    <div className={cn("grid gap-3", view === "list" ? "grid-cols-1" : gridSizes[gridSize])}>
+      {items.map((sprite) => (
+        <SpriteTile
+          key={sprite.id}
+          sprite={sprite}
+          view={view}
+          pending={pendingIds.has(sprite.id)}
+          availabilityKnown={availabilityKnown}
+          onRemovedFocus={onRemovedFocus}
+          notice={notice?.spriteId === sprite.id ? notice : null}
+          onChange={(change) => onChange(sprite, change)}
+        />
+      ))}
+    </div>
   )
 }
