@@ -1,0 +1,39 @@
+{
+  "name": "@fortsprite/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "auth:generate": "pnpm dlx @better-auth/cli@latest generate --config src/auth.ts --output src/db/auth-schema.ts --yes",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
+    "test": "tsx --test tests/*.test.ts",
+    "catalog:import": "tsx scripts/import-catalog.ts"
+  },
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.26",
+    "@hono/node-server": "^2.1.0",
+    "@workspace/contracts": "workspace:*",
+    "better-auth": "^1.6.26",
+    "drizzle-orm": "^0.45.2",
+    "dotenv": "^17.2.3",
+    "pg": "^8.23.0",
+    "hono": "^4.13.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.18.0",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    "./app": "./src/app.ts"
+  }
+}

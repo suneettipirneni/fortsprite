@@ -1,0 +1,26 @@
+{
+  "name": "fortsprite",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --filter=@fortsprite/web",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "turbo": "^2.10.11"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=22.12.0 <23"
+  },
+  "dependencies": {
+    "@neon/config": "^1.3.0",
+    "@neon/env": "^1.2.1"
+  }
+}

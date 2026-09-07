@@ -1,0 +1,3 @@
+ALTER TABLE "friendships" DROP CONSTRAINT "friendships_canonical_pair_check";--> statement-breakpoint
+UPDATE "friendships" SET "user_low_id" = "user_high_id", "user_high_id" = "user_low_id" WHERE "user_low_id" COLLATE "C" > "user_high_id" COLLATE "C";--> statement-breakpoint
+ALTER TABLE "friendships" ADD CONSTRAINT "friendships_canonical_pair_check" CHECK ("friendships"."user_low_id" collate "C" < "friendships"."user_high_id" collate "C");

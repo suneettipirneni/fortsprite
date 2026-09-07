@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1786400607167,
+      "tag": "0000_cloudy_silvermane",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786405173556,
+      "tag": "0001_dark_madame_masque",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788661945852,
+      "tag": "0002_complete_catalog_metadata",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788662868387,
+      "tag": "0003_ownership_availability",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788714343117,
+      "tag": "0004_separate_app_display_name",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788714438702,
+      "tag": "0005_persistent_rate_limits",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788714566329,
+      "tag": "0006_canonical_friend_pairs",
+      "breakpoints": true
+    }
+  ]
+}

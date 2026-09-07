@@ -1,0 +1,14 @@
+{
+  "releasedCount": 164,
+  "sourceVerifiedAt": "2026-09-06",
+  "seasons": [
+    {
+      "label": "C7 S4",
+      "sourceSeasonId": 42
+    },
+    {
+      "label": "C7 S3",
+      "sourceSeasonId": 41
+    }
+  ]
+}

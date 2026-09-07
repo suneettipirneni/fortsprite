@@ -1,0 +1,40 @@
+{
+  "$schema": "https://v2-10-11.turborepo.dev/schema.json",
+  "tasks": {
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": [
+        "DATABASE_URL",
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "WEB_ORIGIN",
+        "EPIC_OAUTH_*",
+        "BETTER_AUTH_COOKIE_DOMAIN",
+        "CATALOG_ASSET_APPROVALS",
+        "SUPPORT_CONTACT_URL"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["transit"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/eslint.config.mjs"],
+      "outputs": []
+    },
+    "typecheck": {
+      "dependsOn": ["transit"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "env": ["TEST_DATABASE_URL"]
+    }
+  }
+}

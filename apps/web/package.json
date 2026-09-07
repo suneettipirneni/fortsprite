@@ -1,0 +1,39 @@
+{
+  "name": "@fortsprite/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/prepare-sprite-assets.mjs && next dev",
+    "build": "node scripts/prepare-sprite-assets.mjs --production && next build",
+    "catalog:sync-assets": "node scripts/sync-sprite-assets.mjs",
+    "catalog:validate": "node scripts/validate-sprite-catalog.mjs",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "test:instant": "playwright test --config playwright.instant.config.ts",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@fortsprite/api": "workspace:*",
+    "@workspace/contracts": "workspace:*",
+    "@workspace/ui": "workspace:*",
+    "better-auth": "^1.6.26",
+    "hono": "^4.13.1",
+    "lucide-react": "^1.31.0",
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
+    "@next/playwright": "16.3.0",
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3"
+  }
+}
