@@ -1,3 +1,5 @@
+<img src="apps/web/app/icon.png" alt="FortSprite logo" width="128" height="128" />
+
 # FortSprite
 
 A friend-first Fortnite Sprite collection tracker.
