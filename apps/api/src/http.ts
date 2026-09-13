@@ -5,7 +5,12 @@ import { auth } from "./auth.ts"
 import { FriendshipError } from "./friends.ts"
 import { EpicPermissionRequiredError } from "./epic/service.ts"
 import { EpicApiError } from "./epic/client.ts"
-import { DiscoveryRateLimitError } from "./rate-limit.ts"
+import {
+  RateLimitError,
+  consumeMutationLimit,
+  type MutationBudget,
+} from "./rate-limit.ts"
+import { db } from "./db/client.ts"
 
 export type ApiEnvironment = {
   Variables: { userId: string; requestId: string }
@@ -56,7 +61,7 @@ export const handleApiError: ErrorHandler<ApiEnvironment> = (
   error,
   context,
 ) => {
-  if (error instanceof DiscoveryRateLimitError) {
+  if (error instanceof RateLimitError) {
     context.header("Retry-After", String(error.retryAfter))
     return context.json(
       { error: { code: "RATE_LIMITED", message: error.message } },
@@ -95,4 +100,11 @@ export const handleApiError: ErrorHandler<ApiEnvironment> = (
     },
     upstream ? 502 : 500,
   )
+}
+
+export function limitMutations(budget: MutationBudget, database = db) {
+  return createMiddleware<ApiEnvironment>(async (context, next) => {
+    await consumeMutationLimit(context.get("userId"), budget, database)
+    await next()
+  })
 }

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { SupportContact } from "@/components/support-contact"
-import { ArrowLeftIcon, CommandIcon } from "lucide-react"
+import { ArrowLeftIcon } from "lucide-react"
+import { FortSpriteIcon } from "@/components/fortsprite-icon"
 
 import { Button } from "@workspace/ui/components/button"
 import { Separator } from "@workspace/ui/components/separator"
@@ -30,7 +31,7 @@ export function LegalPage({
             aria-label="FortSprite sign in"
             className="flex items-center gap-2 font-mono text-sm font-semibold tracking-wide"
           >
-            <CommandIcon className="size-4 shrink-0 stroke-primary" />
+            <FortSpriteIcon size={32} className="shrink-0 text-[#9cfab5]" />
             FORTSPRITE
           </Link>
           <Button variant="ghost" size="sm" asChild>

@@ -13,7 +13,8 @@
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
     "test": "tsx --test tests/*.test.ts",
-    "catalog:import": "tsx scripts/import-catalog.ts"
+    "catalog:import": "tsx scripts/import-catalog.ts",
+    "auth:encrypt-tokens": "tsx scripts/encrypt-oauth-tokens.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.26",
@@ -23,7 +24,7 @@
     "drizzle-orm": "^0.45.2",
     "dotenv": "^17.2.3",
     "pg": "^8.23.0",
-    "hono": "^4.13.1",
+    "hono": "^4.13.7",
     "zod": "^4.4.3"
   },
   "devDependencies": {

@@ -1,8 +1,10 @@
-<img src="apps/web/app/icon.png" alt="FortSprite logo" width="128" height="128" />
+<img src="apps/web/public/brand/fortsprite.svg" alt="FortSprite logo" width="128" height="128" />
 
 # FortSprite
 
 A friend-first Fortnite Sprite collection tracker.
+
+Production: [fortsprite.net](https://fortsprite.net). See [deployment setup](docs/vercel.md) for production environment variables and the Epic callback URL.
 
 ## Workspace
 

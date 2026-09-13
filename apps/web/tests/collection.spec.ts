@@ -286,7 +286,7 @@ test("rapid collection actions stay optimistic and coalesce to the last intent",
     release = resolve
   })
   const search = page.getByRole("textbox", { name: "Search collection" })
-  await search.fill("Jackrabbit")
+  await search.fill(first.baseName)
   let requests = 0
   await page.route("**/collection", async (route) => {
     if (route.request().headers()["next-action"]) {
@@ -310,7 +310,7 @@ test("rapid collection actions stay optimistic and coalesce to the last intent",
   await expect.poll(() => requests).toBe(2)
   await expect(tile(page).getByRole("status")).toHaveCount(0)
   await expect(captured(page)).toHaveAttribute("aria-pressed", "false")
-  await expect(search).toHaveValue("Jackrabbit")
+  await expect(search).toHaveValue(first.baseName)
   await assertPersisted(page, { owned: false, mastered: false })
   await page.reload()
   await expect(captured(page)).toHaveAttribute("aria-pressed", "false")

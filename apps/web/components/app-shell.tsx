@@ -6,7 +6,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   ChevronsUpDownIcon,
-  CommandIcon,
   MenuIcon,
   UserRoundIcon,
 } from "lucide-react"
@@ -35,6 +34,7 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 
 import { SignOutMenuItem } from "@/components/sign-out-menu-item"
+import { FortSpriteIcon } from "@/components/fortsprite-icon"
 import catalogMetadata from "../public/sprites/catalog-meta.json"
 
 const catalogDateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -73,7 +73,7 @@ function Brand() {
       aria-label="Homepage"
       className="flex shrink-0 items-center gap-2 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >
-      <CommandIcon className="size-4 shrink-0 stroke-primary" />
+      <FortSpriteIcon size={32} className="shrink-0 text-[#9cfab5]" />
       <span className="locker-display text-lg text-foreground">FortSprite</span>
     </Link>
   )
@@ -184,7 +184,10 @@ function MobileNavigation() {
       </SheetTrigger>
       <SheetContent side="left" className="!w-[min(20rem,calc(100%-3rem))]">
         <SheetHeader>
-          <SheetTitle className="locker-display text-xl">FortSprite</SheetTitle>
+          <SheetTitle className="locker-display flex items-center gap-2 text-xl">
+            <FortSpriteIcon size={32} className="shrink-0 text-[#9cfab5]" />
+            FortSprite
+          </SheetTitle>
           <SheetDescription>
             Your Sprite locker and friend network.
           </SheetDescription>

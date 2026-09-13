@@ -18,15 +18,15 @@
     "@workspace/contracts": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.6.26",
-    "hono": "^4.13.1",
+    "hono": "^4.13.7",
     "lucide-react": "^1.31.0",
-    "next": "16.3.0",
+    "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
-    "@next/playwright": "16.3.0",
+    "@next/playwright": "16.3.5",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.0.0",

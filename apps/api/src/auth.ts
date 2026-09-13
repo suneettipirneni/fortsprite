@@ -22,6 +22,7 @@ export const auth = betterAuth({
   },
   baseURL: env.betterAuthUrl,
   secret: env.betterAuthSecret,
+  secrets: [{ version: 1, value: env.betterAuthSecret }],
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: databaseSchema,
@@ -58,6 +59,7 @@ export const auth = betterAuth({
     },
   },
   account: {
+    encryptOAuthTokens: true,
     accountLinking: {
       enabled: false,
     },

@@ -9,6 +9,7 @@ export default defineConfig([
     "**/.next/**",
     "**/.next-e2e/**",
     "**/.next-instant/**",
+    "**/.next-security/**",
     "**/next-env.d.ts",
     ".audit/**",
   ]),

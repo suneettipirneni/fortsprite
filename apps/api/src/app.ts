@@ -1,3 +1,4 @@
+import { limitBody } from "./body-limit.ts"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { requestId } from "hono/request-id"
@@ -18,6 +19,9 @@ app.use("/api/*", async (context, next) => {
   context.header("Cache-Control", "no-store")
   await next()
 })
+
+app.use("/api/v1/*", limitBody(16 * 1024))
+app.use("/api/auth/*", limitBody(32 * 1024))
 
 app.use("/api/v1/*", async (context, next) => {
   if (!["GET", "HEAD", "OPTIONS"].includes(context.req.method)) {

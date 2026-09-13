@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import Link from "next/link"
-import { CommandIcon, LockKeyholeIcon, ShieldCheckIcon } from "lucide-react"
+import { LockKeyholeIcon, ShieldCheckIcon } from "lucide-react"
 
 import { Badge } from "@workspace/ui/components/badge"
 
 import { EpicSignInButton } from "@/components/epic-sign-in-button"
+import { FortSpriteIcon } from "@/components/fortsprite-icon"
 
 export const metadata: Metadata = { title: "Sign in" }
 
@@ -23,7 +24,7 @@ export default function SignInPage({
             aria-label="Homepage"
             className="flex items-center gap-2 font-mono text-sm font-semibold tracking-wide"
           >
-            <CommandIcon className="size-4 shrink-0 stroke-primary" />
+            <FortSpriteIcon size={40} className="shrink-0 text-[#9cfab5]" />
             FORTSPRITE
           </Link>
           <div className="flex flex-col gap-3">
@@ -74,6 +75,7 @@ export default function SignInPage({
           Squad intelligence
         </p>
         <div className="flex max-w-xl flex-col gap-5">
+          <FortSpriteIcon size={128} className="text-[#9cfab5]" />
           <p className="text-balance text-5xl font-semibold tracking-tight">
             Your next find may already belong to a friend.
           </p>

@@ -4,6 +4,8 @@ import {
   type SessionReader,
   readSession,
   requireSession,
+  limitMutations,
+  handleApiError,
 } from "./http.ts"
 import { db } from "./db/client.ts"
 import { collectionHelpers } from "./friend-service.ts"
@@ -26,6 +28,7 @@ export function createCollectionRoutes({
 } = {}) {
   const routes = new Hono<ApiEnvironment>()
   const authenticated = requireSession(getSession)
+  routes.onError(handleApiError)
 
   routes.get("/collection", authenticated, async (context) => {
     const query = collectionQuerySchema.safeParse(context.req.query())
@@ -62,39 +65,44 @@ export function createCollectionRoutes({
     })
   })
 
-  routes.put("/collection/:spriteId", authenticated, async (context) => {
-    const spriteId = spriteIdSchema.safeParse(context.req.param("spriteId"))
-    const state = collectionStateSchema.safeParse(
-      await context.req.json().catch(() => null),
-    )
-    if (!spriteId.success || !state.success)
-      return context.json(
-        {
-          error: {
-            code: "INVALID_INPUT",
-            message: "Choose a valid Sprite collection state.",
-          },
-        },
-        400,
+  routes.put(
+    "/collection/:spriteId",
+    authenticated,
+    limitMutations("collection", database),
+    async (context) => {
+      const spriteId = spriteIdSchema.safeParse(context.req.param("spriteId"))
+      const state = collectionStateSchema.safeParse(
+        await context.req.json().catch(() => null),
       )
-    const result = await setCollectionEntry(
-      context.get("userId"),
-      spriteId.data,
-      state.data,
-      database,
-    )
-    if (!result)
-      return context.json(
-        {
-          error: {
-            code: "SPRITE_NOT_FOUND",
-            message: "This released Sprite could not be found.",
+      if (!spriteId.success || !state.success)
+        return context.json(
+          {
+            error: {
+              code: "INVALID_INPUT",
+              message: "Choose a valid Sprite collection state.",
+            },
           },
-        },
-        404,
+          400,
+        )
+      const result = await setCollectionEntry(
+        context.get("userId"),
+        spriteId.data,
+        state.data,
+        database,
       )
-    return context.json(result)
-  })
+      if (!result)
+        return context.json(
+          {
+            error: {
+              code: "SPRITE_NOT_FOUND",
+              message: "This released Sprite could not be found.",
+            },
+          },
+          404,
+        )
+      return context.json(result)
+    },
+  )
 
   return routes
 }

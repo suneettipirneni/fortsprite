@@ -2,6 +2,7 @@ import "./env.js"
 import { after, test } from "node:test"
 import assert from "node:assert/strict"
 import { createHash, randomBytes, randomUUID } from "node:crypto"
+import { symmetricDecrypt } from "better-auth/crypto"
 import { eq, inArray } from "drizzle-orm"
 
 type Grant = { challenge: string; profile: unknown; used: boolean }
@@ -85,11 +86,11 @@ globalThis.fetch = async (input, init) => {
   )
 }
 
+const { auth } = await import("../src/auth.ts")
 const { app } = await import("../src/app.js")
 const { db, pool } = await import("../src/db/client.js")
-const { account, user, session, verification, rateLimit } = await import(
-  "../src/db/auth-schema.js"
-)
+const { account, user, session, verification, rateLimit } =
+  await import("../src/db/auth-schema.js")
 
 after(async () => {
   globalThis.fetch = originalFetch
@@ -214,6 +215,25 @@ test("Epic OAuth uses PKCE, persists one account across logins, and refreshes ex
   assert.equal(initialAccount?.providerId, "epic-games")
   assert.ok(initialAccount?.accessToken)
   assert.ok(initialAccount?.refreshToken)
+  const { secretConfig } = await auth.$context
+  assert.ok(initialAccount.accessToken.startsWith("$ba$"))
+  assert.ok(initialAccount.refreshToken.startsWith("$ba$"))
+  assert.ok(
+    tokens.has(
+      await symmetricDecrypt({
+        key: secretConfig,
+        data: initialAccount.accessToken,
+      }),
+    ),
+  )
+  assert.ok(
+    refreshTokens.has(
+      await symmetricDecrypt({
+        key: secretConfig,
+        data: initialAccount.refreshToken,
+      }),
+    ),
+  )
   assert.deepEqual(initialAccount?.scope?.split(",").sort(), [
     "basic_profile",
     "friends_list",
@@ -275,7 +295,13 @@ test("Epic OAuth uses PKCE, persists one account across logins, and refreshes ex
     .select()
     .from(account)
     .where(eq(account.userId, signedIn.userId))
-  assert.equal(refreshed?.accessToken, friendsAccessToken)
+  assert.ok(refreshed?.accessToken)
+  assert.notEqual(refreshed.accessToken, friendsAccessToken)
+  assert.equal(
+    await symmetricDecrypt({ key: secretConfig, data: refreshed.accessToken }),
+    friendsAccessToken,
+  )
+  assert.ok(refreshed.refreshToken?.startsWith("$ba$"))
   assert.notEqual(refreshed?.accessToken, accounts[0]?.accessToken)
   assert.ok(
     refreshed?.accessTokenExpiresAt &&

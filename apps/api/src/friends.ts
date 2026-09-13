@@ -40,6 +40,12 @@ export class FriendshipError extends Error {
   }
 }
 
+export class EpicFriendVerificationRequiredError extends FriendshipError {
+  constructor() {
+    super(404, "This friend is not currently available through Epic.")
+  }
+}
+
 function publicProfile(
   profile: Pick<
     typeof user.$inferSelect,
@@ -81,12 +87,13 @@ function acceptedFriendCondition(
   viewerId: string,
   friendId: string | typeof user.id,
 ) {
+  // Match the canonical-pair unique index instead of an OR over both directions.
+  // C collation matches the JavaScript ordering used when storing the pair.
   return sql`exists (select 1 from ${friendships} where ${friendships.status} = 'accepted'
-    and ((${friendships.userLowId} = ${viewerId} and ${friendships.userHighId} = ${friendId})
-      or (${friendships.userHighId} = ${viewerId} and ${friendships.userLowId} = ${friendId})))
-    and not exists (select 1 from ${blocks} where
-      (${blocks.blockerId} = ${viewerId} and ${blocks.blockedId} = ${friendId})
-      or (${blocks.blockedId} = ${viewerId} and ${blocks.blockerId} = ${friendId}))`
+    and ${friendships.userLowId} = least(${viewerId}::text collate "C", ${friendId}::text collate "C")
+    and ${friendships.userHighId} = greatest(${viewerId}::text collate "C", ${friendId}::text collate "C"))
+    and not exists (select 1 from ${blocks} where ${blocks.blockerId} = ${viewerId} and ${blocks.blockedId} = ${friendId})
+    and not exists (select 1 from ${blocks} where ${blocks.blockerId} = ${friendId} and ${blocks.blockedId} = ${viewerId})`
 }
 
 export async function sharingFriends(
@@ -190,11 +197,10 @@ export async function changeSharing(
       await transaction.delete(friendships).where(pair)
       return
     }
-    if (!visibleLocalIds.includes(friendId))
-      throw new FriendshipError(
-        404,
-        "This friend is not currently available through Epic.",
-      )
+    const canRevokeLocally =
+      action === "block" && (relationship || blocked.length > 0)
+    if (!canRevokeLocally && !visibleLocalIds.includes(friendId))
+      throw new EpicFriendVerificationRequiredError()
     if (action === "block") {
       await transaction.delete(friendships).where(pair)
       await transaction
@@ -262,7 +268,7 @@ export async function getHelpers(
   if (!visibleLocalIds.length) return []
   const rows = await database
     .select({
-      spriteId: collectionEntries.spriteId,
+      spriteIds: sql<string[]>`array_agg(${collectionEntries.spriteId})`,
       profile: profileColumns,
     })
     .from(collectionEntries)
@@ -276,10 +282,11 @@ export async function getHelpers(
         acceptedFriendCondition(viewerId, user.id),
       ),
     )
-  return rows.map((row) => ({
-    spriteId: row.spriteId,
-    profile: publicProfile(row.profile),
-  }))
+    .groupBy(user.id)
+  return rows.flatMap((row) => {
+    const profile = publicProfile(row.profile)
+    return row.spriteIds.map((spriteId) => ({ spriteId, profile }))
+  })
 }
 
 export async function getBlockedProfiles(viewerId: string, database = db) {

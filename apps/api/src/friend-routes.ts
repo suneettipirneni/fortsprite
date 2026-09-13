@@ -1,9 +1,11 @@
 import { Hono } from "hono"
 import { z } from "zod"
 import { db } from "./db/client.ts"
+import { consumeMutationLimit } from "./rate-limit.ts"
 import { getFriendContext } from "./friend-service.ts"
 import {
   changeSharing,
+  EpicFriendVerificationRequiredError,
   getBlockedProfiles,
   getComparison,
   sharingActionSchema,
@@ -81,16 +83,41 @@ export function createFriendRoutes({
           400,
         )
       const { action } = parsed.data
-      const localIds = ["remove", "decline", "unblock"].includes(action)
-        ? []
-        : (await getFriends(context.req.raw.headers, database)).localIds
-      await changeSharing(
-        context.get("userId"),
-        id.data,
+      const privacyAction = ["remove", "decline", "unblock", "block"].includes(
         action,
-        localIds,
+      )
+      await consumeMutationLimit(
+        context.get("userId"),
+        privacyAction ? "privacy" : "sharing",
         database,
       )
+      const localIds = privacyAction
+        ? []
+        : (await getFriends(context.req.raw.headers, database)).localIds
+      try {
+        await changeSharing(
+          context.get("userId"),
+          id.data,
+          action,
+          localIds,
+          database,
+        )
+      } catch (error) {
+        if (
+          action !== "block" ||
+          !(error instanceof EpicFriendVerificationRequiredError)
+        )
+          throw error
+        // Unknown relationships need verification, outside the transaction/connection lock.
+        const { localIds } = await getFriends(context.req.raw.headers, database)
+        await changeSharing(
+          context.get("userId"),
+          id.data,
+          action,
+          localIds,
+          database,
+        )
+      }
       return context.json({ ok: true })
     },
   )

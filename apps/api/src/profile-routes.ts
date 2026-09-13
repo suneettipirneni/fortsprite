@@ -1,9 +1,10 @@
 import { Hono } from "hono"
 import { z } from "zod"
-import { eq } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 import { auth } from "./auth.ts"
 import { db } from "./db/client.ts"
 import { user, rateLimit } from "./db/auth-schema.ts"
+import { userRateLimitKeys } from "./rate-limit.ts"
 import { profileSchema, updateProfile } from "./profile.ts"
 import {
   type ApiEnvironment,
@@ -12,6 +13,7 @@ import {
   readSession,
   rejectQueryParameters,
   requireSession,
+  limitMutations,
 } from "./http.ts"
 
 export function createProfileRoutes({
@@ -30,6 +32,7 @@ export function createProfileRoutes({
   routes.put(
     "/profile",
     authenticated,
+    limitMutations("profile", database),
     rejectQueryParameters,
     async (context) => {
       const parsed = profileSchema.safeParse(
@@ -88,6 +91,7 @@ export function createProfileRoutes({
   routes.delete(
     "/profile",
     authenticated,
+    limitMutations("deletion", database),
     rejectQueryParameters,
     async (context) => {
       const parsed = z
@@ -122,7 +126,7 @@ export function createProfileRoutes({
         )
       await database
         .delete(rateLimit)
-        .where(eq(rateLimit.key, `friend-discovery:${context.get("userId")}`))
+        .where(inArray(rateLimit.key, userRateLimitKeys(context.get("userId"))))
       for (const cookie of result.headers.getSetCookie())
         context.header("set-cookie", cookie, { append: true })
       return context.json({ ok: true })

@@ -5,3 +5,12 @@ packages:
 onlyBuiltDependencies:
   - esbuild
   - sharp
+
+# drizzle-kit 0.31.10 bundles tsx and never imports this obsolete loader.
+# Remove the unused chain that still installs vulnerable esbuild 0.18.
+overrides:
+  "drizzle-kit@0.31.10>@esbuild-kit/esm-loader": "-"
+  "sharp@<0.35.4": "^0.35.4"
+  "fast-uri@>=3.0.0 <3.1.6": "^3.1.7"
+  "qs@>=6.0.0 <6.16.0": "^6.16.0"
+  "js-yaml@>=4.0.0 <4.3.2": "^4.3.2"

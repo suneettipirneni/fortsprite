@@ -20,3 +20,5 @@ dist
 .vercel
 .env*
 !.env.example
+
+/apps/web/.next-security/
