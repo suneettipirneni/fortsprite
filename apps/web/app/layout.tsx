@@ -5,12 +5,27 @@ import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import "@workspace/ui/globals.css"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://fortsprite.net"),
   title: {
     default: "FortSprite",
     template: "%s · FortSprite",
   },
   description:
     "Track your Fortnite Sprite collection and see which friends can help fill the gaps.",
+  openGraph: {
+    description:
+      "Track your Fortnite Sprite collection and see which friends can help fill the gaps.",
+    siteName: "FortSprite",
+    title: "FortSprite",
+    type: "website",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    description:
+      "Track your Fortnite Sprite collection and see which friends can help fill the gaps.",
+    title: "FortSprite",
+  },
 }
 
 export default function RootLayout({

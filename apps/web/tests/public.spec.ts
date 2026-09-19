@@ -2,6 +2,15 @@ import { readFile } from "node:fs/promises"
 import AxeBuilder from "@axe-core/playwright"
 import { expect, test } from "@playwright/test"
 
+test("social preview images are public PNGs", async ({ request }) => {
+  for (const path of ["/opengraph-image", "/twitter-image"]) {
+    const response = await request.get(path)
+    expect(response.status()).toBe(200)
+    expect(response.headers()["content-type"]).toContain("image/png")
+    expect((await response.body()).subarray(1, 4).toString()).toBe("PNG")
+  }
+})
+
 test("a verified passkey atomically creates the account and its first session", async ({
   page,
 }, testInfo) => {
