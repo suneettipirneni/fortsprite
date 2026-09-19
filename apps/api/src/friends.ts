@@ -5,10 +5,10 @@ import type {
   SharingAction,
   SharingFriend,
 } from "@workspace/contracts"
-import { db } from "./db/client.ts"
-import { account, user } from "./db/auth-schema.ts"
-import { blocks, friendships, collectionEntries, sprites } from "./db/schema.ts"
 import { catalogItem } from "./catalog.ts"
+import { user } from "./db/auth-schema.ts"
+import { db } from "./db/client.ts"
+import { blocks, collectionEntries, friendships, sprites } from "./db/schema.ts"
 
 const profileColumns = {
   id: user.id,
@@ -17,6 +17,11 @@ const profileColumns = {
   handle: user.handle,
   fortniteDisplayName: user.fortniteDisplayName,
 }
+
+export const handleSchema = z
+  .string()
+  .trim()
+  .regex(/^[A-Za-z0-9_-]{3,24}$/)
 
 export const sharingActionSchema = z
   .object({
@@ -40,13 +45,7 @@ export class FriendshipError extends Error {
   }
 }
 
-export class EpicFriendVerificationRequiredError extends FriendshipError {
-  constructor() {
-    super(404, "This friend is not currently available through Epic.")
-  }
-}
-
-function publicProfile(
+export function publicProfile(
   profile: Pick<
     typeof user.$inferSelect,
     "id" | "name" | "handle" | "fortniteDisplayName" | "appDisplayName"
@@ -68,27 +67,10 @@ function publicProfile(
   }
 }
 
-export async function resolveLocalFriends(epicIds: string[], database = db) {
-  if (!epicIds.length) return []
-  return database
-    .select({
-      ...profileColumns,
-      epicId: account.accountId,
-    })
-    .from(user)
-    .innerJoin(
-      account,
-      and(eq(account.userId, user.id), eq(account.providerId, "epic-games")),
-    )
-    .where(inArray(account.accountId, epicIds))
-}
-
 function acceptedFriendCondition(
   viewerId: string,
   friendId: string | typeof user.id,
 ) {
-  // Match the canonical-pair unique index instead of an OR over both directions.
-  // C collation matches the JavaScript ordering used when storing the pair.
   return sql`exists (select 1 from ${friendships} where ${friendships.status} = 'accepted'
     and ${friendships.userLowId} = least(${viewerId}::text collate "C", ${friendId}::text collate "C")
     and ${friendships.userHighId} = greatest(${viewerId}::text collate "C", ${friendId}::text collate "C"))
@@ -96,11 +78,7 @@ function acceptedFriendCondition(
     and not exists (select 1 from ${blocks} where ${blocks.blockerId} = ${friendId} and ${blocks.blockedId} = ${viewerId})`
 }
 
-export async function sharingFriends(
-  viewerId: string,
-  localFriends: Awaited<ReturnType<typeof resolveLocalFriends>>,
-  database = db,
-): Promise<SharingFriend[]> {
+export async function sharingFriends(viewerId: string, database = db) {
   const [relationships, blocked] = await Promise.all([
     database
       .select()
@@ -118,37 +96,62 @@ export async function sharingFriends(
         or(eq(blocks.blockerId, viewerId), eq(blocks.blockedId, viewerId)),
       ),
   ])
-  return localFriends
+  const peerIds = [
+    ...new Set(
+      relationships.map((relationship) =>
+        relationship.userLowId === viewerId
+          ? relationship.userHighId
+          : relationship.userLowId,
+      ),
+    ),
+  ]
+  if (!peerIds.length) return [] satisfies SharingFriend[]
+  const profiles = await database
+    .select(profileColumns)
+    .from(user)
+    .where(inArray(user.id, peerIds))
+  return profiles
     .filter(
-      (friend) =>
-        friend.id !== viewerId &&
+      (profile) =>
         !blocked.some(
           (block) =>
-            block.blockerId === friend.id && block.blockedId === viewerId,
+            block.blockerId === profile.id && block.blockedId === viewerId,
         ),
     )
-    .map((friend) => {
+    .map((profile): SharingFriend => {
       const relationship = relationships.find(
-        (row) => row.userLowId === friend.id || row.userHighId === friend.id,
+        (row) => row.userLowId === profile.id || row.userHighId === profile.id,
       )
-      const status = blocked.some((row) => row.blockedId === friend.id)
+      const status = blocked.some((row) => row.blockedId === profile.id)
         ? "blocked"
         : relationship?.status === "accepted"
           ? "accepted"
-          : relationship?.status === "pending"
-            ? relationship.requestedById === viewerId
-              ? "outgoing"
-              : "incoming"
-            : "none"
-      return { profile: publicProfile(friend), status }
+          : relationship?.requestedById === viewerId
+            ? "outgoing"
+            : "incoming"
+      return { profile: publicProfile(profile), status }
     })
+}
+
+export async function requestFriendByHandle(
+  viewerId: string,
+  handle: string,
+  database = db,
+) {
+  const [friend] = await database
+    .select(profileColumns)
+    .from(user)
+    .where(sql`lower(${user.handle}) = lower(${handle})`)
+  if (!friend || friend.id === viewerId)
+    throw new FriendshipError(404, "No FortSprite account uses that handle.")
+  await changeSharing(viewerId, friend.id, "request", database)
+  return { profile: publicProfile(friend), status: "outgoing" as const }
 }
 
 export async function changeSharing(
   viewerId: string,
   friendId: string,
   action: SharingAction,
-  visibleLocalIds: string[],
   database = db,
 ) {
   if (viewerId === friendId)
@@ -158,6 +161,12 @@ export async function changeSharing(
     await transaction.execute(
       sql`select pg_advisory_xact_lock(hashtext(${`friendship:${low}:${high}`}))`,
     )
+    const [target] = await transaction
+      .select({ id: user.id })
+      .from(user)
+      .where(eq(user.id, friendId))
+    if (!target)
+      throw new FriendshipError(404, "This friend could not be found.")
     const pair = and(
       eq(friendships.userLowId, low),
       eq(friendships.userHighId, high),
@@ -197,10 +206,6 @@ export async function changeSharing(
       await transaction.delete(friendships).where(pair)
       return
     }
-    const canRevokeLocally =
-      action === "block" && (relationship || blocked.length > 0)
-    if (!canRevokeLocally && !visibleLocalIds.includes(friendId))
-      throw new EpicFriendVerificationRequiredError()
     if (action === "block") {
       await transaction.delete(friendships).where(pair)
       await transaction
@@ -260,12 +265,7 @@ export async function changeSharing(
   })
 }
 
-export async function getHelpers(
-  viewerId: string,
-  visibleLocalIds: string[],
-  database = db,
-) {
-  if (!visibleLocalIds.length) return []
+export async function getHelpers(viewerId: string, database = db) {
   const rows = await database
     .select({
       spriteIds: sql<string[]>`array_agg(${collectionEntries.spriteId})`,
@@ -276,7 +276,6 @@ export async function getHelpers(
     .innerJoin(sprites, eq(sprites.id, collectionEntries.spriteId))
     .where(
       and(
-        inArray(user.id, visibleLocalIds),
         eq(collectionEntries.owned, true),
         eq(sprites.releaseStatus, "released"),
         acceptedFriendCondition(viewerId, user.id),
@@ -301,11 +300,8 @@ export async function getBlockedProfiles(viewerId: string, database = db) {
 export async function getComparison(
   viewerId: string,
   friendId: string,
-  visibleLocalIds: string[],
   database = db,
 ) {
-  if (!visibleLocalIds.includes(friendId))
-    throw new FriendshipError(404, "This shared collection is unavailable.")
   const rows = await database
     .select({
       sprite: sprites,

@@ -197,7 +197,7 @@ export function CollectionExplorer({
     view: view === "list" ? "list" as const : "grid" as const,
     gridSize,
     pendingIds,
-    availabilityKnown: initialCollection.friendAvailability.status === "ready",
+    availabilityKnown: true,
     notice,
     onRemovedFocus: () => activeFilterRef.current?.focus(),
     onChange: updateSprite,
@@ -334,27 +334,11 @@ export function CollectionExplorer({
             {notice.message}
           </p>
         ) : null}
-        {initialCollection.friendAvailability.status === "unavailable" ? (
-          <p role="status" className="text-sm text-muted-foreground">
-            Friend availability could not be refreshed. Your collection is still
-            available. Reload to check friends again.
-          </p>
-        ) : null}
         <p className="text-xs text-muted-foreground">
           {updatedAt
             ? `Collection updated ${updatedDateFormatter.format(new Date(updatedAt))}.`
             : "No collection changes saved yet."}
         </p>
-        {initialCollection.friendAvailability.status === "ready" &&
-        initialCollection.friendAvailability.refreshedAt ? (
-          <p className="text-xs text-muted-foreground">
-            Friends checked{" "}
-            {updatedDateFormatter.format(
-              new Date(initialCollection.friendAvailability.refreshedAt),
-            )}
-            .
-          </p>
-        ) : null}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p role="status" className="text-xs text-muted-foreground">
             Showing {filteredSprites.length} of {sprites.length} Sprites

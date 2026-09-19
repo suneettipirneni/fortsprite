@@ -5,30 +5,27 @@ import { ArrowRightIcon, CheckIcon } from "lucide-react"
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
-import { Separator } from "@workspace/ui/components/separator"
 
 import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
 import { SpritePortrait } from "@/components/sprite-portrait"
-import { getCollection, getEpicFriends, getViewer } from "@/lib/api"
+import { getCollection, getSharing, getViewer } from "@/lib/api"
 import { completionPercent, presentSprite } from "@/lib/catalog-presentation"
 
 async function DashboardContent() {
-  const [collection, friendsResult] = await Promise.all([
+  const [collection, sharing] = await Promise.all([
     getCollection(),
-    getEpicFriends().then(
-      (data) => ({ data, error: false }),
-      () => ({ data: null, error: true }),
-    ),
+    getSharing(),
   ])
   const missingSprites = collection.items
     .filter((sprite) => !sprite.owned)
     .map(presentSprite)
-  const availabilityReady = collection.friendAvailability.status === "ready"
   const availableCount = missingSprites.filter(
     (sprite) => sprite.helpers.length > 0,
   ).length
-  const epicFriends = friendsResult.data?.friends ?? []
+  const acceptedFriends = sharing.friends.filter(
+    (friend) => friend.status === "accepted",
+  )
 
   return (
     <>
@@ -59,14 +56,10 @@ async function DashboardContent() {
           </div>
           <div className="flex flex-col gap-1 border-t border-border py-5 pr-4 sm:border-t-0 sm:border-l sm:px-6">
             <dt className="truncate text-base text-muted-foreground sm:text-sm">
-              Epic friends
+              Sharing friends
             </dt>
             <dd className="tabular-nums text-3xl font-semibold tracking-tight">
-              {friendsResult.error ? (
-                <span className="text-base font-normal">Unavailable</span>
-              ) : (
-                epicFriends.length
-              )}
+              {acceptedFriends.length}
             </dd>
           </div>
           <div className="flex flex-col gap-1 border-t border-l border-border py-5 pl-4 sm:border-t-0 sm:pl-6">
@@ -94,14 +87,10 @@ async function DashboardContent() {
                 id="reach-heading"
                 className="max-w-[18ch] text-balance text-3xl font-semibold tracking-tight sm:text-4xl"
               >
-                {availabilityReady
-                  ? `${availableCount} collection gaps within reach.`
-                  : "Keep your Sprite collection up to date."}
+                {`${availableCount} collection gaps within reach.`}
               </h2>
               <p className="max-w-[54ch] text-pretty text-base text-sidebar-foreground/65 sm:text-sm">
-                {availabilityReady
-                  ? `You are missing ${missingSprites.length} released Sprites. Sharing friends have captured ${availableCount} of them. ${missingSprites.length - availableCount} have no current friend coverage.`
-                  : "Friend availability could not be refreshed. Your captured and mastered Sprites remain saved."}
+                {`You are missing ${missingSprites.length} released Sprites. Sharing friends have captured ${availableCount} of them. ${missingSprites.length - availableCount} have no current friend coverage.`}
               </p>
             </div>
           </div>
@@ -191,11 +180,9 @@ async function DashboardContent() {
                   </span>
                   <span className="flex items-center gap-1.5 text-base sm:text-sm">
                     <CheckIcon className="size-4 shrink-0 stroke-primary" />
-                    {availabilityReady
-                      ? sprite.helpers.length > 0
-                        ? `${sprite.helpers.length} friends can help`
-                        : "No sharing friend has it yet"
-                      : "Friend availability unavailable"}
+                    {sprite.helpers.length > 0
+                      ? `${sprite.helpers.length} friends can help`
+                      : "No sharing friend has it yet"}
                   </span>
                 </span>
               </Link>
@@ -209,39 +196,36 @@ async function DashboardContent() {
               id="squad-heading"
               className="text-balance text-2xl font-semibold tracking-tight"
             >
-              Epic squad
+              FortSprite squad
             </h2>
             <p className="text-pretty text-base text-muted-foreground sm:text-sm">
-              Read directly from your consented Epic friends list.
+              Friends who accepted collection sharing with you.
             </p>
           </div>
           <div className="mt-5 flex flex-col">
-            {epicFriends.slice(0, 4).map((friend, index) => (
-              <div key={`${friend.displayName}-${index}`}>
-                {index > 0 ? <Separator /> : null}
+            {acceptedFriends.slice(0, 4).map((friend) => (
+              <div key={friend.profile.id} className="border-b border-border last:border-b-0">
                 <div className="flex min-w-0 items-center gap-3 py-3">
                   <Avatar className="size-9 shrink-0">
-                    <AvatarFallback>{friend.initials}</AvatarFallback>
+                    <AvatarFallback>{friend.profile.initials}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-base font-medium sm:text-sm">
-                      {friend.displayName}
+                      {friend.profile.displayName}
                     </p>
                     <p className="truncate text-base text-muted-foreground sm:text-sm">
-                      {friend.nickname ?? "Epic Games friend"}
+                      @{friend.profile.handle}
                     </p>
                   </div>
                   <Badge variant="outline" className="tabular-nums">
-                    Epic
+                    Sharing
                   </Badge>
                 </div>
               </div>
             ))}
-            {epicFriends.length === 0 ? (
+            {acceptedFriends.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border p-5 text-sm text-muted-foreground">
-                {friendsResult.error
-                  ? "Epic friends could not be refreshed right now."
-                  : "No friends have granted the Epic profile consent required to appear here yet."}
+                No friends have accepted collection sharing yet.
               </div>
             ) : null}
           </div>
@@ -275,7 +259,7 @@ export default function DashboardPage() {
           </div>
           <Button asChild>
             <Link href="/friends">
-              View Epic friends
+              View friends
               <ArrowRightIcon data-icon="inline-end" />
             </Link>
           </Button>
@@ -295,8 +279,8 @@ async function GreetingName() {
 }
 
 async function FriendStatus() {
-  const friends = await getEpicFriends().catch(() => null)
+  const friends = await getSharing().catch(() => null)
   return friends
-    ? `${friends.friends.length} Epic friend${friends.friends.length === 1 ? " is" : "s are"} visible to FortSprite.`
-    : "Your Epic identity is connected; friend data is temporarily unavailable."
+    ? `${friends.friends.filter((friend) => friend.status === "accepted").length} friend connections are sharing collections with you.`
+    : "Your collection and friend network."
 }

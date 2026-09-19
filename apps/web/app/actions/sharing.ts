@@ -15,3 +15,15 @@ export async function updateSharing(id: string, action: SharingAction) {
   if (result.ok) refresh()
   return result
 }
+
+export async function requestSharing(handle: string) {
+  if (typeof handle !== "string")
+    return { ok: false, error: "Enter a valid FortSprite handle." } as const
+  const result = await mutateApi<{ friend: unknown }>(
+    "/api/v1/friends",
+    "POST",
+    { handle },
+  )
+  if (result.ok) refresh()
+  return result
+}

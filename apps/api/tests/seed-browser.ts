@@ -8,11 +8,9 @@ const { user, session, account, rateLimit } =
   await import("../src/db/auth-schema.ts")
 const { sprites, collectionEntries } = await import("../src/db/schema.ts")
 const { importCatalogSnapshot } = await import("../src/catalog.ts")
+const { userRateLimitKeys } = await import("../src/rate-limit.ts")
 const fixturePath =
   process.env.BROWSER_FIXTURE_PATH ?? "/tmp/fortsprite-browser-fixture.json"
-const providerPath =
-  process.env.BROWSER_PROVIDER_STATE_PATH ??
-  "/tmp/fortsprite-browser-provider.json"
 
 async function writePrivate(path: string, value: unknown) {
   await writeFile(path, JSON.stringify(value, null, 2), { mode: 0o600 })
@@ -35,12 +33,12 @@ async function cleanup() {
     await db.delete(rateLimit).where(
       inArray(
         rateLimit.key,
-        ids.map((id) => `friend-discovery:${id}`),
+        ids.flatMap(userRateLimitKeys),
       ),
     )
     await db.delete(user).where(inArray(user.id, ids))
   }
-  for (const path of [fixturePath, providerPath]) {
+  for (const path of [fixturePath]) {
     await unlink(path).catch((error: NodeJS.ErrnoException) => {
       if (error.code !== "ENOENT") throw error
     })
@@ -61,28 +59,47 @@ try {
     const actors = Object.fromEntries(
       ["a", "b"].map((key, index) => {
         const userId = `${index === 0 ? "a" : "B"}${randomUUID().replaceAll("-", "")}Z`
-        const token = randomUUID()
-        const signature = createHmac("sha256", process.env.BETTER_AUTH_SECRET!)
-          .update(token)
-          .digest("base64")
+        const tokens = {
+          desktop: randomUUID(),
+          mobile: randomUUID(),
+        }
+        const cookies = Object.fromEntries(
+          Object.entries(tokens).map(([project, token]) => {
+            const signature = createHmac(
+              "sha256",
+              process.env.BETTER_AUTH_SECRET!,
+            )
+              .update(token)
+              .digest("base64")
+            return [
+              project,
+              {
+                name: "better-auth.session_token",
+                value: encodeURIComponent(`${token}.${signature}`),
+                url: baseURL,
+                httpOnly: true,
+                sameSite: "Lax" as const,
+              },
+            ]
+          }),
+        ) as Record<"desktop" | "mobile", {
+          name: string
+          value: string
+          url: string
+          httpOnly: boolean
+          sameSite: "Lax"
+        }>
         return [
           key,
           {
             userId,
-            epicId: randomUUID().replaceAll("-", ""),
-            accessToken: `browser-${randomUUID()}`,
             displayName:
               index === 0 ? "Browser collector" : "Browser squadmate",
-            epicDisplayName: index === 0 ? "Epic Collector" : "Epic Squadmate",
+            providerDisplayName:
+              index === 0 ? "Google Collector" : "Google Squadmate",
             handle: `browser_${randomUUID().slice(0, 8)}`,
-            token,
-            cookie: {
-              name: "better-auth.session_token",
-              value: encodeURIComponent(`${token}.${signature}`),
-              url: baseURL,
-              httpOnly: true,
-              sameSite: "Lax" as const,
-            },
+            tokens,
+            cookies,
           },
         ]
       }),
@@ -92,7 +109,7 @@ try {
         .insert(user)
         .values({
           id: actor.userId,
-          name: actor.epicDisplayName,
+          name: actor.providerDisplayName,
           appDisplayName: actor.displayName,
           email: `${actor.userId}@test.invalid`,
           handle: actor.handle,
@@ -102,21 +119,19 @@ try {
         .values({
           id: randomUUID(),
           userId: actor.userId,
-          accountId: actor.epicId,
-          providerId: "epic-games",
-          accessToken: actor.accessToken,
-          accessTokenExpiresAt: new Date(Date.now() + 86_400_000),
-          scope: "basic_profile,friends_list",
+          accountId: `google-${actor.userId}`,
+          providerId: "google",
+          scope: "openid,email,profile",
         })
-      await db
-        .insert(session)
-        .values({
+      await db.insert(session).values(
+        Object.values(actor.tokens).map((token) => ({
           id: randomUUID(),
-          token: actor.token,
+          token,
           userId: actor.userId,
           expiresAt: new Date(Date.now() + 86_400_000),
           updatedAt: new Date(),
-        })
+        })),
+      )
     }
     const selected = await db
       .select()
@@ -134,24 +149,11 @@ try {
       { userId: a.userId, spriteId: first.id, owned: true, mastered: false },
       { userId: b.userId, spriteId: second.id, owned: true, mastered: false },
     ])
-    const provider = {
-      accounts: Object.values(actors).map((actor) => ({
-        accountId: actor.epicId,
-        displayName: actor.epicDisplayName,
-        accessToken: actor.accessToken,
-      })),
-      visibleAccountIds: [a.epicId, b.epicId],
-      friendships: { [a.epicId]: [b.epicId], [b.epicId]: [a.epicId] },
-      outage: false,
-    }
-    await writePrivate(providerPath, provider)
     await writePrivate(fixturePath, {
       userId: a.userId,
-      cookie: a.cookie,
+      cookies: a.cookies,
       baseURL,
       actors,
-      provider,
-      providerPath,
       sprites: [first, second].map((sprite) => ({
         id: sprite.id,
         baseName: sprite.baseName,

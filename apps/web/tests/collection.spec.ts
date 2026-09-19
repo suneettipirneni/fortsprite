@@ -5,13 +5,16 @@ import type { CollectionSnapshot } from "@workspace/contracts"
 
 type BrowserFixture = {
   baseURL: string
-  cookie: {
-    name: string
-    value: string
-    url: string
-    httpOnly: boolean
-    sameSite: "Lax"
-  }
+  cookies: Record<
+    "desktop" | "mobile",
+    {
+      name: string
+      value: string
+      url: string
+      httpOnly: boolean
+      sameSite: "Lax"
+    }
+  >
 }
 let first: CollectionSnapshot["items"][number]
 let errors: string[] = []
@@ -36,11 +39,15 @@ async function assertPersisted(
   page: Page,
   expected: { owned: boolean; mastered: boolean },
 ) {
-  const collection = await snapshot(page)
-  expect(collection.friendAvailability.status).toBe("ready")
-  expect(collection.items.find((item) => item.id === first.id)).toMatchObject(
-    expected,
-  )
+  await expect
+    .poll(async () => {
+      const collection = await snapshot(page)
+      const item = collection.items.find((candidate) => candidate.id === first.id)
+      return item
+        ? { owned: item.owned, mastered: item.mastered }
+        : null
+    })
+    .toEqual(expected)
 }
 
 async function assertFits(page: Page) {
@@ -51,7 +58,7 @@ async function assertFits(page: Page) {
   ).toBe(true)
 }
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
   const fixture = JSON.parse(
     readFileSync(
       process.env.BROWSER_FIXTURE_PATH ??
@@ -59,7 +66,9 @@ test.beforeEach(async ({ page }) => {
       "utf8",
     ),
   ) as BrowserFixture
-  await page.context().addCookies([fixture.cookie])
+  await page.context().addCookies([
+    fixture.cookies[testInfo.project.name as "desktop" | "mobile"],
+  ])
   errors = []
   serverErrors = []
   expectedServerErrors = 0
@@ -250,7 +259,11 @@ test("details support keyboard focus and modal removal restores the active filte
         .getByRole("dialog")
         .getByText(`${source}: ${percent}%`, { exact: true }),
     ).toBeVisible()
-  await expect(page.getByText(/^Friends checked /)).toBeVisible()
+  await expect(
+    page
+      .getByRole("dialog")
+      .getByText("Friends with this Sprite", { exact: true }),
+  ).toBeVisible()
   const results = await new AxeBuilder({ page }).analyze()
   expect(
     results.violations.filter(

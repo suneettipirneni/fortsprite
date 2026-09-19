@@ -1,15 +1,21 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter"
+import { passkey } from "@better-auth/passkey"
 import { betterAuth } from "better-auth"
-import { genericOAuth } from "better-auth/plugins"
+import { APIError } from "better-auth/api"
 
+import { createAppleClientSecret } from "./apple-client-secret.ts"
 import { databaseSchema, db } from "./db/client.ts"
 import { env } from "./env.ts"
-import { getEpicUserInfo } from "./epic/client.ts"
 
-export const EPIC_PROVIDER_ID = "epic-games"
+function createInitialHandle() {
+  return `sprite_${crypto.randomUUID().replaceAll("-", "").slice(0, 16)}`
+}
 
-function createEpicHandle() {
-  return `epic_${crypto.randomUUID().replaceAll("-", "").slice(0, 16)}`
+function requireVerifiedUser(verified: boolean | undefined) {
+  if (!verified)
+    throw new APIError("UNAUTHORIZED", {
+      message: "Passkey user verification is required.",
+    })
 }
 
 export const auth = betterAuth({
@@ -33,14 +39,31 @@ export const auth = betterAuth({
     window: 60,
     max: 100,
     customRules: {
-      "/sign-in/oauth2": { window: 60, max: 10 },
+      "/sign-in/social": { window: 60, max: 10 },
+      "/passkey/generate-authenticate-options": { window: 60, max: 20 },
+      "/passkey/verify-authentication": { window: 60, max: 20 },
       "/get-session": false,
     },
   },
   emailAndPassword: {
     enabled: false,
   },
-  trustedOrigins: [env.webOrigin],
+  trustedOrigins: [env.webOrigin, "https://appleid.apple.com"],
+  socialProviders: {
+    google: {
+      clientId: env.googleClientId,
+      clientSecret: env.googleClientSecret,
+    },
+    apple: async () => ({
+      clientId: env.appleClientId,
+      clientSecret: await createAppleClientSecret({
+        clientId: env.appleClientId,
+        teamId: env.appleTeamId,
+        keyId: env.appleKeyId,
+        privateKey: env.applePrivateKey,
+      }),
+    }),
+  },
   user: {
     deleteUser: { enabled: true },
     additionalFields: {
@@ -49,7 +72,7 @@ export const auth = betterAuth({
         type: "string",
         required: true,
         input: false,
-        defaultValue: createEpicHandle,
+        defaultValue: createInitialHandle,
       },
       fortniteDisplayName: {
         type: "string",
@@ -61,20 +84,11 @@ export const auth = betterAuth({
   account: {
     encryptOAuthTokens: true,
     accountLinking: {
-      enabled: false,
-    },
-  },
-  databaseHooks: {
-    user: {
-      deleteUser: { enabled: true },
-      create: {
-        before: async (user) => ({
-          data: {
-            ...user,
-            fortniteDisplayName: user.name,
-          },
-        }),
-      },
+      enabled: true,
+      disableImplicitLinking: true,
+      allowDifferentEmails: true,
+      allowUnlinkingAll: false,
+      updateUserInfoOnLink: false,
     },
   },
   advanced: {
@@ -86,23 +100,25 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    genericOAuth({
-      config: [
-        {
-          providerId: EPIC_PROVIDER_ID,
-          clientId: env.epicClientId,
-          clientSecret: env.epicClientSecret,
-          authentication: "basic",
-          getUserInfo: (tokens) =>
-            getEpicUserInfo(tokens.accessToken, env.epicUserInfoUrl),
-          authorizationUrl: env.epicAuthorizationUrl,
-          tokenUrl: env.epicTokenUrl,
-          userInfoUrl: env.epicUserInfoUrl,
-          scopes: env.epicScopes,
-          pkce: true,
-          overrideUserInfo: true,
+    passkey({
+      rpID: env.passkeyRpId,
+      rpName: "FortSprite",
+      origin: env.passkeyOrigin,
+      authenticatorSelection: {
+        residentKey: "required",
+        userVerification: "required",
+      },
+      registration: {
+        requireSession: true,
+        afterVerification: ({ verification }) => {
+          requireVerifiedUser(verification.registrationInfo?.userVerified)
         },
-      ],
+      },
+      authentication: {
+        afterVerification: ({ verification }) => {
+          requireVerifiedUser(verification.authenticationInfo.userVerified)
+        },
+      },
     }),
   ],
 })

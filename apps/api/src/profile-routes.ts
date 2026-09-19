@@ -5,7 +5,12 @@ import { auth } from "./auth.ts"
 import { db } from "./db/client.ts"
 import { user, rateLimit } from "./db/auth-schema.ts"
 import { userRateLimitKeys } from "./rate-limit.ts"
-import { profileSchema, updateProfile } from "./profile.ts"
+import {
+  profileSchema,
+  readCredentials,
+  readViewer,
+  updateProfile,
+} from "./profile.ts"
 import {
   type ApiEnvironment,
   type SessionReader,
@@ -29,6 +34,29 @@ export function createProfileRoutes({
   const routes = new Hono<ApiEnvironment>()
   const authenticated = requireSession(getSession)
   routes.onError(handleApiError)
+  routes.get(
+    "/me",
+    authenticated,
+    rejectQueryParameters,
+    async (context) => {
+      const viewer = await readViewer(context.get("userId"), database)
+      if (!viewer)
+        return context.json(
+          { error: { code: "AUTH_REQUIRED", message: "Sign in again." } },
+          401,
+        )
+      return context.json({ viewer })
+    },
+  )
+  routes.get(
+    "/credentials",
+    authenticated,
+    rejectQueryParameters,
+    async (context) =>
+      context.json({
+        credentials: await readCredentials(context.get("userId"), database),
+      }),
+  )
   routes.put(
     "/profile",
     authenticated,
@@ -119,7 +147,7 @@ export function createProfileRoutes({
             error: {
               code: "REAUTH_REQUIRED",
               message:
-                "Sign out and sign in with Epic Games again before deleting your account.",
+                "Sign out and sign in again before deleting your account.",
             },
           },
           403,

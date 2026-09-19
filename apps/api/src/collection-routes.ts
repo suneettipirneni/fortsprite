@@ -8,7 +8,7 @@ import {
   handleApiError,
 } from "./http.ts"
 import { db } from "./db/client.ts"
-import { collectionHelpers } from "./friend-service.ts"
+import { getHelpers } from "./friends.ts"
 import {
   collectionQuerySchema,
   collectionStateSchema,
@@ -20,11 +20,11 @@ import {
 export function createCollectionRoutes({
   database = db,
   getSession = readSession,
-  getHelpers = collectionHelpers,
+  readHelpers = getHelpers,
 }: {
   database?: typeof db
   getSession?: SessionReader
-  getHelpers?: typeof collectionHelpers
+  readHelpers?: typeof getHelpers
 } = {}) {
   const routes = new Hono<ApiEnvironment>()
   const authenticated = requireSession(getSession)
@@ -42,22 +42,18 @@ export function createCollectionRoutes({
         },
         400,
       )
-    const [collection, availability] = await Promise.all([
+    const [collection, availableHelpers] = await Promise.all([
       getCollection(context.get("userId"), query.data, database),
-      getHelpers(context.req.raw.headers, context.get("userId"), database),
+      readHelpers(context.get("userId"), database),
     ])
-    const helpers = new Map<
-      string,
-      (typeof availability.helpers)[number]["profile"][]
-    >()
-    for (const helper of availability.helpers) {
+    const helpers = new Map<string, (typeof availableHelpers)[number]["profile"][]>()
+    for (const helper of availableHelpers) {
       const profiles = helpers.get(helper.spriteId) ?? []
       profiles.push(helper.profile)
       helpers.set(helper.spriteId, profiles)
     }
     return context.json({
       ...collection,
-      friendAvailability: availability.friendAvailability,
       items: collection.items.map((item) => ({
         ...item,
         helpers: helpers.get(item.id) ?? [],

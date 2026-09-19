@@ -2,13 +2,13 @@ import { readFileSync } from "node:fs"
 import { test, expect, type Page } from "@playwright/test"
 import { instant } from "@next/playwright"
 
-test.beforeEach(async ({ page, baseURL }) => {
+test.beforeEach(async ({ page, baseURL }, testInfo) => {
   const fixture = JSON.parse(
     readFileSync(process.env.BROWSER_FIXTURE_PATH!, "utf8"),
   )
   await page.context().addCookies([
     {
-      ...fixture.cookie,
+      ...fixture.cookies[testInfo.project.name as "desktop" | "mobile"],
       name: "__Secure-better-auth.session_token",
       url: baseURL!.replace("http:", "https:"),
       secure: true,

@@ -6,7 +6,6 @@ import { sql } from "drizzle-orm"
 
 import { auth } from "./auth.ts"
 import { db } from "./db/client.ts"
-import { epicRoutes } from "./epic/routes.ts"
 import { env } from "./env.ts"
 import { collectionRoutes } from "./collection-routes.ts"
 import { friendRoutes } from "./friend-routes.ts"
@@ -59,14 +58,23 @@ app.use(
 
 app.on(["GET", "POST"], "/api/auth/*", async (context) => {
   const path = context.req.path.slice("/api/auth".length)
-  const allowed = [
-    "/sign-in/oauth2",
-    "/oauth2/callback/epic-games",
-    "/get-session",
-    "/sign-out",
-    "/error",
-  ]
-  if (!allowed.includes(path)) {
+  const allowed = new Map([
+    ["/sign-in/social", ["POST"]],
+    ["/callback/google", ["GET"]],
+    ["/callback/apple", ["GET", "POST"]],
+    ["/get-session", ["GET"]],
+    ["/sign-out", ["POST"]],
+    ["/error", ["GET"]],
+    ["/link-social", ["POST"]],
+    ["/unlink-account", ["POST"]],
+    ["/passkey/generate-register-options", ["GET"]],
+    ["/passkey/verify-registration", ["POST"]],
+    ["/passkey/generate-authenticate-options", ["GET"]],
+    ["/passkey/verify-authentication", ["POST"]],
+    ["/passkey/delete-passkey", ["POST"]],
+    ["/passkey/update-passkey", ["POST"]],
+  ])
+  if (!allowed.get(path)?.includes(context.req.method)) {
     return context.json(
       {
         error: {
@@ -78,18 +86,18 @@ app.on(["GET", "POST"], "/api/auth/*", async (context) => {
     )
   }
   if (path === "/error")
-    return context.redirect(`${env.webOrigin}/sign-in?error=oauth`)
+    return context.redirect(`${env.webOrigin}/sign-in?error=auth`)
   let response: Response
   try {
     response = await auth.handler(context.req.raw)
   } catch (error) {
-    if (path === "/oauth2/callback/epic-games")
-      return context.redirect(`${env.webOrigin}/sign-in?error=oauth`)
+    if (path.startsWith("/callback/"))
+      return context.redirect(`${env.webOrigin}/sign-in?error=auth`)
     throw error
   }
-  if (path === "/oauth2/callback/epic-games" && response.status >= 400) {
+  if (path.startsWith("/callback/") && response.status >= 400) {
     const headers = new Headers({
-      location: `${env.webOrigin}/sign-in?error=oauth`,
+      location: `${env.webOrigin}/sign-in?error=auth`,
     })
     for (const cookie of response.headers.getSetCookie())
       headers.append("set-cookie", cookie)
@@ -133,7 +141,6 @@ app.get("/api/v1/health", async (context) => {
   }
 })
 
-app.route("/api/v1", epicRoutes)
 app.route("/api/v1", collectionRoutes)
 app.route("/api/v1", friendRoutes)
 app.route("/api/v1", profileRoutes)

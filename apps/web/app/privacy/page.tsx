@@ -6,12 +6,12 @@ export const metadata: Metadata = { title: "Privacy Policy" }
 
 const sections = [
   {
-    heading: "Epic Games sign-in",
-    body: "Epic Games is the only identity provider for FortSprite. We use Basic Profile to create your account and Friends List to show Epic friends who are visible under Epic's consent rules. FortSprite never receives your Epic password.",
+    heading: "Account sign-in",
+    body: "You can create a FortSprite account with Apple or Google and add passkeys after signing in. FortSprite never receives your provider password. For passkeys, we store the public credential and related device metadata needed to verify sign-in, never a private key.",
   },
   {
     heading: "Collection and friendship data",
-    body: "Epic provides the visible friend identities shown in FortSprite. We separately store Sprite ownership, mastery, profile settings, and any FortSprite collection-sharing choices you make. An Epic friendship alone does not grant access to collection data, and Epic does not verify collection entries.",
+    body: "FortSprite stores Sprite ownership, mastery, profile settings, friend requests, blocks, and collection-sharing choices. Friends connect using exact FortSprite handles, and both people must accept before either collection is shared. Collection entries are self-reported.",
   },
   {
     heading: "Provider tokens and security",
@@ -19,7 +19,7 @@ const sections = [
   },
   {
     heading: "Your choices",
-    body: "You can update your profile and collection at any time. Account deletion removes or irreversibly anonymizes FortSprite data according to the documented retention process; it does not delete your Epic Games account.",
+    body: "You can update your profile, collection, linked providers, and passkeys at any time. Account deletion removes or irreversibly anonymizes FortSprite data according to the documented retention process; it does not delete your Apple, Google, or Fortnite accounts.",
   },
 ]
 

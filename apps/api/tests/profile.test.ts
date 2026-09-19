@@ -25,7 +25,7 @@ before(async () => {
   await db.insert(user).values(
     ids.map((id) => ({
       id,
-      name: "Epic Name",
+      name: "Provider Name",
       email: `${id}@test.invalid`,
       handle: `original_${id.slice(0, 8)}`,
     })),
@@ -41,8 +41,8 @@ before(async () => {
     id: randomUUID(),
     userId: owner,
     accountId: randomUUID().replaceAll("-", ""),
-    providerId: "epic-games",
-    scope: "basic_profile,friends_list",
+    providerId: "google",
+    scope: "openid,email,profile",
   })
 })
 after(async () => {
@@ -64,17 +64,22 @@ test("profile saves edited name separately from provider identity and survives f
     fortniteDisplayName: "My Fortnite name",
   })
   assert.equal(response.status, 200)
-  await db.update(user).set({ name: "New Epic Name" }).where(eq(user.id, owner))
+  await db
+    .update(user)
+    .set({ name: "New Provider Name" })
+    .where(eq(user.id, owner))
   const viewer = (await (await app.request("/api/v1/me", { headers })).json())
     .viewer
   assert.equal(viewer.displayName, "My app name")
-  assert.deepEqual(viewer.epicPermissions, {
-    basicProfile: true,
-    friendsList: true,
-  })
-  assert.equal(viewer.epicDisplayName, "New Epic Name")
+  assert.equal("epicPermissions" in viewer, false)
+  assert.equal("epicDisplayName" in viewer, false)
   assert.equal(viewer.fortniteDisplayName, "My Fortnite name")
   assert.equal(viewer.handle, handle)
+  const credentials = await (
+    await app.request("/api/v1/credentials", { headers })
+  ).json()
+  assert.deepEqual(credentials.credentials.map((item: { provider?: string }) => item.provider), ["google"])
+  assert.equal(JSON.stringify(credentials).includes("accountId"), false)
   assert.equal(
     (
       await save({

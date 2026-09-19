@@ -11,15 +11,6 @@ export class RateLimitError extends Error {
   }
 }
 
-export class DiscoveryRateLimitError extends RateLimitError {
-  constructor(retryAfter: number) {
-    super(
-      retryAfter,
-      "Friend data was refreshed too often. Please wait a minute.",
-    )
-  }
-}
-
 export const mutationBudgets = {
   collection: 120,
   profile: 30,
@@ -58,7 +49,6 @@ export function mutationLimitKey(userId: string, budget: MutationBudget) {
 
 export function userRateLimitKeys(userId: string) {
   return [
-    `friend-discovery:${userId}`,
     ...Object.keys(mutationBudgets).map((budget) =>
       mutationLimitKey(userId, budget as MutationBudget),
     ),
@@ -75,14 +65,4 @@ export function consumeMutationLimit(
     mutationBudgets[budget],
     database,
   )
-}
-
-export async function consumeDiscoveryLimit(userId: string, database = db) {
-  try {
-    await consumeLimit(`friend-discovery:${userId}`, 120, database)
-  } catch (error) {
-    if (error instanceof RateLimitError)
-      throw new DiscoveryRateLimitError(error.retryAfter)
-    throw error
-  }
 }

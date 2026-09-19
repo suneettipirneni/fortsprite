@@ -5,7 +5,7 @@ import { LockKeyholeIcon, ShieldCheckIcon } from "lucide-react"
 
 import { Badge } from "@workspace/ui/components/badge"
 
-import { EpicSignInButton } from "@/components/epic-sign-in-button"
+import { SignInOptions } from "@/components/sign-in-options"
 import { FortSpriteIcon } from "@/components/fortsprite-icon"
 
 export const metadata: Metadata = { title: "Sign in" }
@@ -29,20 +29,20 @@ export default function SignInPage({
           </Link>
           <div className="flex flex-col gap-3">
             <Badge variant="secondary" className="w-fit">
-              Epic account required
+              Your account, your choice
             </Badge>
             <h1 className="text-balance text-3xl font-semibold tracking-tight">
               Keep your squad in sync.
             </h1>
             <p className="text-pretty text-base text-muted-foreground sm:text-sm">
-              FortSprite uses Epic Games to establish one trusted identity for
-              your collection and friend list.
+              Create a FortSprite account with Apple or Google, then add a
+              passkey for fast, phishing-resistant sign-in.
             </p>
           </div>
           <Suspense fallback={null}>
             <SignInError searchParams={searchParams} />
           </Suspense>
-          <EpicSignInButton />
+          <SignInOptions />
           <p className="text-sm text-muted-foreground">
             Unofficial fan-made tool. Not affiliated with, endorsed by, or
             sponsored by Epic Games.
@@ -51,16 +51,16 @@ export default function SignInPage({
             <div className="flex items-start gap-3">
               <ShieldCheckIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
               <p>
-                We request Basic Profile and Friends List access as documented
-                in our Privacy Policy. Your Epic password is never shared with
-                FortSprite.
+                Apple and Google only establish your FortSprite identity. Your
+                provider password is never shared with FortSprite.
               </p>
             </div>
             <div className="flex items-start gap-3">
               <LockKeyholeIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
               <p>
-                Signing in does not import or verify your Fortnite Sprite
-                collection. You control those entries here.
+                A passkey stays protected by your device or password manager.
+                FortSprite stores only the public credential needed to verify
+                it.
               </p>
             </div>
           </div>
@@ -97,7 +97,7 @@ async function SignInError({
   const { error } = await searchParams
   return error ? (
     <p role="alert" className="text-sm text-destructive">
-      Epic Games sign-in was not completed. Please try again.
+      Sign-in was not completed. Please try again.
     </p>
   ) : null
 }

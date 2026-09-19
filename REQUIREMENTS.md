@@ -15,7 +15,7 @@ FortSprite is an unofficial companion app that lets signed-in users:
 5. See which missing items are available through accepted friends.
 6. Compare collections with a friend so both users can coordinate in Fortnite.
 
-The MVP is a tracker and coordination tool. Epic Games OAuth establishes identity only; FortSprite does not read or synchronize Fortnite gameplay or collection data, alter an in-game collection, transfer an item, guarantee a trade, or provide in-app chat or payments.
+The MVP is a tracker and coordination tool. FortSprite owns its account identity through Better Auth with Apple, Google, and passkey credentials. It does not read or synchronize Fortnite gameplay or collection data, alter an in-game collection, transfer an item, guarantee a trade, or provide in-app chat or payments.
 
 ### Catalog reference
 
@@ -38,7 +38,7 @@ FortSprite must not depend on Fortnite.GG at runtime. Catalog data will be store
 
 | Actor | Capabilities |
 | --- | --- |
-| Visitor | View the Epic Games sign-in, legal, privacy, and authentication-error pages |
+| Visitor | View Apple, Google, and passkey sign-in, legal, privacy, and authentication-error pages |
 | Authenticated user | Manage their own profile, collection, friend relationships, and friend overview |
 | Friend | View the collection and help availability exposed by an accepted friend |
 | Administrator | Maintain catalog data through a protected administrative mechanism |
@@ -47,23 +47,23 @@ FortSprite must not depend on Fortnite.GG at runtime. Catalog data will be store
 
 ### 4.1 Accounts and sessions
 
-#### AUTH-001 — Create an account through Epic Games (`P0`)
+#### AUTH-001 — Create an account through a supported social provider (`P0`)
 
-Given a visitor has no FortSprite account, when they complete the Epic Games authorization flow with the required consent, then Better Auth creates exactly one local user and one Epic provider account linked by Epic's immutable account identifier.
+Given a visitor has no FortSprite account, when they complete Apple or Google authorization, then Better Auth creates exactly one local user and one provider account linked by that provider's immutable account identifier.
 
-Given that same Epic identity completes the flow again, when account matching occurs, then the existing FortSprite user is signed in and no duplicate user or provider account is created.
+Given that same provider identity completes the flow again, when account matching occurs, then the existing FortSprite user is signed in and no duplicate user or provider account is created.
 
-Given the Epic callback is denied, malformed, missing a valid state, replays an already-consumed authorization response, or fails provider verification, then no account or session is created and the visitor receives a safe recoverable error.
+Given a provider callback is denied, malformed, missing a valid state, replays an already-consumed authorization response, or fails provider verification, then no account or session is created and the visitor receives a safe recoverable error.
 
-Given any request targets Better Auth email/password, magic-link, registration, or a non-Epic social provider flow, then the flow is unavailable and no account or session is created.
+Given any request targets Better Auth email/password, magic-link, generic OAuth, or an unconfigured provider flow, then the flow is unavailable and no account or session is created.
 
-#### AUTH-002 — Sign in and sign out with Epic Games (`P0`)
+#### AUTH-002 — Sign in and sign out (`P0`)
 
-Given a visitor opens the sign-in page, then Epic Games is the only sign-in action and no local email, password, or alternate-provider controls are rendered.
+Given a visitor opens the sign-in page, then Apple, Google, and passkey actions are rendered and no local email or password controls are rendered.
 
-Given an existing user completes valid Epic authorization, then Better Auth creates a secure session and sends the user to the validated in-app destination or the authenticated dashboard.
+Given an existing user completes valid provider authorization or passkey verification, then Better Auth creates a secure session and sends the user to the validated in-app destination or the authenticated dashboard.
 
-Given Epic authorization fails or the user cancels consent, then the app returns a generic recoverable authentication error and creates no session.
+Given authorization fails or the user cancels consent, then the app returns a generic recoverable authentication error and creates no session.
 
 Given an authenticated user, when they sign out, then the current session is invalidated and protected pages and endpoints no longer accept it.
 
@@ -75,19 +75,29 @@ Given a request without a valid session, when it calls a protected API endpoint,
 
 Given the web application cannot reach the authentication service, when a visitor requests a protected page, then access fails closed and the visitor is sent to sign in rather than receiving protected content.
 
-#### AUTH-004 — Epic authorization boundaries (`P0`)
+#### AUTH-004 — Credential and linking boundaries (`P0`)
 
-Given FortSprite starts an Epic authorization request, then it requests only `basic_profile` to identify the account and `friends_list` to retrieve the consented Epic friends list; collection, presence, friend-management, or unrelated Epic permissions are not requested.
+Given FortSprite starts Apple or Google authorization, then it requests only the identity claims needed to authenticate the user and never requests Fortnite, friend-list, collection, presence, or unrelated permissions.
 
-Given an Epic access or refresh token is stored by Better Auth, then application pages and business APIs never expose the token, and logs never record it.
+Given an access, refresh, or ID token is stored by Better Auth, then application pages and business APIs never expose it, and logs never record it.
 
-Given a user loses access to their Epic account, then FortSprite directs them to Epic's account-recovery flow; FortSprite provides no local password-reset path.
+Given a signed-in user explicitly links Apple or Google, then Better Auth may link a different provider email, including an Apple private-relay address, but implicit email-based account linking remains disabled.
+
+Given a user manages credentials, then FortSprite never permits removal of their final Apple or Google recovery credential.
+
+#### AUTH-004A — Passkeys (`P0`)
+
+Given an authenticated user has an Apple or Google recovery credential, when they register a passkey, then Better Auth stores only the WebAuthn public credential and display-safe metadata under the same local user ID.
+
+Given passkey registration or authentication completes without user verification, then FortSprite rejects the ceremony and creates neither a credential nor a session.
+
+Given a registered resident passkey completes a valid user-verified ceremony for the configured RP ID and origin, then Better Auth signs the existing user in without requiring a provider round trip.
 
 #### AUTH-005 — Delete an account (`P1`)
 
 Given a user confirms account deletion, when deletion completes, then their authentication data, profile, collection entries, friend requests, friendships, and blocks are removed or irreversibly anonymized according to the documented retention policy.
 
-Given a FortSprite account is deleted, then the deletion does not claim to delete, alter, or revoke the user's Epic Games account beyond revoking FortSprite's own authorization where supported.
+Given a FortSprite account is deleted, then the deletion does not claim to delete or alter the user's Apple, Google, or Fortnite accounts.
 
 Given a deleted account, when another user opens previously cached friend data, then the deleted profile and collection are no longer available.
 
@@ -103,9 +113,9 @@ Given users `SpriteFan` and `spritefan`, when uniqueness is evaluated, then the 
 
 Given an authenticated user, when they update their profile, then they can set a display name and an optional Fortnite display name, subject to documented length and character validation.
 
-Given a display name is sourced from an Epic identity claim, then the UI may label it as Epic-provided but must not claim that Epic verified the user's manually tracked collection.
+Given a display name initially comes from a sign-in provider, then the user may override it inside FortSprite and the UI must not claim that the provider verified their manually tracked collection.
 
-Given a Fortnite display name is manually entered rather than sourced from Epic, then the UI labels it as user-provided.
+Given a Fortnite display name is manually entered, then the UI labels it as user-provided.
 
 #### PROF-003 — Profile authorization (`P0`)
 
@@ -241,37 +251,37 @@ The UI must show when collection/help data was last updated so users do not inte
 
 ### 4.6 Friend relationships
 
-#### FRND-001 — List consented Epic friends (`P0`)
+#### FRND-001 — Request a FortSprite friend by exact handle (`P0`)
 
-Given an authenticated user granted `friends_list`, when they open Friends, then FortSprite requests their current Epic friends list with the server-held user access token and returns only display-safe friend fields.
+Given an authenticated user enters an exact case-insensitive FortSprite handle, when the target exists and neither user has blocked the other, then FortSprite creates one pending local relationship.
 
-Given Epic omits a friend because that account has not consented to Basic Profile for the Epic application, then FortSprite does not attempt to bypass the omission or infer that account's identity.
+Given the handle is absent, belongs to the requester, or the relationship is blocked, then the API returns a safe not-found or unavailable response without exposing email addresses, provider identifiers, credentials, or search suggestions.
 
-Given friend account records are resolved, then the API batches account lookups and never returns Epic account IDs, OAuth tokens, email addresses, or linked platform identifiers to the browser.
+Given a friend profile is returned, then it contains only the local user ID, handle, display name, optional user-entered Fortnite display name, and initials.
 
-#### FRND-002 — Preserve Epic relationship ownership (`P0`)
+#### FRND-002 — Own relationships locally (`P0`)
 
-Given a user wants to add, remove, block, accept, or decline an Epic friend, then FortSprite directs them to Epic-owned relationship controls rather than mutating the Epic relationship.
+Given a user wants to request, accept, decline, remove, block, or unblock a FortSprite friend, then FortSprite performs that operation on the canonical local relationship pair.
 
-Given an Epic friendship changes outside FortSprite, then the next friends refresh reflects Epic's current result.
+Given a user blocks another user, then any pending or accepted relationship is removed and private collection access is denied in both directions.
 
 #### FRND-003 — Activate FortSprite sharing (`P0`)
 
-Given an Epic friend has not joined FortSprite or has not explicitly enabled collection sharing, then no collection, mastery, or help-availability data is exposed for that friend.
+Given another person has not joined FortSprite or has not explicitly accepted collection sharing, then no collection, mastery, or help-availability data is exposed for that person.
 
-Given both Epic friends have FortSprite accounts and approve the product's sharing relationship, then friend-only collection comparisons may be enabled without treating the Epic friendship itself as sharing consent.
+Given both users approve the FortSprite relationship, then friend-only collection comparisons are enabled.
 
 #### FRND-004 — Friends states (`P0`)
 
-Given Epic returns zero visible friends, then the UI presents an intentional empty state explaining the Basic Profile consent boundary rather than showing demo profiles.
+Given a user has no local relationships, then the UI presents an intentional empty state and an exact-handle request form rather than showing demo profiles.
 
-Given Epic or the FortSprite API cannot refresh friends, then the UI presents a recoverable error state and does not falsely display a successful empty list.
+Given the FortSprite API cannot load relationships, then the UI presents a recoverable error state and does not falsely display a successful empty list.
 
 #### FRND-005 — Friend data freshness (`P0`)
 
-Given an authenticated user reloads the Friends page, then FortSprite requests the current Epic list rather than presenting a persistent browser-side copy as authoritative.
+Given an authenticated user reloads the Friends page, then FortSprite reads current relationships and blocks from PostgreSQL rather than presenting a persistent browser-side copy as authoritative.
 
-Given token refresh is required, then Hono obtains a valid provider token through Better Auth and never exposes the refreshed token to application pages or API responses.
+Given a relationship changes, then the next collection and comparison read derives helper access from the committed relationship and block state.
 
 ### 4.7 Friend availability overview
 
@@ -320,7 +330,7 @@ The UI must not label an offer as a completed trade, promise that an item can be
 
 #### OVER-006 — Avoid leaking friend data (`P0`)
 
-Given an overview or comparison API response, then it contains only data needed for the requesting user’s authorized view and does not expose friend email addresses, Epic account identifiers, OAuth tokens, authentication sessions, or unrelated collection records.
+Given an overview or comparison API response, then it contains only data needed for the requesting user’s authorized view and does not expose friend email addresses, provider account identifiers, OAuth tokens, passkey credential material, authentication sessions, or unrelated collection records.
 
 ### 4.8 Navigation and basic UI states
 
@@ -392,7 +402,7 @@ These invariants should be enforced at the database level where possible and dup
 
 | ID | Invariant |
 | --- | --- |
-| DATA-001 | The Epic provider's immutable account identifier maps to at most one local Better Auth account and one FortSprite user. |
+| DATA-001 | Each Apple, Google, or passkey credential maps to at most one local Better Auth account and one FortSprite user. The local `user.id` is the sole domain owner key. |
 | DATA-002 | Profile handles are unique case-insensitively. |
 | DATA-003 | Catalog slugs and stable external keys are unique. |
 | DATA-004 | At most one collection record exists per `(userId, catalogItemId)`. |
@@ -410,7 +420,7 @@ These invariants should be enforced at the database level where possible and dup
 
 - Next.js owns the web UI and page rendering.
 - Hono owns the application API under a versioned prefix such as `/api/v1`.
-- Better Auth owns Epic OAuth, sessions, and supported local account lifecycle endpoints; local passwords and alternate identity providers are disabled.
+- Better Auth owns Apple and Google OAuth, WebAuthn passkeys, sessions, account linking, credential removal, and supported local account lifecycle endpoints; local passwords are disabled.
 - Drizzle ORM owns application schema definitions, typed queries, and migrations for PostgreSQL.
 - Business authorization is enforced in Hono service/API code, not only in React or middleware redirects.
 - Shared request/response contracts must be TypeScript-safe across the Hono API and Next.js client.
@@ -439,17 +449,17 @@ Given a schema change is proposed, then a deterministic Drizzle migration can be
 
 Given application code accesses persistence, then it does so through a typed Drizzle query or transaction owned by the API package.
 
-#### ARCH-001C — Epic OAuth deployment contract (`P0`)
+#### ARCH-001C — Authentication deployment contract (`P0`)
 
-- Epic client ID, client secret, provider endpoints, approved scopes, and Better Auth secret are supplied only through deployment secrets and are never committed to the repository or bundled into the browser.
-- The Epic application registration contains the exact Better Auth callback URL for each deployed environment.
-- Better Auth uses its Generic OAuth provider integration for the Epic authorization-code flow, including state validation and PKCE when supported by the registered Epic client.
-- Provider response fields are mapped only from the Epic Developer Portal contract for the registered product; unverified community endpoint assumptions are not accepted as production configuration.
-- The Hono auth handler is the only endpoint that exchanges Epic authorization codes. Authenticated Hono application services may obtain a valid provider token through Better Auth for approved Epic API calls, but tokens never enter browser code or application API responses.
+- Apple and Google client configuration, Apple signing key, Better Auth secret, and database URLs are supplied only through deployment secrets and are never committed to the repository or bundled into the browser.
+- Apple and Google registrations contain the exact native Better Auth callback URL for each deployed environment.
+- Better Auth uses its native Apple, Google, and passkey integrations. Application code does not reimplement OAuth state, PKCE, callback exchange, WebAuthn challenge validation, or credential counters.
+- `PASSKEY_ORIGIN` exactly matches `WEB_ORIGIN`, and `PASSKEY_RP_ID` is that origin's host or a parent domain.
+- The Hono auth handler exposes only the method-and-path allowlist needed for social sign-in, linking, unlinking, passkey ceremonies, sessions, sign-out, and safe callback handling.
 
-Given required Epic configuration is absent or malformed, then the API fails startup with the name of the missing configuration key and does not start in a partially authenticated mode.
+Given required provider or passkey configuration is absent or malformed, then the API fails startup with the name of the missing configuration key and does not start in a partially authenticated mode.
 
-Given a callback URL is not allowlisted for the current Epic client, then deployment verification fails before release.
+Given a provider callback, WebAuthn origin, or RP ID is not registered for the deployment origin, then deployment verification fails before release.
 
 #### ARCH-002 — Request validation (`P0`)
 
@@ -485,7 +495,7 @@ The API should use these status semantics consistently:
 
 Server errors must have a correlation/request ID in logs and safe error responses.
 
-Authentication events, catalog administrative writes, and authorization failures must be auditable without logging OAuth codes, Epic access or refresh tokens, session cookies, or unnecessary personal data.
+Authentication events, catalog administrative writes, and authorization failures must be auditable without logging OAuth codes, access or refresh tokens, passkey credential material, session cookies, or unnecessary personal data.
 
 ## 7. Non-functional requirements
 
@@ -499,10 +509,10 @@ Automated accessibility checks must report no serious or critical violations on 
 
 - Production sessions use secure, HTTP-only cookies with an appropriate SameSite policy.
 - State-changing browser requests have CSRF protection appropriate to the Better Auth and Hono integration.
-- Local password, email/password registration, magic-link, and non-Epic social sign-in endpoints are disabled.
+- Local password, email/password registration, magic-link, generic OAuth, and unconfigured social-provider endpoints are disabled.
 - OAuth state and callback validation, PKCE where supported, secure token handling, and CSRF protections are delegated to the configured Better Auth flow rather than reimplemented in application code.
 - User-provided profile text is escaped when rendered and cannot inject HTML or script.
-- Authentication and user-discovery endpoints are rate-limited.
+- Authentication, passkey, and relationship-mutation endpoints are rate-limited.
 - Authorization tests cover every user-owned and friend-only endpoint.
 
 #### NFR-003 — Performance (`P0`)
@@ -529,34 +539,35 @@ The app must support the latest two stable major versions of Chrome, Safari, Fir
 - Ownership and mastery progress calculations (`COLL-002A`, `COLL-003`).
 - Catalog and overview filtering/sorting (`CAT-002`, `OVER-003`).
 - Catalog snapshot normalization and idempotent import behavior (`CAT-005`).
-- Epic account/friend response validation, batched account resolution, safe-field mapping, and consent-aware omission (`FRND-001` through `FRND-005`).
+- Exact-handle validation, safe friend-profile mapping, and relationship projection (`FRND-001` through `FRND-005`).
+- Apple client-secret claims and passkey user-verification enforcement (`AUTH-004`, `AUTH-004A`).
 - Ownership-derived availability rules (`HELP-001`).
 - Request schema validation and safe error mapping (`ARCH-002`, `ARCH-004`).
 
 ### 8.2 Database/integration tests
 
 - Every invariant in `DATA-001` through `DATA-010`.
-- Epic identity uniqueness and idempotent account creation (`AUTH-001`, `DATA-001`).
+- Apple, Google, and passkey credential uniqueness and idempotent account reuse (`AUTH-001`, `DATA-001`).
 - Better Auth session recognition by protected Hono routes (`AUTH-002`, `AUTH-003`).
-- Rejected state, replayed callback, canceled consent, invalid provider response, and disabled non-Epic/local sign-in paths (`AUTH-001`, `AUTH-004`).
+- Rejected state, canceled consent, invalid provider response, disabled generic/local sign-in paths, and safe credential DTOs (`AUTH-001`, `AUTH-004`).
 - Object-level authorization for profile, collection, friendship, comparison, overview, and catalog endpoints.
 - Atomic ownership/mastery/help and friend/block transitions (`ARCH-003`).
-- Epic friends endpoint behavior for valid sessions, missing permission, expired-token refresh, upstream failure, zero visible friends, and batched populated results (`FRND-001` through `FRND-005`).
+- Exact-handle requests, crossed requests, acceptance, removal, blocking, safe not-found behavior, and current local relationship reads (`FRND-001` through `FRND-005`).
 - Aggregate overview accuracy with multiple friends, missing items, unmastered owned items, retired items, removed friends, and blocks (`OVER-001`, `OVER-002`).
 
 ### 8.3 End-to-end tests
 
 At minimum, automate these user journeys in a real browser:
 
-1. Complete Epic authorization as a new visitor → create one account → sign out → protected-route redirect → authorize again → reuse the same account.
+1. Complete Apple or Google authorization as a new visitor → create one account → sign out → protected-route redirect → authorize again → reuse the same account.
 2. Browse the Sprite grid → open its anchored Hover Card metadata preview with pointer hover and keyboard focus → open details by touch/click → search/filter catalog → mark items owned and mastered → see the tile and both progress measures update → reload and verify persistence.
 3. Mark an owned item mastered → mark it missing → verify mastery is cleared and the item disappears from friend availability.
-4. User A authorizes Epic Friends access → sees only consented Epic friends → no Epic identifiers or tokens appear in browser responses.
-5. Epic friend B joins FortSprite and explicitly enables collection sharing → B owns an item A is missing → A sees it in Friends Can Help → both open the two-way comparison.
+4. User A adds a resident, user-verified passkey → signs out → signs in with the passkey → no credential ID or public key appears in application API responses.
+5. User A requests B by exact FortSprite handle and B accepts → B owns an item A is missing → A sees it in Friends Can Help → both open the two-way comparison.
 6. B marks the item missing → A refreshes/revalidates → B disappears from the item’s available helpers.
 7. One friend removes or blocks the other → previously accessible friend collection/comparison URLs are denied.
 8. Invalid/failed collection mutation → optimistic UI reconciles and announces the error.
-9. Keyboard-only completion of collection update, Epic friends navigation, sharing approval, and friend overview filtering.
+9. Keyboard-only completion of collection update, FortSprite friend navigation, sharing approval, and friend overview filtering.
 10. Mobile-width completion of collection and friend-help journeys with no horizontal page overflow.
 
 ### 8.4 Test data requirements
@@ -568,7 +579,7 @@ Shared test builders/fixtures must be able to create:
 - owned, missing, mastered, and unmastered collection states; and
 - cases where zero, one, or many friends can help with the same item.
 
-Tests must not depend on production catalog ordering, mutable live Fortnite data, live Fortnite.GG responses, real Epic authorization, or third-party network availability. Epic integration tests must use deterministic local OAuth, Friends, and Accounts API fixtures that cover success, consent denial, invalid state, replay, malformed responses, empty friends, missing friend profiles, pagination/batching limits, token refresh, and upstream failure. Catalog importer tests must use checked-in HTML/structured fixtures whose provenance and capture date are documented.
+Tests must not depend on production catalog ordering, mutable live Fortnite data, live Fortnite.GG responses, real Apple or Google authorization, or third-party network availability. Provider tests use deterministic flow initialization and invalid-state checks. Passkey browser tests use a virtual WebAuthn authenticator with resident credentials and user verification. Catalog importer tests use checked-in HTML/structured fixtures whose provenance and capture date are documented.
 
 ## 9. MVP release gate
 
@@ -585,7 +596,7 @@ The MVP is releasable when:
 
 The following are out of scope unless separately specified:
 
-- Automated Fortnite collection, friend-list, or gameplay synchronization beyond the required Epic identity login.
+- Automated Fortnite collection, friend-list, identity, or gameplay synchronization.
 - In-app transfer, escrow, payment, or guarantee of Sprite availability.
 - In-app chat, push notifications, public collection links, public trading marketplace, groups, or teams.
 - Per-level mastery progression, duplicate quantity, Sprite Dust calculations, collection history, reputation, and ratings. The MVP tracks only whether an exact Sprite is mastered.

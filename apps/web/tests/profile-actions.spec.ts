@@ -7,13 +7,16 @@ type Fixture = {
   actors: Record<
     "a" | "b",
     {
-      cookie: {
-        name: string
-        value: string
-        url: string
-        httpOnly: boolean
-        sameSite: "Lax"
-      }
+      cookies: Record<
+        "desktop" | "mobile",
+        {
+          name: string
+          value: string
+          url: string
+          httpOnly: boolean
+          sameSite: "Lax"
+        }
+      >
     }
   >
 }
@@ -21,7 +24,7 @@ type Fixture = {
 let fixture: Fixture
 let original: ProfileUpdate
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
   fixture = JSON.parse(
     readFileSync(
       process.env.BROWSER_FIXTURE_PATH ??
@@ -29,7 +32,11 @@ test.beforeEach(async ({ page }) => {
       "utf8",
     ),
   )
-  await page.context().addCookies([fixture.actors.a.cookie])
+  await page.context().addCookies([
+    fixture.actors.a.cookies[
+      testInfo.project.name as "desktop" | "mobile"
+    ],
+  ])
   const response = await page.request.get("/api/v1/me")
   expect(response.status()).toBe(200)
   const { viewer } = (await response.json()) as ViewerResponse
@@ -50,10 +57,13 @@ test.afterEach(async ({ page }) => {
 
 test("profile action preserves rejected edits and refreshes the header after a pending retry", async ({
   page,
-}) => {
+}, testInfo) => {
   const errors: string[] = []
   page.on("pageerror", (error) => errors.push(error.message))
-  const teammateCookie = fixture.actors.b.cookie
+  const teammateCookie =
+    fixture.actors.b.cookies[
+      testInfo.project.name as "desktop" | "mobile"
+    ]
   const teammateResponse = await page.request.get("/api/v1/me", {
     headers: { cookie: `${teammateCookie.name}=${teammateCookie.value}` },
   })

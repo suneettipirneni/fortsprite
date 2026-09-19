@@ -1,9 +1,9 @@
 import "./env.js"
 import assert from "node:assert/strict"
-import { after, before, test } from "node:test"
 import { randomUUID } from "node:crypto"
-import { Hono } from "hono"
+import { after, before, test } from "node:test"
 import { eq, inArray } from "drizzle-orm"
+import { Hono } from "hono"
 
 const { db, pool } = await import("../src/db/client.ts")
 const { user, rateLimit } = await import("../src/db/auth-schema.ts")
@@ -11,28 +11,33 @@ const { sprites } = await import("../src/db/schema.ts")
 const { createCollectionRoutes } = await import("../src/collection-routes.ts")
 const { createFriendRoutes } = await import("../src/friend-routes.ts")
 const { createProfileRoutes } = await import("../src/profile-routes.ts")
-const { epicRoutes } = await import("../src/epic/routes.ts")
-const { DiscoveryRateLimitError } = await import("../src/rate-limit.ts")
-const ids = [randomUUID(), randomUUID()]
-const [owner, friend] = ids as [string, string]
+const { userRateLimitKeys } = await import("../src/rate-limit.ts")
+
+const owner = randomUUID()
+const friend = randomUUID()
 const spriteId = randomUUID()
 const handle = `route_${owner.slice(0, 8)}`
-const session = async () => ({ user: { id: owner } })
+const readSession = async () => ({ user: { id: owner } })
 const headers = {
   "content-type": "application/json",
   "x-test-context": "forwarded",
 }
-const refreshTime = "2026-09-06T00:00:00.000Z"
 
 before(async () => {
-  await db.insert(user).values(
-    ids.map((id) => ({
-      id,
-      name: "Route fixture",
-      email: `${id}@test.invalid`,
-      handle: id === owner ? handle : `route_${id.slice(0, 8)}`,
-    })),
-  )
+  await db.insert(user).values([
+    {
+      id: owner,
+      name: "Route owner",
+      email: `${owner}@test.invalid`,
+      handle,
+    },
+    {
+      id: friend,
+      name: "Route friend",
+      email: `${friend}@test.invalid`,
+      handle: `route_${friend.slice(0, 8)}`,
+    },
+  ])
   await db.insert(sprites).values({
     id: spriteId,
     stableKey: spriteId,
@@ -45,43 +50,37 @@ before(async () => {
     sourceVerifiedAt: new Date(),
   })
 })
+
 after(async () => {
-  await db.delete(user).where(inArray(user.id, ids))
+  await db.delete(user).where(inArray(user.id, [owner, friend]))
   await db.delete(sprites).where(eq(sprites.id, spriteId))
   await db
     .delete(rateLimit)
-    .where(eq(rateLimit.key, `friend-discovery:${owner}`))
+    .where(inArray(rateLimit.key, userRateLimitKeys(owner)))
   await pool.end()
 })
 
-test("collection routes use the injected helper lookup after session and query validation", async () => {
+test("collection routes call the injected helper reader only after authentication and query validation", async () => {
   let calls = 0
   const routes = createCollectionRoutes({
     database: db,
-    getSession: session,
-    getHelpers: async (received, viewerId, database) => {
+    getSession: readSession,
+    readHelpers: async (viewerId, database) => {
       calls++
-      assert.equal(received.get("x-test-context"), "forwarded")
       assert.equal(viewerId, owner)
       assert.equal(database, db)
-      return {
-        helpers: [
-          {
-            spriteId,
-            profile: {
-              id: friend,
-              handle: "friend",
-              displayName: "Friend",
-              initials: "F",
-              fortniteDisplayName: null,
-            },
+      return [
+        {
+          spriteId,
+          profile: {
+            id: friend,
+            handle: "route_friend",
+            displayName: "Route friend",
+            initials: "RF",
+            fortniteDisplayName: null,
           },
-        ],
-        friendAvailability: {
-          status: "ready" as const,
-          refreshedAt: refreshTime,
         },
-      }
+      ]
     },
   })
   const app = new Hono().route("/alternate", routes)
@@ -90,10 +89,6 @@ test("collection routes use the injected helper lookup after session and query v
   })
   assert.equal(response.status, 200)
   const body = await response.json()
-  assert.deepEqual(body.friendAvailability, {
-    status: "ready",
-    refreshedAt: refreshTime,
-  })
   assert.equal(
     body.items.find((item: { id: string }) => item.id === spriteId).helpers[0]
       .id,
@@ -105,57 +100,25 @@ test("collection routes use the injected helper lookup after session and query v
     400,
   )
   assert.equal(calls, 1)
+
   const anonymous = createCollectionRoutes({
     getSession: async () => null,
-    getHelpers: async () => {
-      throw new Error("must not look up friends")
+    readHelpers: async () => {
+      throw new Error("helper lookup must not run")
     },
   })
-  assert.equal(
-    (await anonymous.request("/collection?unknown=true")).status,
-    401,
-  )
+  assert.equal((await anonymous.request("/collection?unknown=true")).status, 401)
 })
 
-test("collection routes distinguish empty ready availability from provider failure", async () => {
-  for (const friendAvailability of [
-    { status: "ready" as const, refreshedAt: refreshTime },
-    { status: "unavailable" as const, refreshedAt: null },
-  ]) {
-    const routes = createCollectionRoutes({
-      getSession: session,
-      getHelpers: async () => ({ helpers: [], friendAvailability }),
-    })
-    const response = await routes.request("/collection")
-    assert.equal(response.status, 200)
-    const body = await response.json()
-    assert.deepEqual(body.friendAvailability, friendAvailability)
-    assert.deepEqual(
-      body.items.find((item: { id: string }) => item.id === spriteId).helpers,
-      [],
-    )
-  }
-})
-
-test("query guards work under alternate prefixes without leaking onto unknown routes", async () => {
-  const noProvider = async () => {
-    throw new Error("must not call Epic")
-  }
+test("query guards stay attached under alternate route prefixes", async () => {
   const app = new Hono()
-    .route(
-      "/alternate",
-      createFriendRoutes({ getSession: session, getFriends: noProvider }),
-    )
-    .route(
-      "/alternate",
-      createProfileRoutes({ getSession: session, deleteUser: noProvider }),
-    )
-    .route("/alternate", epicRoutes)
+    .route("/alternate", createFriendRoutes({ getSession: readSession }))
+    .route("/alternate", createProfileRoutes({ getSession: readSession }))
   for (const path of [
     "/friends?unknown=true",
     `/friends/${friend}/comparison?unknown=true`,
     "/me?unknown=true",
-    "/epic/friends?unknown=true",
+    "/credentials?unknown=true",
   ])
     assert.equal((await app.request(`/alternate${path}`)).status, 400)
   assert.equal(
@@ -172,22 +135,12 @@ test("query guards work under alternate prefixes without leaking onto unknown ro
     (await app.request("/alternate/missing?unknown=true")).status,
     404,
   )
-  const anonymous = createFriendRoutes({
-    getSession: async () => null,
-    getFriends: noProvider,
-  })
+  const anonymous = createFriendRoutes({ getSession: async () => null })
   assert.equal((await anonymous.request("/friends?unknown=true")).status, 401)
 })
 
-test("privacy revocation and invalid mutations never require Epic lookup", async () => {
-  let calls = 0
-  const routes = createFriendRoutes({
-    getSession: session,
-    getFriends: async () => {
-      calls++
-      return { visible: [], local: [], localIds: [] }
-    },
-  })
+test("privacy revocation stays idempotent while invalid mutations fail closed", async () => {
+  const routes = createFriendRoutes({ getSession: readSession })
   for (const action of ["remove", "decline", "unblock"])
     assert.equal(
       (
@@ -209,33 +162,19 @@ test("privacy revocation and invalid mutations never require Epic lookup", async
     ).status,
     400,
   )
-  assert.equal(calls, 0)
 })
 
-test("friend discovery rate limits retain their HTTP retry contract", async () => {
-  const routes = createFriendRoutes({
-    getSession: session,
-    getFriends: async () => {
-      throw new DiscoveryRateLimitError(17)
-    },
-  })
-  const response = await routes.request("/friends")
-  assert.equal(response.status, 429)
-  assert.equal(response.headers.get("retry-after"), "17")
-  assert.equal((await response.json()).error.code, "RATE_LIMITED")
-})
-
-test("profile deletion honors the injected operation, confirmation, failures and cookie forwarding", async () => {
+test("profile deletion validates confirmation and forwards cleared cookies", async () => {
   let calls = 0
-  let allow = false
+  let allowed = false
   const routes = createProfileRoutes({
-    getSession: session,
+    getSession: readSession,
     deleteUser: async (received) => {
       calls++
       assert.equal(received.get("x-test-context"), "forwarded")
       return new Response(null, {
-        status: allow ? 200 : 403,
-        headers: allow ? { "set-cookie": "session=; Max-Age=0; Path=/" } : {},
+        status: allowed ? 200 : 403,
+        headers: allowed ? { "set-cookie": "session=; Max-Age=0; Path=/" } : {},
       })
     },
   })
@@ -248,13 +187,7 @@ test("profile deletion honors the injected operation, confirmation, failures and
   assert.equal((await remove("wrong_handle")).status, 400)
   assert.equal(calls, 0)
   assert.equal((await remove(handle)).status, 403)
-  allow = true
-  await db.insert(rateLimit).values({
-    id: randomUUID(),
-    key: `friend-discovery:${owner}`,
-    count: 1,
-    lastRequest: Date.now(),
-  })
+  allowed = true
   const response = await remove(handle)
   assert.equal(response.status, 200)
   assert.equal(calls, 2)
@@ -263,17 +196,5 @@ test("profile deletion honors the injected operation, confirmation, failures and
       .getSetCookie()
       .some((cookie) => cookie.includes("Max-Age=0")),
   )
-  assert.equal(
-    (
-      await db
-        .select()
-        .from(rateLimit)
-        .where(eq(rateLimit.key, `friend-discovery:${owner}`))
-    ).length,
-    0,
-  )
-  assert.equal(
-    (await db.select().from(user).where(eq(user.id, owner))).length,
-    1,
-  )
+  assert.equal((await db.select().from(user).where(eq(user.id, owner))).length, 1)
 })

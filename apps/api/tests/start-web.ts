@@ -16,7 +16,6 @@ execFileSync(
     stdio: "inherit",
   },
 )
-const providerPreload = new URL("./browser-provider.mjs", import.meta.url).href
 const child = spawn(
   process.execPath,
   [
@@ -35,8 +34,6 @@ const child = spawn(
       ...process.env,
       FORTSPRITE_DIST_DIR: ".next-e2e",
       SUPPORT_CONTACT_URL: "mailto:support@example.test",
-      NODE_OPTIONS:
-        `${process.env.NODE_OPTIONS ?? ""} --import ${providerPreload}`.trim(),
     },
     stdio: "inherit",
   },

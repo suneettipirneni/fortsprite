@@ -14,12 +14,14 @@ const requiredNames = [
   "BETTER_AUTH_SECRET",
   "BETTER_AUTH_URL",
   "WEB_ORIGIN",
-  "EPIC_OAUTH_CLIENT_ID",
-  "EPIC_OAUTH_CLIENT_SECRET",
-  "EPIC_OAUTH_AUTHORIZATION_URL",
-  "EPIC_OAUTH_TOKEN_URL",
-  "EPIC_OAUTH_USER_INFO_URL",
-  "EPIC_OAUTH_SCOPES",
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET",
+  "APPLE_CLIENT_ID",
+  "APPLE_TEAM_ID",
+  "APPLE_KEY_ID",
+  "APPLE_PRIVATE_KEY",
+  "PASSKEY_RP_ID",
+  "PASSKEY_ORIGIN",
 ] as const
 
 type RequiredName = (typeof requiredNames)[number]
@@ -66,7 +68,9 @@ if (betterAuthSecret.length < 32) {
   throw new Error("BETTER_AUTH_SECRET must contain at least 32 characters")
 }
 
-function requiredOrigin(name: "BETTER_AUTH_URL" | "WEB_ORIGIN") {
+function requiredOrigin(
+  name: "BETTER_AUTH_URL" | "WEB_ORIGIN" | "PASSKEY_ORIGIN",
+) {
   const value = requiredUrl(
     name,
     process.env.NODE_ENV === "production" ? ["https:"] : ["http:", "https:"],
@@ -85,16 +89,6 @@ function requiredOrigin(name: "BETTER_AUTH_URL" | "WEB_ORIGIN") {
   return url.origin
 }
 
-const epicScopes = required("EPIC_OAUTH_SCOPES").split(/\s+/).filter(Boolean)
-if (
-  epicScopes.length !== 2 ||
-  new Set(epicScopes).size !== 2 ||
-  !epicScopes.includes("basic_profile") ||
-  !epicScopes.includes("friends_list")
-)
-  throw new Error(
-    "EPIC_OAUTH_SCOPES must be exactly basic_profile friends_list",
-  )
 const betterAuthUrl = requiredOrigin("BETTER_AUTH_URL")
 const webOrigin = requiredOrigin("WEB_ORIGIN")
 if (process.env.NODE_ENV === "production" && betterAuthUrl !== webOrigin)
@@ -102,16 +96,35 @@ if (process.env.NODE_ENV === "production" && betterAuthUrl !== webOrigin)
     "BETTER_AUTH_URL and WEB_ORIGIN must match for the single-origin deployment",
   )
 
+const passkeyOrigin = requiredOrigin("PASSKEY_ORIGIN")
+if (passkeyOrigin !== webOrigin)
+  throw new Error("PASSKEY_ORIGIN and WEB_ORIGIN must match")
+
+const passkeyRpId = required("PASSKEY_RP_ID").toLowerCase()
+if (
+  passkeyRpId.includes(":") ||
+  passkeyRpId.includes("/") ||
+  (new URL(passkeyOrigin).hostname !== passkeyRpId &&
+    !new URL(passkeyOrigin).hostname.endsWith(`.${passkeyRpId}`))
+)
+  throw new Error("PASSKEY_RP_ID must be the PASSKEY_ORIGIN host or its parent domain")
+
+const applePrivateKey = required("APPLE_PRIVATE_KEY").replaceAll("\\n", "\n")
+if (!applePrivateKey.includes("-----BEGIN PRIVATE KEY-----"))
+  throw new Error("APPLE_PRIVATE_KEY must be a PKCS8 private key")
+
 export const env = {
   databaseUrl: requiredUrl("DATABASE_URL", ["postgresql:", "postgres:"]),
   betterAuthSecret,
   betterAuthUrl,
   webOrigin,
   betterAuthCookieDomain: process.env.BETTER_AUTH_COOKIE_DOMAIN?.trim(),
-  epicClientId: required("EPIC_OAUTH_CLIENT_ID"),
-  epicClientSecret: required("EPIC_OAUTH_CLIENT_SECRET"),
-  epicAuthorizationUrl: requiredUrl("EPIC_OAUTH_AUTHORIZATION_URL", ["https:"]),
-  epicTokenUrl: requiredUrl("EPIC_OAUTH_TOKEN_URL", ["https:"]),
-  epicUserInfoUrl: requiredUrl("EPIC_OAUTH_USER_INFO_URL", ["https:"]),
-  epicScopes,
+  googleClientId: required("GOOGLE_CLIENT_ID"),
+  googleClientSecret: required("GOOGLE_CLIENT_SECRET"),
+  appleClientId: required("APPLE_CLIENT_ID"),
+  appleTeamId: required("APPLE_TEAM_ID"),
+  appleKeyId: required("APPLE_KEY_ID"),
+  applePrivateKey,
+  passkeyRpId,
+  passkeyOrigin,
 } as const

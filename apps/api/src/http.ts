@@ -3,8 +3,6 @@ import { createMiddleware } from "hono/factory"
 import { z } from "zod"
 import { auth } from "./auth.ts"
 import { FriendshipError } from "./friends.ts"
-import { EpicPermissionRequiredError } from "./epic/service.ts"
-import { EpicApiError } from "./epic/client.ts"
 import {
   RateLimitError,
   consumeMutationLimit,
@@ -31,7 +29,7 @@ export function requireSession(getSession: SessionReader) {
         {
           error: {
             code: "AUTH_REQUIRED",
-            message: "Sign in with Epic Games to continue.",
+            message: "Sign in to continue.",
           },
         },
         401,
@@ -73,17 +71,6 @@ export const handleApiError: ErrorHandler<ApiEnvironment> = (
       { error: { code: "SHARING_UNAVAILABLE", message: error.message } },
       error.status,
     )
-  if (error instanceof EpicPermissionRequiredError)
-    return context.json(
-      {
-        error: {
-          code: "EPIC_FRIENDS_PERMISSION_REQUIRED",
-          message: "Reconnect Epic Games and approve Friends access.",
-        },
-      },
-      403,
-    )
-  const upstream = error instanceof EpicApiError
   console.error("FortSprite request failed", {
     requestId: context.get("requestId"),
     name: error.name,
@@ -91,14 +78,12 @@ export const handleApiError: ErrorHandler<ApiEnvironment> = (
   return context.json(
     {
       error: {
-        code: upstream ? "FRIENDS_UNAVAILABLE" : "INTERNAL_ERROR",
-        message: upstream
-          ? "Friend data could not be refreshed. Please try again."
-          : "Your request could not be completed. Please try again.",
+        code: "INTERNAL_ERROR",
+        message: "Your request could not be completed. Please try again.",
         requestId: context.get("requestId"),
       },
     },
-    upstream ? 502 : 500,
+    500,
   )
 }
 

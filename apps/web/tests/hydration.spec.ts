@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test"
 test("streamed menus become interactive only after their JavaScript loads", async ({
   page,
   isMobile,
-}) => {
+}, testInfo) => {
   const fixture = JSON.parse(
     readFileSync(
       process.env.BROWSER_FIXTURE_PATH ??
@@ -12,7 +12,11 @@ test("streamed menus become interactive only after their JavaScript loads", asyn
       "utf8",
     ),
   )
-  await page.context().addCookies([fixture.actors.a.cookie])
+  await page.context().addCookies([
+    fixture.actors.a.cookies[
+      testInfo.project.name as "desktop" | "mobile"
+    ],
+  ])
   let release!: () => void
   const scriptsReady = new Promise<void>((resolve) => {
     release = resolve

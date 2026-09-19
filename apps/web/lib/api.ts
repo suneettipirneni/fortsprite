@@ -3,7 +3,7 @@ import "server-only"
 import type {
   ApiErrorResponse,
   CollectionSnapshot,
-  EpicFriendsResponse,
+  CredentialsResponse,
   ViewerResponse,
   SharingSnapshot,
   FriendComparison,
@@ -53,8 +53,8 @@ export const getViewer = cache(async () => {
   return response.viewer
 })
 
-export const getEpicFriends = cache(() =>
-  getJson<EpicFriendsResponse>("/api/v1/epic/friends"),
+export const getCredentials = cache(() =>
+  getJson<CredentialsResponse>("/api/v1/credentials"),
 )
 
 export const getCollection = cache(() =>

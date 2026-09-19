@@ -5,7 +5,6 @@ import Link from "next/link"
 import { Button } from "@workspace/ui/components/button"
 import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
-import { RefreshDataButton } from "@/components/refresh-data-button"
 import { CatalogResults } from "@/components/catalog-results"
 import { getCollection } from "@/lib/api"
 
@@ -44,17 +43,13 @@ async function MatchResults() {
   const collection = await getCollection()
   const missing = collection.items.filter((item) => !item.owned)
   const available = missing.filter((item) => item.helpers.length > 0).length
-  const ready = collection.friendAvailability.status === "ready"
   return (
     <>
       <dl className="grid grid-cols-1 divide-y divide-border border-y border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
         {[
           ["Missing", missing.length],
-          ["Friends can help", ready ? available : "Unavailable"],
-          [
-            "No friend has it yet",
-            ready ? missing.length - available : "Unavailable",
-          ],
+          ["Friends can help", available],
+          ["No friend has it yet", missing.length - available],
         ].map(([label, value]) => (
           <div key={label} className="min-w-0 px-4 py-5 first:pl-0">
             <dt className="text-sm text-muted-foreground">{label}</dt>
@@ -64,34 +59,16 @@ async function MatchResults() {
           </div>
         ))}
       </dl>
-      {!ready ? (
-        <div role="alert" className="rounded-xl border border-border p-5">
-          <p className="font-medium">
-            Friend availability could not be refreshed.
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Your saved collection is still available. Refresh this page to check
-            your sharing friends again.
-          </p>
-          <div className="mt-3">
-            <RefreshDataButton />
-          </div>
-        </div>
-      ) : (
-        <p className="text-xs text-muted-foreground">
-          {collection.friendAvailability.refreshedAt
-            ? `Friend availability checked ${new Date(collection.friendAvailability.refreshedAt).toLocaleString("en-US", { timeZone: "UTC" })}.`
-            : "Friend availability is up to date."}{" "}
-          Ownership is self-reported and does not guarantee availability in
-          Fortnite.
-        </p>
-      )}
+      <p className="text-xs text-muted-foreground">
+        Ownership is self-reported and does not guarantee availability in
+        Fortnite.
+      </p>
       <CatalogResults
         items={missing}
         title="Missing Sprites"
         description="Filter your collection gaps by name, rarity, variant, or friend availability."
         showAvailability
-        availabilityKnown={ready}
+        availabilityKnown
         emptyMessage={
           collection.progress.total === 0
             ? "The released catalog is not available yet."

@@ -50,6 +50,13 @@
       "when": 1788714566329,
       "tag": "0006_canonical_friend_pairs",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789774810870,
+      "tag": "0007_glorious_radioactive_man",
+      "breakpoints": true
     }
   ]
 }

@@ -99,7 +99,6 @@ export async function getCollection(
     item.updatedAt ? [item.updatedAt] : [],
   )
   return {
-    friendAvailability: { status: "unavailable", refreshedAt: null },
     items,
     progress: {
       total: allItems.length,

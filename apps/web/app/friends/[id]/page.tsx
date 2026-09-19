@@ -54,7 +54,7 @@ async function ComparisonContent({
         </h1>
         <p className="text-muted-foreground">
           {denied
-            ? "Both friends must accept FortSprite sharing and remain Epic friends. Review your sharing settings to continue."
+            ? "Both friends must accept FortSprite sharing. Review your sharing settings to continue."
             : "We could not refresh this comparison. Please try again."}
         </p>
         <div className="flex flex-wrap gap-3">

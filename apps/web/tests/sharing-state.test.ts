@@ -21,7 +21,6 @@ function snapshot(): SharingSnapshot {
       { profile: profile("accepted"), status: "accepted" },
     ],
     blocked: [profile("blocked")],
-    unjoined: [],
     refreshedAt: "2026-09-06T00:00:00Z",
   }
 }
@@ -64,7 +63,6 @@ test("blocking moves an existing identity out of friends once and preserves unre
     ["blocked", "accepted"],
   )
   assert.equal(projected.blocked[1], confirmed.friends[2]!.profile)
-  assert.equal(projected.unjoined, confirmed.unjoined)
   assert.deepEqual(
     projectSharing(projected, { id: "accepted", action: "block" }),
     projected,

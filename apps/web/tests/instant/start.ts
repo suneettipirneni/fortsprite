@@ -30,11 +30,11 @@ const environment: NodeJS.ProcessEnv = {
   NODE_ENV: "production",
   BETTER_AUTH_URL: "https://localhost:3002",
   WEB_ORIGIN: "https://localhost:3002",
+  PASSKEY_RP_ID: "localhost",
+  PASSKEY_ORIGIN: "https://localhost:3002",
   FORTSPRITE_DIST_DIR: ".next-instant",
   EXPOSE_TESTING_API: "1",
   SUPPORT_CONTACT_URL: "mailto:support@example.test",
-  NODE_OPTIONS:
-    `${process.env.NODE_OPTIONS ?? ""} --import ${new URL("browser-provider.mjs", apiTests).href}`.trim(),
 }
 
 try {

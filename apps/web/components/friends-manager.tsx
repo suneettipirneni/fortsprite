@@ -8,10 +8,9 @@ import type {
 import { useOptimistic, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 
-import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
-import { updateSharing } from "@/app/actions/sharing"
+import { requestSharing, updateSharing } from "@/app/actions/sharing"
 import { FriendRow } from "@/components/friend-row"
 import { projectSharing } from "@/lib/sharing-state"
 
@@ -38,6 +37,7 @@ export function FriendsManager({
   )
   const [saving, setSaving] = useState<string | null>(null)
   const [query, setQuery] = useState("")
+  const [handle, setHandle] = useState("")
   const [notice, setNotice] = useState<{
     message: string
     error: boolean
@@ -52,7 +52,6 @@ export function FriendsManager({
     optimisticSnapshot?.friends.filter(
       (friend) => friend.status !== "blocked" && matches(friend.profile),
     ) ?? []
-  const unjoined = optimisticSnapshot?.unjoined.filter(matches) ?? []
   const blocked = optimisticSnapshot?.blocked.filter(matches) ?? []
 
   const confirmedSharingIds = new Set(
@@ -83,8 +82,50 @@ export function FriendsManager({
     })
   }
 
+  function requestFriend() {
+    if (busy || !handle.trim()) return
+    setSaving("request")
+    setNotice(null)
+    startSaving(async () => {
+      const result = await requestSharing(handle.trim()).catch(() => ({
+        ok: false,
+        error: "The friend request could not be sent. Please try again.",
+      }))
+      setNotice(
+        result.ok
+          ? { message: `Request sent to @${handle.trim()}.`, error: false }
+          : { message: result.error, error: true },
+      )
+      if (result.ok) {
+        setHandle("")
+        router.refresh()
+      }
+      setSaving(null)
+    })
+  }
+
   return (
     <div className="space-y-6">
+      <form
+        className="flex flex-col gap-3 rounded-xl border border-border p-4 sm:flex-row"
+        onSubmit={(event) => {
+          event.preventDefault()
+          requestFriend()
+        }}
+      >
+        <Input
+          aria-label="FortSprite handle"
+          placeholder="Exact FortSprite handle"
+          value={handle}
+          onChange={(event) => setHandle(event.target.value.replace(/^@/, ""))}
+          minLength={3}
+          maxLength={24}
+          pattern="[A-Za-z0-9_-]{3,24}"
+        />
+        <Button type="submit" disabled={busy || !handle.trim()}>
+          {saving === "request" ? "Sending…" : "Send request"}
+        </Button>
+      </form>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <Input
           aria-label="Search friends"
@@ -125,9 +166,7 @@ export function FriendsManager({
             Friends are temporarily unavailable
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Your collection is still saved. Refresh friends to try again. If
-            Friends permission was not approved, sign out and reconnect Epic
-            Games.
+            Your collection is still saved. Refresh friends to try again.
           </p>
         </div>
       ) : (
@@ -139,8 +178,7 @@ export function FriendsManager({
                 timeZone: "UTC",
               })}
             </time>
-            . Epic friendship and mutual sharing are required for collection
-            access.
+            . Mutual FortSprite sharing is required for collection access.
           </p>
           {friends.length > 0 ? (
             <section aria-labelledby="sharing-friends">
@@ -158,29 +196,6 @@ export function FriendsManager({
                   onChange={change}
                 />
               ))}
-            </section>
-          ) : null}
-          {unjoined.length > 0 ? (
-            <section aria-labelledby="unjoined-friends">
-              <h2 id="unjoined-friends" className="text-xl font-semibold">
-                Other Epic friends
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                These friends have no available FortSprite collection to share.
-              </p>
-              <div className="mt-3 divide-y divide-border">
-                {unjoined.map((friend, index) => (
-                  <div
-                    key={`${friend.displayName}-${index}`}
-                    className="flex items-center gap-3 py-4"
-                  >
-                    <Avatar>
-                      <AvatarFallback>{friend.initials}</AvatarFallback>
-                    </Avatar>
-                    <p className="min-w-0 truncate">{friend.displayName}</p>
-                  </div>
-                ))}
-              </div>
             </section>
           ) : null}
           {blocked.length > 0 ? (
@@ -201,15 +216,15 @@ export function FriendsManager({
               ))}
             </section>
           ) : null}
-          {friends.length + unjoined.length + blocked.length === 0 ? (
+          {friends.length + blocked.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border p-8 text-center">
               <h2 className="text-xl font-semibold">
-                {search ? "No matching friends" : "No visible friends yet"}
+                {search ? "No matching friends" : "No FortSprite friends yet"}
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 {search
                   ? "Try a different name or clear your search."
-                  : "Epic only shows friends who granted this app Basic Profile consent. Share collections after your friends join FortSprite."}
+                  : "Send a request using your friend's exact FortSprite handle."}
               </p>
               {search ? (
                 <Button
@@ -225,8 +240,7 @@ export function FriendsManager({
         </>
       )}
       <p className="border-t border-border pt-5 text-sm text-muted-foreground">
-        These controls change FortSprite collection sharing only. Manage Epic
-        friendships and Epic blocks in your Epic Games account or Fortnite.
+        Friend requests and blocks apply only inside FortSprite.
       </p>
     </div>
   )

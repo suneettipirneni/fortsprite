@@ -8,7 +8,7 @@ FortSprite renders its navigation and page headings before private data resolves
 
 [`lib/api.ts`](../apps/web/lib/api.ts) awaits `connection()` before reading cookies and calling the authenticated Hono API with `no-store`. This explicit request boundary keeps private work out of prerendering. Its `React.cache` wrappers deduplicate calls within a server render. They do not provide a persistent data cache.
 
-Do not add shared `"use cache"` boundaries around viewer, collection, sharing, or comparison reads. Those responses depend on the signed-in user, current Epic consent, accepted sharing, and blocks. The API continues to enforce those checks for every private read and mutation.
+Do not add shared `"use cache"` boundaries around viewer, credential, collection, sharing, or comparison reads. Those responses depend on the signed-in user, linked credentials, accepted sharing, and blocks. The API continues to enforce those checks for every private read and mutation.
 
 Public catalog metadata and fixed page copy can remain in the static shell. Private counts, names, ownership controls, and comparison results appear only after their authenticated reads resolve. Comparison parameters stay inside the suspended content component; friend IDs are not enumerated for prerendering.
 
@@ -89,4 +89,4 @@ The preceding organization pass separately passed 45 API functional tests, 13 we
 
 The differential evidence was recorded in `/tmp/fortsprite-instant-final-reverted.log` and `/tmp/fortsprite-instant-final-reapplied.log`. The earlier desktop and mobile success is in `/tmp/fortsprite-instant-green.log`. These are local run artifacts. The checked-in rig and tests reproduce the assertions.
 
-Final logs: `/tmp/fortsprite-actions-browser-verified.log`, `/tmp/fortsprite-instant-final-verified.log`, `/tmp/fortsprite-runtime-route-sweep.log`, and `/tmp/fortsprite-production-final-build.log`. Browser checks used isolated PostgreSQL databases and deterministic Epic fixtures. The production instant rig verifies rendering over its read-only local transport; real mutation flows are exercised by the ordinary browser suite. These checks do not establish a live Epic deployment or Vercel-region latency.
+Final logs from the earlier rendering pass remain at `/tmp/fortsprite-actions-browser-verified.log`, `/tmp/fortsprite-instant-final-verified.log`, `/tmp/fortsprite-runtime-route-sweep.log`, and `/tmp/fortsprite-production-final-build.log`. Current browser checks use isolated PostgreSQL databases, local provider-backed users, and a virtual WebAuthn authenticator. The production instant rig verifies rendering over its read-only local transport; real mutation flows are exercised by the ordinary browser suite. These checks do not establish live Apple or Google callbacks or Vercel-region latency.

@@ -5,8 +5,9 @@ import Link from "next/link"
 import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
 import { DeleteAccountDialog } from "@/components/delete-account-dialog"
+import { CredentialManager } from "@/components/credential-manager"
 import { ProfileEditor } from "@/components/profile-editor"
-import { getViewer } from "@/lib/api"
+import { getCredentials, getViewer } from "@/lib/api"
 
 export const metadata: Metadata = { title: "Account" }
 
@@ -22,8 +23,7 @@ export default function AccountPage() {
             Make your profile yours.
           </h1>
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-            Choose how your friends recognize you on FortSprite. Your Epic
-            account stays connected for sign-in.
+            Choose how friends recognize you and how you securely sign in.
           </p>
         </div>
         <Suspense fallback={<ContentLoading />}>
@@ -58,40 +58,14 @@ export default function AccountPage() {
 }
 
 async function AccountDetails() {
-  const viewer = await getViewer()
+  const [viewer, credentialResponse] = await Promise.all([
+    getViewer(),
+    getCredentials(),
+  ])
   return (
     <>
       <ProfileEditor viewer={viewer} />
-      <section
-        aria-labelledby="epic-identity"
-        className="space-y-4 border-t border-border pt-6"
-      >
-        <h2 id="epic-identity" className="text-xl font-semibold">
-          Connected Epic account
-        </h2>
-        <dl className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <dt className="text-sm text-muted-foreground">
-              Epic-provided display name
-            </dt>
-            <dd className="mt-1 break-words">{viewer.epicDisplayName}</dd>
-          </div>
-          <div>
-            <dt className="text-sm text-muted-foreground">
-              Friends permission
-            </dt>
-            <dd className="mt-1">
-              {viewer.epicPermissions.friendsList
-                ? "Connected"
-                : "Sign out and reconnect to approve Friends access"}
-            </dd>
-          </div>
-        </dl>
-        <p className="text-sm text-muted-foreground">
-          Editing your FortSprite profile does not change your Epic display name
-          or Fortnite account.
-        </p>
-      </section>
+      <CredentialManager credentials={credentialResponse.credentials} />
       <DeleteAccountDialog handle={viewer.handle} />
     </>
   )

@@ -8,32 +8,33 @@ export interface ApiErrorResponse {
 
 export interface Viewer {
   displayName: string
-  epicDisplayName: string
   fortniteDisplayName: string | null
   handle: string
   initials: string
-  epicPermissions: {
-    basicProfile: boolean
-    friendsList: boolean
-  }
 }
 
 export interface ViewerResponse {
   viewer: Viewer
 }
 
-export interface EpicFriend {
-  displayName: string
-  nickname: string | null
-  initials: string
-  friendsSince: string | null
-  favorite: boolean
-}
+export type CredentialSummary =
+  | {
+      id: string
+      kind: "social"
+      provider: "apple" | "google"
+      createdAt: string
+    }
+  | {
+      id: string
+      kind: "passkey"
+      name: string | null
+      deviceType: string
+      backedUp: boolean
+      createdAt: string | null
+    }
 
-export interface EpicFriendsResponse {
-  friends: EpicFriend[]
-  total: number
-  source: "epic-games"
+export interface CredentialsResponse {
+  credentials: CredentialSummary[]
 }
 
 export type CollectionState =
@@ -88,10 +89,6 @@ export interface CollectionProgress {
 }
 
 export interface CollectionSnapshot {
-  friendAvailability: {
-    status: "ready" | "unavailable"
-    refreshedAt: string | null
-  }
   items: CollectionItem[]
   progress: CollectionProgress
   updatedAt: string | null
@@ -110,7 +107,6 @@ export interface SharingFriend {
 }
 export interface SharingSnapshot {
   friends: SharingFriend[]
-  unjoined: EpicFriend[]
   blocked: PublicProfile[]
   refreshedAt: string
 }

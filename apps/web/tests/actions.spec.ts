@@ -1,4 +1,4 @@
-import { readFile, rename, writeFile } from "node:fs/promises"
+import { readFile } from "node:fs/promises"
 import {
   test,
   expect,
@@ -12,13 +12,14 @@ type Actor = {
   userId: string
   displayName: string
   handle: string
-  cookie: Parameters<BrowserContext["addCookies"]>[0][number]
+  cookies: Record<
+    "desktop" | "mobile",
+    Parameters<BrowserContext["addCookies"]>[0][number]
+  >
 }
 type Fixture = {
   baseURL: string
   actors: { a: Actor; b: Actor }
-  providerPath: string
-  provider: unknown
 }
 
 let fixture: Fixture
@@ -74,7 +75,7 @@ async function holdSharingAction(page: Page) {
   }
 }
 
-test.beforeEach(async ({ page, browser }) => {
+test.beforeEach(async ({ page, browser }, testInfo) => {
   fixture = JSON.parse(
     await readFile(
       process.env.BROWSER_FIXTURE_PATH ??
@@ -82,12 +83,10 @@ test.beforeEach(async ({ page, browser }) => {
       "utf8",
     ),
   )
-  const temporary = `${fixture.providerPath}.actions`
-  await writeFile(temporary, JSON.stringify(fixture.provider), { mode: 0o600 })
-  await rename(temporary, fixture.providerPath)
-  await page.context().addCookies([fixture.actors.a.cookie])
+  const project = testInfo.project.name as "desktop" | "mobile"
+  await page.context().addCookies([fixture.actors.a.cookies[project]])
   teammate = await browser.newContext({ baseURL: fixture.baseURL })
-  await teammate.addCookies([fixture.actors.b.cookie])
+  await teammate.addCookies([fixture.actors.b.cookies[project]])
   errors = []
   expectedActionFailure = false
   page.on("pageerror", (error) => errors.push(error.message))
@@ -118,54 +117,12 @@ test.beforeEach(async ({ page, browser }) => {
     })
     expect(response.status()).toBe(200)
   }
-  expect(await sharingStatus(page)).toBe("none")
+  expect(await sharingStatus(page)).toBeUndefined()
 })
 
 test.afterEach(async () => {
   await teammate?.close()
   expect(errors).toEqual([])
-})
-
-test("sharing request appears optimistically, rolls back on action failure, and retries successfully", async ({
-  page,
-}) => {
-  await page.goto("/friends")
-  const held = await holdSharingAction(page)
-  const request = page.getByRole("button", {
-    name: `Share collections with ${fixture.actors.b.displayName}`,
-    exact: true,
-  })
-  await request.click()
-  await expect(page.getByText("Request sent", { exact: true })).toBeVisible()
-  const cancel = page.getByRole("button", {
-    name: `Cancel request with ${fixture.actors.b.displayName}`,
-    exact: true,
-  })
-  await expect(cancel).toBeDisabled()
-  await expect(
-    page.getByRole("button", { name: "Refresh friends", exact: true }),
-  ).toBeDisabled()
-  await expect.poll(held.count).toBe(1)
-  expect(await sharingStatus(page)).toBe("none")
-  expectedActionFailure = true
-  await held.release(true)
-  await expect(
-    page.getByRole("alert").filter({
-      hasText: "Your sharing settings could not be saved. Please try again.",
-    }),
-  ).toBeVisible()
-  await expect(request).toBeEnabled()
-  await expect(page.getByText("Request sent", { exact: true })).toHaveCount(0)
-  expect(await sharingStatus(page)).toBe("none")
-  await request.click()
-  await expect(cancel).toBeEnabled()
-  await expect.poll(held.count).toBe(2)
-  expect(await sharingStatus(page)).toBe("outgoing")
-  await expect(
-    page.getByRole("status").filter({ hasText: "Sharing request sent." }),
-  ).toBeVisible()
-  await page.reload()
-  await expect(page.getByText("Request sent", { exact: true })).toBeVisible()
 })
 
 test("optimistic acceptance cannot navigate to a comparison before server confirmation", async ({

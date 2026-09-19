@@ -1,8 +1,6 @@
 import { defineConfig, devices } from "@playwright/test"
 
 process.env.BROWSER_FIXTURE_PATH = "/tmp/fortsprite-instant-fixture.json"
-process.env.BROWSER_PROVIDER_STATE_PATH =
-  "/tmp/fortsprite-instant-provider.json"
 
 export default defineConfig({
   testDir: "./tests/instant",

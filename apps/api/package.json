@@ -14,17 +14,19 @@
     "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
     "test": "tsx --test tests/*.test.ts",
     "catalog:import": "tsx scripts/import-catalog.ts",
-    "auth:encrypt-tokens": "tsx scripts/encrypt-oauth-tokens.ts"
+    "auth:remove-legacy-epic-user": "tsx scripts/remove-legacy-epic-user.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.26",
+    "@better-auth/passkey": "1.6.26",
     "@hono/node-server": "^2.1.0",
     "@workspace/contracts": "workspace:*",
     "better-auth": "^1.6.26",
-    "drizzle-orm": "^0.45.2",
     "dotenv": "^17.2.3",
-    "pg": "^8.23.0",
+    "drizzle-orm": "^0.45.2",
     "hono": "^4.13.7",
+    "jose": "^6.2.8",
+    "pg": "^8.23.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

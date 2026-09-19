@@ -20,9 +20,9 @@ export default function FriendsPage() {
             Collect with your squad.
           </h1>
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-            Connect with your Epic friends on FortSprite. Once you both accept
-            sharing, compare your collections and see which captured Sprites can
-            help each other.
+            Find friends by their exact FortSprite handle. Once you both accept
+            sharing, compare collections and see which captured Sprites can help
+            each other.
           </p>
         </div>
         <Suspense fallback={<ContentLoading />}>
