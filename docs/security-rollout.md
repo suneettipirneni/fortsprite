@@ -7,7 +7,7 @@ The migration replaces the Epic identity and friend graph with FortSprite-owned,
 3. Run `pnpm --filter @fortsprite/api auth:remove-legacy-epic-user` without flags. It must report exactly one user, one account, one Epic account, zero passkeys, and `exactLegacyShape: true`.
 4. Because the only legacy user is authorized disposable development data, rerun the same command with `--execute`. The command refuses every other database shape and deletes through the user cascade.
 5. Verify zero users and zero `epic-games` account rows. Deploy the new application without any `EPIC_*` variables or old instances still serving Epic routes.
-6. Verify passkey-first account creation, passkey sign-in, adding a backup passkey, final-passkey deletion refusal, sign-out, exact-handle friend requests, blocking, collection updates, and account deletion.
+6. Verify required-username, passkey-first account creation, passkey sign-in, adding a backup passkey, final-passkey deletion refusal, sign-out, exact-username friend requests, blocking, collection updates, and account deletion.
 
 Application DTOs do not expose internal emails, passkey credential IDs, public keys, or session tokens. Browser requests are constrained by the Hono method-and-path allowlist and same-origin checks.
 

@@ -114,8 +114,8 @@ export function FriendsManager({
         }}
       >
         <Input
-          aria-label="FortSprite handle"
-          placeholder="Exact FortSprite handle"
+          aria-label="FortSprite username"
+          placeholder="Exact FortSprite username"
           value={handle}
           onChange={(event) => setHandle(event.target.value.replace(/^@/, ""))}
           minLength={3}
@@ -224,7 +224,7 @@ export function FriendsManager({
               <p className="mt-2 text-sm text-muted-foreground">
                 {search
                   ? "Try a different name or clear your search."
-                  : "Send a request using your friend's exact FortSprite handle."}
+                  : "Send a request using your friend's exact FortSprite username."}
               </p>
               {search ? (
                 <Button

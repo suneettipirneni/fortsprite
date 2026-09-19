@@ -9,6 +9,7 @@ import { catalogItem } from "./catalog.ts"
 import { user } from "./db/auth-schema.ts"
 import { db } from "./db/client.ts"
 import { blocks, collectionEntries, friendships, sprites } from "./db/schema.ts"
+import { usernameSchema } from "./identity.ts"
 
 const profileColumns = {
   id: user.id,
@@ -18,10 +19,7 @@ const profileColumns = {
   fortniteDisplayName: user.fortniteDisplayName,
 }
 
-export const handleSchema = z
-  .string()
-  .trim()
-  .regex(/^[A-Za-z0-9_-]{3,24}$/)
+export const handleSchema = usernameSchema
 
 export const sharingActionSchema = z
   .object({
@@ -143,7 +141,7 @@ export async function requestFriendByHandle(
     .from(user)
     .where(sql`lower(${user.handle}) = lower(${handle})`)
   if (!friend || friend.id === viewerId)
-    throw new FriendshipError(404, "No FortSprite account uses that handle.")
+    throw new FriendshipError(404, "No FortSprite account uses that username.")
   await changeSharing(viewerId, friend.id, "request", database)
   return { profile: publicProfile(friend), status: "outgoing" as const }
 }

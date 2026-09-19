@@ -72,7 +72,7 @@ export function createProfileRoutes({
             error: {
               code: "INVALID_INPUT",
               message:
-                "Use a 3–24 character handle with letters, digits, underscores or hyphens, and names of 1–60 characters.",
+                "Use a 3–24 character username with letters, digits, underscores or hyphens, and names of 1–60 characters.",
             },
           },
           400,
@@ -107,7 +107,7 @@ export function createProfileRoutes({
             {
               error: {
                 code: "HANDLE_TAKEN",
-                message: "That handle is already taken. Choose another.",
+                message: "That username is already taken. Choose another.",
               },
             },
             409,
@@ -135,7 +135,7 @@ export function createProfileRoutes({
           {
             error: {
               code: "CONFIRMATION_REQUIRED",
-              message: "Type your current handle to confirm account deletion.",
+              message: "Type your current username to confirm account deletion.",
             },
           },
           400,

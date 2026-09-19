@@ -83,7 +83,7 @@ export function DeleteAccountDialog({ handle }: { handle: string }) {
           </AlertDialogHeader>
           <Field>
             <FieldLabel htmlFor="delete-account-confirmation">
-              Type your handle to confirm
+              Type your username to confirm
             </FieldLabel>
             <Input
               id="delete-account-confirmation"

@@ -65,7 +65,7 @@ after(async () => {
   await pool.end()
 })
 
-test("exact handles create local requests without provider identities", async () => {
+test("exact usernames create local requests without provider identities", async () => {
   const friend = await requestFriendByHandle(
     viewerId,
     `FRIEND_${friendId.slice(0, 6)}`,

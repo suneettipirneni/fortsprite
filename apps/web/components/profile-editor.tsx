@@ -68,7 +68,7 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
             </FieldDescription>
           </Field>
           <Field>
-            <FieldLabel htmlFor="handle">FortSprite handle</FieldLabel>
+            <FieldLabel htmlFor="handle">FortSprite username</FieldLabel>
             <Input
               id="handle"
               name="handle"
@@ -87,7 +87,7 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
               className="h-11"
             />
             <FieldDescription id="handle-help">
-              3–24 letters, numbers, underscores or hyphens. Handles are unique
+              3–24 letters, numbers, underscores or hyphens. Usernames are unique
               regardless of capitalization.
             </FieldDescription>
           </Field>

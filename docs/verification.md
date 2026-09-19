@@ -6,12 +6,12 @@ This record distinguishes implemented behavior, local evidence, and deployment c
 
 | Area | Local evidence | Remaining deployment check |
 | --- | --- | --- |
-| Passkeys | Better Auth 1.7 passkey-first registration, resident credentials, required user verification, transactional user/session creation, safe credential inventory, verified sign-in, and additional-passkey management in Chromium. | Register and authenticate with platform passkeys on current Safari, Chrome, Firefox, Edge, and mobile devices at `fortsprite.net`. |
+| Passkeys | Better Auth 1.7 passkey-first registration, required unique usernames, resident credentials, required user verification, transactional user/session creation, safe credential inventory, verified sign-in, and additional-passkey management in Chromium. | Register and authenticate with platform passkeys on current Safari, Chrome, Firefox, Edge, and mobile devices at `fortsprite.net`. |
 | Account recovery | The application and migration 0008 reject removal of the final passkey while allowing full account deletion. The UI directs users to add a second device or password-manager passkey. | Confirm recovery guidance with real synced and hardware passkeys. There is intentionally no provider or email fallback. |
 | Profiles and credentials | Profile fields persist independently from authentication metadata. Application DTOs omit internal email, passkey credential IDs, public keys, and session tokens. | Confirm profile and credential management after real platform-passkey registration. |
-| Friends and collection privacy | Exact-handle requests, acceptance, removal, blocking, helpers, and two-way comparison are enforced from local relationships and blocks. No provider friend graph remains. | Exercise two real accounts after deployment. |
+| Friends and collection privacy | Exact-username requests, acceptance, removal, blocking, helpers, and two-way comparison are enforced from local relationships and blocks. No provider friend graph remains. | Exercise two real accounts after deployment. |
 | Database | Migration 0007 creates the passkey table. Migration 0008 protects the final passkey with a serialized database trigger while permitting account-deletion cascades. Both migrations are applied in production. | Continue normal backup and restore testing. |
-| Legacy user | The guarded cleanup matched exactly one user, one account, one Epic account, and zero passkeys. The authorized deletion completed and its post-check found zero users, accounts, Epic accounts, and passkeys. | No legacy data action remains. Restore from a database backup if the deleted development account is ever needed. |
+| Production account reset | After the required-username release, the authorized September 19 cleanup deleted the sole production user and its passkey, cleared pending registration challenges, and verified zero user-owned auth, collection, friendship, and block rows. | Restore from a database backup if the deleted development account is ever needed. |
 
 ## Running the checks
 
@@ -33,6 +33,8 @@ Browser tests create local fixture users with separate desktop and mobile sessio
 - Migration 0007 applied successfully to the expiring schema-only Neon branch and production.
 - Migration 0008 applied successfully to the isolated local test database and the Neon production branch before the passkey-only deployment.
 - The authorized legacy cleanup deleted the sole Epic-only development user and cascade-owned data. The verification pass found zero users, accounts, Epic accounts, and passkeys.
+- Deployment `dpl_Aou7qKjUYBHkMs8TMRjqweQP5Ke9` made username selection mandatory before first-passkey registration and requires the first passkey, user, and session to share Better Auth's transaction. Live checks returned 400 for missing and malformed usernames.
+- The authorized post-deployment reset deleted one production passkey user and cleared five pending verification rows. Transactional post-checks found zero users, accounts, sessions, passkeys, collection entries, friendships, blocks, and verifications.
 - The database-backed API suite passed 33 of 33 tests.
 - The web unit suite passed 25 of 25 tests.
 - The Playwright suite passed 34 of 34 tests across desktop and mobile Chromium profiles. Both profiles reject unverified first-passkey registration, create an account only after verified registration, add a second resident passkey, sign out, and sign back in with it. The focused post-upgrade passkey run also passed 4 of 4 tests.

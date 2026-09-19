@@ -15,12 +15,15 @@ after(async () => {
 test("passkey registration rate limit is enforced with a retry header", async () => {
   let last: Response | undefined
   for (let i = 0; i < 11; i++) {
-    last = await app.request("/api/auth/passkey/generate-register-options", {
-      headers: {
-        origin: "http://localhost:3000",
-        "x-real-ip": ip,
+    last = await app.request(
+      `/api/auth/passkey/generate-register-options?context=rate_${i}_${ip.replaceAll(".", "_")}`,
+      {
+        headers: {
+          origin: "http://localhost:3000",
+          "x-real-ip": ip,
+        },
       },
-    })
+    )
   }
   assert.equal(last?.status, 429)
   assert.ok(Number(last?.headers.get("x-retry-after")) > 0)

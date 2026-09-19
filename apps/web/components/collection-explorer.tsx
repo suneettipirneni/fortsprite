@@ -11,7 +11,6 @@ import {
 } from "react"
 import { Grid2X2Icon, Grid3X3Icon, ListIcon, Rows3Icon, SearchIcon, SquareIcon } from "lucide-react"
 
-import { cn } from "@workspace/ui/lib/utils"
 import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group"
 import {
   Tooltip,
@@ -37,10 +36,7 @@ import { SelectGroup, SelectItem } from "@workspace/ui/components/select"
 
 import type { CollectionChange } from "@/lib/collection-state"
 import { createCollectionSync } from "@/lib/collection-sync"
-import {
-  SpriteTile,
-  type CollectionNotice,
-} from "@/components/collection-sprite-tile"
+import type { CollectionNotice } from "@/components/collection-sprite-tile"
 import {
   filterCollection,
   type CatalogSort,
@@ -52,12 +48,11 @@ import {
   type Sprite,
 } from "@/lib/catalog-presentation"
 import { updateCollectionAction } from "@/app/actions/collection"
-
-const gridSizes = {
-  small: "grid-cols-2 @[400px]:grid-cols-3 @xl:grid-cols-4 @3xl:grid-cols-6 @5xl:grid-cols-8",
-  medium: "grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-5 @5xl:grid-cols-6",
-  large: "grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-4",
-} as const
+import {
+  VirtualizedSpriteGrid,
+  VirtualizedSpriteGroups,
+  type CollectionGridSize,
+} from "@/components/virtualized-sprite-grid"
 
 const gridSizeOptions = [
   { value: "small", label: "Small grid", icon: Grid3X3Icon },
@@ -147,7 +142,7 @@ export function CollectionExplorer({
   const variantOptions = [...new Set(sprites.map((sprite) => sprite.variant))]
   const rarityOptions = [...new Set(sprites.map((sprite) => sprite.rarity))]
   const [view, setView] = useState<"list" | "grid" | "grouped">("grid")
-  const [gridSize, setGridSize] = useState<keyof typeof gridSizes>("medium")
+  const [gridSize, setGridSize] = useState<CollectionGridSize>("medium")
   const [query, setQuery] = useState("")
   const [ownership, setOwnership] = useState<OwnershipFilter>("all")
   const [variant, setVariant] = useState("all")
@@ -172,6 +167,7 @@ export function CollectionExplorer({
       else spriteGroups.set(sprite.baseName, [sprite])
     }
   }
+  const groupedSprites = [...spriteGroups]
 
   const ownedCount = sprites.filter((sprite) => sprite.owned).length
   const masteredCount = sprites.filter((sprite) => sprite.mastered).length
@@ -399,20 +395,8 @@ export function CollectionExplorer({
         {filteredSprites.length > 0 ? (
           <div className="@container">
             {view === "grouped" ? (
-              <div className="space-y-8">
-                {[...spriteGroups].map(([baseName, items]) => (
-                  <section key={baseName} aria-label={baseName} className="space-y-4">
-                    <div className="flex items-baseline justify-between gap-3 border-b border-white/15 pb-3">
-                      <h2 className="text-lg font-semibold">{baseName}</h2>
-                      <span className="text-xs text-muted-foreground">
-                        {items.length} {items.length === 1 ? "variant" : "variants"}
-                      </span>
-                    </div>
-                    <SpriteGrid items={items} {...gridProps} />
-                  </section>
-                ))}
-              </div>
-            ) : <SpriteGrid items={filteredSprites} {...gridProps} />}
+              <VirtualizedSpriteGroups groups={groupedSprites} {...gridProps} />
+            ) : <VirtualizedSpriteGrid items={filteredSprites} {...gridProps} />}
           </div>
         ) : (
           <Empty className="min-h-64 border border-white/14 bg-card">
@@ -463,43 +447,5 @@ export function CollectionExplorer({
         ) : null}
       </div>
     </>
-  )
-}
-
-
-function SpriteGrid({
-  items,
-  view,
-  gridSize,
-  pendingIds,
-  availabilityKnown,
-  notice,
-  onRemovedFocus,
-  onChange,
-}: {
-  items: Sprite[]
-  view: "list" | "grid"
-  gridSize: keyof typeof gridSizes
-  pendingIds: Set<string>
-  availabilityKnown: boolean
-  notice: CollectionNotice | null
-  onRemovedFocus: () => void
-  onChange: (sprite: Sprite, change: CollectionChange) => void
-}) {
-  return (
-    <div className={cn("grid gap-3", view === "list" ? "grid-cols-1" : gridSizes[gridSize])}>
-      {items.map((sprite) => (
-        <SpriteTile
-          key={sprite.id}
-          sprite={sprite}
-          view={view}
-          pending={pendingIds.has(sprite.id)}
-          availabilityKnown={availabilityKnown}
-          onRemovedFocus={onRemovedFocus}
-          notice={notice?.spriteId === sprite.id ? notice : null}
-          onChange={(change) => onChange(sprite, change)}
-        />
-      ))}
-    </div>
   )
 }

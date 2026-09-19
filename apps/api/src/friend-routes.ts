@@ -62,7 +62,7 @@ export function createFriendRoutes({
           {
             error: {
               code: "INVALID_INPUT",
-              message: "Enter an exact FortSprite handle.",
+              message: "Enter an exact FortSprite username.",
             },
           },
           400,

@@ -109,6 +109,7 @@ test("meaningful collection renders without overflow or serious accessibility fa
   await expect(page).toHaveURL(/\/collection$/)
   await expect(page).toHaveTitle(/My collection/)
   await expect(tile(page)).toBeVisible()
+  await tile(page).scrollIntoViewIfNeeded()
   await expect
     .poll(() =>
       tile(page)
@@ -120,6 +121,14 @@ test("meaningful collection renders without overflow or serious accessibility fa
   await expect(page.locator("nextjs-dialog")).toHaveCount(0)
   await expect(captured(page)).toHaveAttribute("aria-pressed", "false")
   await expect(mastered(page)).toBeDisabled()
+  const virtualGrid = page.getByTestId("virtualized-sprite-grid")
+  await expect(virtualGrid).toHaveAttribute(
+    "data-total-items",
+    String((await snapshot(page)).items.length),
+  )
+  expect(await page.locator("article[data-sprite-id]").count()).toBeLessThan(
+    Number(await virtualGrid.getAttribute("data-total-items")),
+  )
   await assertFits(page)
   const results = await new AxeBuilder({ page }).analyze()
   expect(
@@ -201,12 +210,14 @@ test("failed save leaves persisted state unchanged and offers a truthful retry",
 test("rarity and search filters narrow results and empty-state reset restores the catalog", async ({
   page,
 }) => {
-  const count = await page.locator("article[data-sprite-id]").count()
+  const virtualGrid = page.getByTestId("virtualized-sprite-grid")
+  const count = Number(await virtualGrid.getAttribute("data-total-items"))
   await page.getByRole("combobox", { name: "Filter by rarity" }).click()
   await page.getByRole("option", { name: "Rare", exact: true }).click()
   const rare = await snapshot(page)
-  await expect(page.locator("article[data-sprite-id]")).toHaveCount(
-    rare.items.filter((item) => item.rarity === "Rare").length,
+  await expect(virtualGrid).toHaveAttribute(
+    "data-total-items",
+    String(rare.items.filter((item) => item.rarity === "Rare").length),
   )
   await page
     .getByRole("textbox", { name: "Search collection" })
@@ -219,7 +230,7 @@ test("rarity and search filters narrow results and empty-state reset restores th
   await expect(
     page.getByRole("combobox", { name: "Filter by rarity" }),
   ).toHaveText("All rarities")
-  await expect(page.locator("article[data-sprite-id]")).toHaveCount(count)
+  await expect(virtualGrid).toHaveAttribute("data-total-items", String(count))
   await page
     .getByRole("textbox", { name: "Search collection" })
     .fill(first.baseName)
@@ -228,8 +239,9 @@ test("rarity and search filters narrow results and empty-state reset restores th
       .toLowerCase()
       .includes(first.baseName.toLowerCase()),
   )
-  await expect(page.locator("article[data-sprite-id]")).toHaveCount(
-    expected.length,
+  await expect(virtualGrid).toHaveAttribute(
+    "data-total-items",
+    String(expected.length),
   )
 })
 
@@ -387,10 +399,13 @@ test("collection switches between list and three grid sizes", async ({ page }, t
 test("grouped view keeps each base Sprite and its variants in one section", async ({ page }, testInfo) => {
   const collection = await snapshot(page)
   const expected = collection.items.filter((item) => item.baseName === first.baseName)
+  const expectedGroupCount = new Set(collection.items.map((item) => item.baseName)).size
   await page.getByRole("radio", { name: "Grouped view", exact: true }).click()
+  const virtualGroups = page.getByTestId("virtualized-sprite-groups")
   const section = page.getByRole("region", { name: first.baseName, exact: true })
   await expect(section.getByRole("heading", { name: first.baseName, exact: true, level: 2 })).toBeVisible()
-  await expect(page.locator("section")).toHaveCount(new Set(collection.items.map((item) => item.baseName)).size)
+  await expect(virtualGroups).toHaveAttribute("data-total-groups", String(expectedGroupCount))
+  expect(await page.locator("section").count()).toBeLessThan(expectedGroupCount)
   await expect(section.locator("article")).toHaveCount(expected.length)
   expect(await section.locator("article").evaluateAll((elements) =>
     elements.map((element) => element.getAttribute("data-sprite-id")).sort()

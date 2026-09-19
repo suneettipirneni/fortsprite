@@ -35,8 +35,9 @@ export default function SignInPage({
               Keep your squad in sync.
             </h1>
             <p className="text-pretty text-base text-muted-foreground sm:text-sm">
-              Create an account or sign in with a passkey. There are no
-              passwords and no social-provider accounts to connect.
+              Choose a username and create a passkey, or sign in with one you
+              already have. There are no passwords or social-provider accounts
+              to connect.
             </p>
           </div>
           <Suspense fallback={null}>

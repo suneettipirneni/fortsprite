@@ -265,6 +265,26 @@ test("social, password, and generic OAuth operations are unavailable", async () 
     )
 })
 
+test("first-passkey registration requires an available username", async () => {
+  const registrationOptions = (context?: string) =>
+    app.request(
+      `/api/auth/passkey/generate-register-options${context === undefined ? "" : `?context=${encodeURIComponent(context)}`}`,
+      { headers: { origin: headers.origin } },
+    )
+
+  const missing = await registrationOptions()
+  assert.equal(missing.status, 400)
+  assert.match((await missing.json()).message, /choose a username/i)
+
+  const invalid = await registrationOptions("ab")
+  assert.equal(invalid.status, 400)
+  assert.match((await invalid.json()).message, /choose a username/i)
+
+  const taken = await registrationOptions(`TEST_${userId.slice(0, 8)}`)
+  assert.equal(taken.status, 409)
+  assert.match((await taken.json()).message, /already taken/i)
+})
+
 test("the final passkey cannot be removed", async () => {
   const firstId = randomUUID()
   const secondId = randomUUID()

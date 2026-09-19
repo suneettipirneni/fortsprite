@@ -17,6 +17,7 @@
     "@better-auth/passkey": "1.7.5",
     "@better-auth/utils": "0.4.2",
     "@fortsprite/api": "workspace:*",
+    "@tanstack/react-virtual": "^3.14.13",
     "@workspace/contracts": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.7.5",

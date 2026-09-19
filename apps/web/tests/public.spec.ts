@@ -2,9 +2,10 @@ import { readFile } from "node:fs/promises"
 import AxeBuilder from "@axe-core/playwright"
 import { expect, test } from "@playwright/test"
 
-test("a verified passkey creates the account and its first session", async ({
+test("a verified passkey atomically creates the account and its first session", async ({
   page,
-}) => {
+}, testInfo) => {
+  const username = `e2e_${testInfo.project.name}_${Date.now().toString(36)}`
   const cdp = await page.context().newCDPSession(page)
   await cdp.send("WebAuthn.enable")
   const { authenticatorId } = await cdp.send(
@@ -22,12 +23,13 @@ test("a verified passkey creates the account and its first session", async ({
   )
 
   await page.goto("/sign-in")
+  await page.getByRole("textbox", { name: "Username" }).fill(username)
   await page
     .getByRole("button", { name: "Create account with a passkey" })
     .click()
   await expect(
     page.getByRole("alert").filter({
-      hasText: "Your passkey could not be created. Please try again.",
+      hasText: "Your account could not be created. Please try again.",
     }),
   ).toBeVisible()
   expect((await page.request.get("/api/v1/me")).status()).toBe(401)
@@ -36,6 +38,26 @@ test("a verified passkey creates the account and its first session", async ({
     authenticatorId,
     isUserVerified: true,
   })
+
+  let removeCreateSession = true
+  await page.route("**/api/auth/passkey/verify-registration", async (route) => {
+    if (!removeCreateSession) return route.continue()
+    const body = route.request().postDataJSON()
+    if (testInfo.project.name === "desktop") delete body.createSession
+    else body.createSession = false
+    await route.continue({ postData: JSON.stringify(body) })
+  })
+  await page
+    .getByRole("button", { name: "Create account with a passkey" })
+    .click()
+  await expect(
+    page.getByRole("alert").filter({
+      hasText: "Your account could not be created. Please try again.",
+    }),
+  ).toBeVisible()
+  expect((await page.request.get("/api/v1/me")).status()).toBe(401)
+
+  removeCreateSession = false
   await page
     .getByRole("button", { name: "Create account with a passkey" })
     .click()
@@ -44,7 +66,8 @@ test("a verified passkey creates the account and its first session", async ({
   const me = await page.request.get("/api/v1/me")
   expect(me.status()).toBe(200)
   const viewer = (await me.json()).viewer
-  expect(viewer.displayName).toBe("FortSprite collector")
+  expect(viewer.handle).toBe(username)
+  expect(viewer.displayName).toBe(username)
 
   const remove = await page.request.delete("/api/v1/profile", {
     headers: { origin: new URL(page.url()).origin },
@@ -74,7 +97,11 @@ test("protected redirects preserve destination and the account-neutral sign-in p
   ).toBeVisible()
   await expect(
     page.getByRole("button", { name: "Create account with a passkey" }),
-  ).toBeVisible()
+  ).toBeDisabled()
+  await expect(page.getByRole("textbox", { name: "Username" })).toHaveAttribute(
+    "required",
+    "",
+  )
   await expect(
     page.getByRole("button", { name: "Sign in with a passkey" }),
   ).toBeVisible()

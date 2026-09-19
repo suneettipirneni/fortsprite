@@ -49,7 +49,7 @@ FortSprite must not depend on Fortnite.GG at runtime. Catalog data will be store
 
 #### AUTH-001 — Create an account with a passkey (`P0`)
 
-Given a visitor has no FortSprite account, when they complete a resident, user-verified passkey registration, then Better Auth creates exactly one local user, one passkey, and one session.
+Given a visitor has no FortSprite account, when they choose an available valid username and complete a resident, user-verified passkey registration, then Better Auth creates exactly one local user, one passkey, and one session.
 
 Given passkey registration is abandoned, canceled, malformed, or fails verification, then no local user, passkey, or session is created.
 
@@ -99,17 +99,17 @@ Given a deleted account, when another user opens previously cached friend data, 
 
 ### 4.2 Profiles and identity
 
-#### PROF-001 — Unique app handle (`P0`)
+#### PROF-001 — Unique username (`P0`)
 
-Given a user chooses a handle, then it must be 3–24 characters, contain only letters, digits, underscores, or hyphens, and be unique case-insensitively.
+Given a user creates an account, then they must choose a username that is 3–24 characters, contains only letters, digits, underscores, or hyphens, and is unique case-insensitively.
 
-Given users `SpriteFan` and `spritefan`, when uniqueness is evaluated, then the handles conflict.
+Given users `SpriteFan` and `spritefan`, when uniqueness is evaluated, then the usernames conflict.
 
 #### PROF-002 — Profile fields (`P0`)
 
 Given an authenticated user, when they update their profile, then they can set a display name and an optional Fortnite display name, subject to documented length and character validation.
 
-Given a generated display name exists after passkey-first registration, then the user may override it inside FortSprite and the UI must not claim that authentication verified their manually tracked collection.
+Given the username is also the initial display name after passkey-first registration, then the user may override the display name inside FortSprite and the UI must not claim that authentication verified their manually tracked collection.
 
 Given a Fortnite display name is manually entered, then the UI labels it as user-provided.
 
@@ -247,13 +247,13 @@ The UI must show when collection/help data was last updated so users do not inte
 
 ### 4.6 Friend relationships
 
-#### FRND-001 — Request a FortSprite friend by exact handle (`P0`)
+#### FRND-001 — Request a FortSprite friend by exact username (`P0`)
 
-Given an authenticated user enters an exact case-insensitive FortSprite handle, when the target exists and neither user has blocked the other, then FortSprite creates one pending local relationship.
+Given an authenticated user enters an exact case-insensitive FortSprite username, when the target exists and neither user has blocked the other, then FortSprite creates one pending local relationship.
 
-Given the handle is absent, belongs to the requester, or the relationship is blocked, then the API returns a safe not-found or unavailable response without exposing email addresses, provider identifiers, credentials, or search suggestions.
+Given the username is absent, belongs to the requester, or the relationship is blocked, then the API returns a safe not-found or unavailable response without exposing email addresses, provider identifiers, credentials, or search suggestions.
 
-Given a friend profile is returned, then it contains only the local user ID, handle, display name, optional user-entered Fortnite display name, and initials.
+Given a friend profile is returned, then it contains only the local user ID, username, display name, optional user-entered Fortnite display name, and initials.
 
 #### FRND-002 — Own relationships locally (`P0`)
 
@@ -269,7 +269,7 @@ Given both users approve the FortSprite relationship, then friend-only collectio
 
 #### FRND-004 — Friends states (`P0`)
 
-Given a user has no local relationships, then the UI presents an intentional empty state and an exact-handle request form rather than showing demo profiles.
+Given a user has no local relationships, then the UI presents an intentional empty state and an exact-username request form rather than showing demo profiles.
 
 Given the FortSprite API cannot load relationships, then the UI presents a recoverable error state and does not falsely display a successful empty list.
 
@@ -399,7 +399,7 @@ These invariants should be enforced at the database level where possible and dup
 | ID | Invariant |
 | --- | --- |
 | DATA-001 | Each passkey credential maps to at most one FortSprite user, and every existing account retains at least one passkey. The local `user.id` is the sole domain owner key. |
-| DATA-002 | Profile handles are unique case-insensitively. |
+| DATA-002 | Usernames are required and unique case-insensitively. |
 | DATA-003 | Catalog slugs and stable external keys are unique. |
 | DATA-004 | At most one collection record exists per `(userId, catalogItemId)`. |
 | DATA-005 | Friend availability is derived from ownership and accepted friendship. No separate help opt-in is stored. |
@@ -534,7 +534,7 @@ The app must support the latest two stable major versions of Chrome, Safari, Fir
 - Ownership and mastery progress calculations (`COLL-002A`, `COLL-003`).
 - Catalog and overview filtering/sorting (`CAT-002`, `OVER-003`).
 - Catalog snapshot normalization and idempotent import behavior (`CAT-005`).
-- Exact-handle validation, safe friend-profile mapping, and relationship projection (`FRND-001` through `FRND-005`).
+- Exact-username validation, safe friend-profile mapping, and relationship projection (`FRND-001` through `FRND-005`).
 - Passkey user-verification enforcement (`AUTH-004`, `AUTH-004A`).
 - Ownership-derived availability rules (`HELP-001`).
 - Request schema validation and safe error mapping (`ARCH-002`, `ARCH-004`).
@@ -547,18 +547,18 @@ The app must support the latest two stable major versions of Chrome, Safari, Fir
 - Rejected or canceled ceremonies, disabled social/generic/local sign-in paths, and safe credential DTOs (`AUTH-001`, `AUTH-004`).
 - Object-level authorization for profile, collection, friendship, comparison, overview, and catalog endpoints.
 - Atomic ownership/mastery/help and friend/block transitions (`ARCH-003`).
-- Exact-handle requests, crossed requests, acceptance, removal, blocking, safe not-found behavior, and current local relationship reads (`FRND-001` through `FRND-005`).
+- Exact-username requests, crossed requests, acceptance, removal, blocking, safe not-found behavior, and current local relationship reads (`FRND-001` through `FRND-005`).
 - Aggregate overview accuracy with multiple friends, missing items, unmastered owned items, retired items, removed friends, and blocks (`OVER-001`, `OVER-002`).
 
 ### 8.3 End-to-end tests
 
 At minimum, automate these user journeys in a real browser:
 
-1. Register a verified resident passkey as a new visitor → create one account and session → sign out → protected-route redirect → sign in with the same passkey.
+1. Choose a unique username and register a verified resident passkey as a new visitor → create one account and session → sign out → protected-route redirect → sign in with the same passkey.
 2. Browse the Sprite grid → open its anchored Hover Card metadata preview with pointer hover and keyboard focus → open details by touch/click → search/filter catalog → mark items owned and mastered → see the tile and both progress measures update → reload and verify persistence.
 3. Mark an owned item mastered → mark it missing → verify mastery is cleared and the item disappears from friend availability.
 4. User A adds a second resident, user-verified passkey → cannot remove the final remaining passkey → signs out → signs in with a retained passkey → no credential ID or public key appears in application API responses.
-5. User A requests B by exact FortSprite handle and B accepts → B owns an item A is missing → A sees it in Friends Can Help → both open the two-way comparison.
+5. User A requests B by exact FortSprite username and B accepts → B owns an item A is missing → A sees it in Friends Can Help → both open the two-way comparison.
 6. B marks the item missing → A refreshes/revalidates → B disappears from the item’s available helpers.
 7. One friend removes or blocks the other → previously accessible friend collection/comparison URLs are denied.
 8. Invalid/failed collection mutation → optimistic UI reconciles and announces the error.

@@ -20,7 +20,7 @@ export default function FriendsPage() {
             Collect with your squad.
           </h1>
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-            Find friends by their exact FortSprite handle. Once you both accept
+            Find friends by their exact FortSprite username. Once you both accept
             sharing, compare collections and see which captured Sprites can help
             each other.
           </p>

@@ -11,7 +11,7 @@ const sections = [
   },
   {
     heading: "Collection and friendship data",
-    body: "FortSprite stores Sprite ownership, mastery, profile settings, friend requests, blocks, and collection-sharing choices. Friends connect using exact FortSprite handles, and both people must accept before either collection is shared. Collection entries are self-reported.",
+    body: "FortSprite stores Sprite ownership, mastery, profile settings, friend requests, blocks, and collection-sharing choices. Friends connect using exact FortSprite usernames, and both people must accept before either collection is shared. Collection entries are self-reported.",
   },
   {
     heading: "Authentication and security",

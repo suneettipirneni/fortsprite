@@ -72,7 +72,7 @@ test("profile action preserves rejected edits and refreshes the header after a p
 
   await page.goto("/account")
   const name = page.getByLabel("FortSprite display name", { exact: true })
-  const handle = page.getByLabel("FortSprite handle", { exact: true })
+  const handle = page.getByLabel("FortSprite username", { exact: true })
   const fortniteName = page.getByLabel("Fortnite display name (optional)", {
     exact: true,
   })
@@ -82,7 +82,7 @@ test("profile action preserves rejected edits and refreshes the header after a p
   await fortniteName.fill("Action retry Fortnite")
   await page.getByRole("button", { name: "Save profile", exact: true }).click()
   await expect(page.locator("form").getByRole("alert")).toContainText(
-    "That handle is already taken",
+    "That username is already taken",
   )
   await expect(name).toHaveValue(draftName)
   await expect(handle).toHaveValue(teammate.handle)

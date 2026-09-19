@@ -18,7 +18,7 @@ export async function updateSharing(id: string, action: SharingAction) {
 
 export async function requestSharing(handle: string) {
   if (typeof handle !== "string")
-    return { ok: false, error: "Enter a valid FortSprite handle." } as const
+    return { ok: false, error: "Enter a valid FortSprite username." } as const
   const result = await mutateApi<{ friend: unknown }>(
     "/api/v1/friends",
     "POST",

@@ -26,6 +26,8 @@ Production deployments target [fortsprite.net](https://fortsprite.net) through t
 
 The passkey-only release was deployed on September 18, 2026. Production has `PASSKEY_RP_ID=fortsprite.net` and `PASSKEY_ORIGIN=https://fortsprite.net`; the former Epic OAuth variables were removed. Migration 0008 is applied to the production branch.
 
+Required username selection was deployed on September 19, 2026 as `dpl_Aou7qKjUYBHkMs8TMRjqweQP5Ke9`. No additional Vercel environment variables are required. Username validation and case-insensitive uniqueness use the existing Better Auth application and PostgreSQL database configuration.
+
 Platform passkeys still need deployment verification across the supported browsers and device/password-manager combinations.
 
 ## Persistent rate limits

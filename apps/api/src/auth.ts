@@ -2,18 +2,60 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter"
 import { passkey } from "@better-auth/passkey"
 import { betterAuth } from "better-auth"
 import { APIError } from "better-auth/api"
+import { sql } from "drizzle-orm"
 
+import { user } from "./db/auth-schema.ts"
 import { databaseSchema, db } from "./db/client.ts"
 import { env } from "./env.ts"
+import { usernameSchema } from "./identity.ts"
 
-function createInitialHandle() {
-  return `sprite_${crypto.randomUUID().replaceAll("-", "").slice(0, 16)}`
+function requireRegistrationUsername(context: string | null | undefined) {
+  const parsed = usernameSchema.safeParse(context)
+  if (!parsed.success)
+    throw new APIError("BAD_REQUEST", {
+      message:
+        "Choose a username with 3–24 letters, numbers, underscores or hyphens.",
+    })
+  return parsed.data
+}
+
+async function usernameIsTaken(username: string) {
+  const [existing] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(sql`lower(${user.handle}) = lower(${username})`)
+    .limit(1)
+  return Boolean(existing)
+}
+
+function usernameTaken() {
+  return new APIError("CONFLICT", {
+    message: "That username is already taken. Choose another.",
+  })
+}
+
+function isUniqueViolation(error: unknown) {
+  const cause =
+    error instanceof Error && "cause" in error ? error.cause : error
+  return (
+    typeof cause === "object" &&
+    cause !== null &&
+    "code" in cause &&
+    cause.code === "23505"
+  )
 }
 
 function requireVerifiedUser(verified: boolean | undefined) {
   if (!verified)
     throw new APIError("UNAUTHORIZED", {
       message: "Passkey user verification is required.",
+    })
+}
+
+function requireAtomicAccountCreation(createSession: boolean | undefined) {
+  if (createSession !== true)
+    throw new APIError("BAD_REQUEST", {
+      message: "Account creation must also create its first session.",
     })
 }
 
@@ -57,7 +99,6 @@ export const auth = betterAuth({
         type: "string",
         required: true,
         input: false,
-        defaultValue: createInitialHandle,
       },
       fortniteDisplayName: {
         type: "string",
@@ -85,27 +126,38 @@ export const auth = betterAuth({
       },
       registration: {
         requireSession: false,
-        resolveUser: () => {
+        resolveUser: async ({ context }) => {
+          const username = requireRegistrationUsername(context)
+          if (await usernameIsTaken(username)) throw usernameTaken()
           const id = crypto.randomUUID()
-          return { id, name: "FortSprite collector" }
+          return { id, name: username, displayName: username }
         },
-        afterVerification: async ({ ctx, verification, user }) => {
+        afterVerification: async ({ ctx, verification, user, context }) => {
           requireVerifiedUser(verification.registrationInfo?.userVerified)
 
           const existingUser = await ctx.context.internalAdapter.findUserById(
             user.id,
           )
-          if (!existingUser)
+          if (existingUser) return
+
+          requireAtomicAccountCreation(ctx.body.createSession)
+          const username = requireRegistrationUsername(context)
+          try {
             await ctx.context.internalAdapter.createUser(
               {
                 id: user.id,
-                name: user.name,
+                name: username,
                 email: `${user.id}@passkey.fortsprite.invalid`,
                 emailVerified: false,
-                handle: createInitialHandle(),
+                handle: username,
               },
               { method: "passkey" },
             )
+          } catch (error) {
+            if (isUniqueViolation(error)) throw usernameTaken()
+            throw error
+          }
+          return { name: "Primary passkey" }
         },
       },
       authentication: {

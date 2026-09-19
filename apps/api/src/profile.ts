@@ -3,6 +3,7 @@ import type { CredentialSummary, Viewer } from "@workspace/contracts"
 import { z } from "zod"
 import { db } from "./db/client.ts"
 import { passkey, user } from "./db/auth-schema.ts"
+import { usernameSchema } from "./identity.ts"
 
 function initials(displayName: string) {
   return (
@@ -73,10 +74,7 @@ const displayName = z
   )
 export const profileSchema = z
   .object({
-    handle: z
-      .string()
-      .trim()
-      .regex(/^[A-Za-z0-9_-]{3,24}$/),
+    handle: usernameSchema,
     displayName,
     fortniteDisplayName: displayName.nullable(),
   })

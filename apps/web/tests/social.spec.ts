@@ -78,13 +78,13 @@ test.afterEach(async () => {
   await teammateContext?.close()
 })
 
-test("exact-handle requests unlock mutual collection comparison", async ({
+test("exact-username requests unlock mutual collection comparison", async ({
   page,
 }) => {
   const [ours, theirs] = fixture.sprites
   await page.goto("/friends")
   await page
-    .getByRole("textbox", { name: "FortSprite handle" })
+    .getByRole("textbox", { name: "FortSprite username" })
     .fill(fixture.actors.b.handle)
   await page.getByRole("button", { name: "Send request" }).click()
   await expect(page.getByText("Request sent", { exact: true })).toBeVisible()
