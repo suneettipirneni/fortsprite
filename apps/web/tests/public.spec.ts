@@ -2,6 +2,58 @@ import { readFile } from "node:fs/promises"
 import AxeBuilder from "@axe-core/playwright"
 import { expect, test } from "@playwright/test"
 
+test("a verified passkey creates the account and its first session", async ({
+  page,
+}) => {
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send("WebAuthn.enable")
+  const { authenticatorId } = await cdp.send(
+    "WebAuthn.addVirtualAuthenticator",
+    {
+      options: {
+        protocol: "ctap2",
+        transport: "internal",
+        hasResidentKey: true,
+        hasUserVerification: true,
+        isUserVerified: false,
+        automaticPresenceSimulation: true,
+      },
+    },
+  )
+
+  await page.goto("/sign-in")
+  await page
+    .getByRole("button", { name: "Create account with a passkey" })
+    .click()
+  await expect(
+    page.getByRole("alert").filter({
+      hasText: "Your passkey could not be created. Please try again.",
+    }),
+  ).toBeVisible()
+  expect((await page.request.get("/api/v1/me")).status()).toBe(401)
+
+  await cdp.send("WebAuthn.setUserVerified", {
+    authenticatorId,
+    isUserVerified: true,
+  })
+  await page
+    .getByRole("button", { name: "Create account with a passkey" })
+    .click()
+  await expect(page).toHaveURL(/\/$/)
+
+  const me = await page.request.get("/api/v1/me")
+  expect(me.status()).toBe(200)
+  const viewer = (await me.json()).viewer
+  expect(viewer.displayName).toBe("FortSprite collector")
+
+  const remove = await page.request.delete("/api/v1/profile", {
+    headers: { origin: new URL(page.url()).origin },
+    data: { confirmation: viewer.handle },
+  })
+  expect(remove.status()).toBe(200)
+  expect((await page.request.get("/api/v1/me")).status()).toBe(401)
+})
+
 test("protected redirects preserve destination and the account-neutral sign-in page is accessible", async ({
   page,
 }, testInfo) => {
@@ -21,10 +73,7 @@ test("protected redirects preserve destination and the account-neutral sign-in p
     page.getByRole("heading", { name: "Keep your squad in sync." }),
   ).toBeVisible()
   await expect(
-    page.getByRole("button", { name: "Continue with Apple" }),
-  ).toBeVisible()
-  await expect(
-    page.getByRole("button", { name: "Continue with Google" }),
+    page.getByRole("button", { name: "Create account with a passkey" }),
   ).toBeVisible()
   await expect(
     page.getByRole("button", { name: "Sign in with a passkey" }),

@@ -5,7 +5,7 @@ import { createHmac, randomUUID } from "node:crypto"
 import { eq, inArray, or } from "drizzle-orm"
 const { app } = await import("../src/app.ts")
 const { db, pool } = await import("../src/db/client.ts")
-const { user, session, account } = await import("../src/db/auth-schema.ts")
+const { user, session, account, passkey } = await import("../src/db/auth-schema.ts")
 const { collectionEntries, friendships, blocks, sprites } =
   await import("../src/db/schema.ts")
 const spriteId = randomUUID()
@@ -37,12 +37,16 @@ before(async () => {
     expiresAt: new Date(Date.now() + 3600000),
     updatedAt: new Date(),
   })
-  await db.insert(account).values({
+  await db.insert(passkey).values({
     id: randomUUID(),
     userId: owner,
-    accountId: randomUUID().replaceAll("-", ""),
-    providerId: "google",
-    scope: "openid,email,profile",
+    name: "Primary",
+    publicKey: "dGVzdA==",
+    credentialID: randomUUID(),
+    counter: 0,
+    deviceType: "singleDevice",
+    backedUp: false,
+    transports: "internal",
   })
 })
 after(async () => {
@@ -57,7 +61,7 @@ const save = (body: unknown, requestHeaders = headers) =>
     body: JSON.stringify(body),
   })
 
-test("profile saves edited name separately from provider identity and survives fresh reads", async () => {
+test("profile saves an edited name independently and survives fresh reads", async () => {
   const response = await save({
     handle,
     displayName: "My app name",
@@ -78,7 +82,7 @@ test("profile saves edited name separately from provider identity and survives f
   const credentials = await (
     await app.request("/api/v1/credentials", { headers })
   ).json()
-  assert.deepEqual(credentials.credentials.map((item: { provider?: string }) => item.provider), ["google"])
+  assert.deepEqual(credentials.credentials.map((item: { kind: string }) => item.kind), ["passkey"])
   assert.equal(JSON.stringify(credentials).includes("accountId"), false)
   assert.equal(
     (
@@ -187,6 +191,7 @@ test("account deletion requires confirmation and a fresh session, then revokes a
     [user, eq(user.id, owner)],
     [session, eq(session.userId, owner)],
     [account, eq(account.userId, owner)],
+    [passkey, eq(passkey.userId, owner)],
     [collectionEntries, eq(collectionEntries.userId, owner)],
     [
       friendships,

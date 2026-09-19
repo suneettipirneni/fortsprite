@@ -6,7 +6,6 @@ import type { CollectionSnapshot } from "@workspace/contracts"
 type Actor = {
   userId: string
   displayName: string
-  providerDisplayName: string
   handle: string
   cookies: Record<
     "desktop" | "mobile",
@@ -192,6 +191,12 @@ test("a verified resident passkey can be added and used to sign back in", async 
     },
   )
   await page.goto("/account")
+  const initialResponse = await page.request.get("/api/v1/credentials")
+  expect(initialResponse.status()).toBe(200)
+  const initialPasskeys = (await initialResponse.json()).credentials as {
+    id: string
+    kind: string
+  }[]
   await page.getByRole("textbox", { name: "Passkey name" }).fill("Test device")
   await page.getByRole("button", { name: "Add passkey" }).click()
   await expect(
@@ -201,11 +206,9 @@ test("a verified resident passkey can be added and used to sign back in", async 
   ).toBeVisible()
   let credentials = await page.request.get("/api/v1/credentials")
   expect(credentials.status()).toBe(200)
-  expect(
-    (await credentials.json()).credentials.filter(
-      (credential: { kind: string }) => credential.kind === "passkey",
-    ),
-  ).toEqual([])
+  expect((await credentials.json()).credentials).toHaveLength(
+    initialPasskeys.length,
+  )
 
   await cdp.send("WebAuthn.setUserVerified", {
     authenticatorId,
@@ -215,11 +218,54 @@ test("a verified resident passkey can be added and used to sign back in", async 
   await expect(page.getByText("Passkey added.")).toBeVisible()
   await expect(page.getByText("Test device")).toBeVisible()
 
+  for (const credential of initialPasskeys) {
+    const removed = await page.request.post(
+      "/api/auth/passkey/delete-passkey",
+      {
+        headers: { origin: fixture.baseURL },
+        data: { id: credential.id },
+      },
+    )
+    expect(removed.status()).toBe(200)
+  }
+  await page.reload()
+  await expect(
+    page.getByRole("button", { name: "Remove passkey Test device" }),
+  ).toBeDisabled()
+
   credentials = await page.request.get("/api/v1/credentials")
   expect(credentials.status()).toBe(200)
   const serialized = JSON.stringify(await credentials.json())
   expect(serialized).not.toContain("credentialID")
   expect(serialized).not.toContain("publicKey")
+
+  await cdp.send("WebAuthn.removeVirtualAuthenticator", {
+    authenticatorId,
+  })
+  const { authenticatorId: backupAuthenticatorId } = await cdp.send(
+    "WebAuthn.addVirtualAuthenticator",
+    {
+      options: {
+        protocol: "ctap2",
+        transport: "internal",
+        hasResidentKey: true,
+        hasUserVerification: true,
+        isUserVerified: true,
+        automaticPresenceSimulation: true,
+      },
+    },
+  )
+  await page.getByRole("textbox", { name: "Passkey name" }).fill("Backup key")
+  await page.getByRole("button", { name: "Add passkey" }).click()
+  await expect(page.getByText("Backup key")).toBeVisible()
+  await page
+    .getByRole("button", { name: "Remove passkey Test device" })
+    .click()
+  await expect(page.getByText("Passkey removed.")).toBeVisible()
+  await expect(page.getByText("Test device")).not.toBeVisible()
+  await expect(
+    page.getByRole("button", { name: "Remove passkey Backup key" }),
+  ).toBeDisabled()
 
   const signOut = await page.request.post("/api/auth/sign-out", {
     headers: { origin: fixture.baseURL },
@@ -228,7 +274,7 @@ test("a verified resident passkey can be added and used to sign back in", async 
   expect(signOut.status()).toBe(200)
   await page.goto("/sign-in")
   await cdp.send("WebAuthn.setUserVerified", {
-    authenticatorId,
+    authenticatorId: backupAuthenticatorId,
     isUserVerified: false,
   })
   await page.getByRole("button", { name: "Sign in with a passkey" }).click()
@@ -240,16 +286,10 @@ test("a verified resident passkey can be added and used to sign back in", async 
   expect((await page.request.get("/api/v1/me")).status()).toBe(401)
 
   await cdp.send("WebAuthn.setUserVerified", {
-    authenticatorId,
+    authenticatorId: backupAuthenticatorId,
     isUserVerified: true,
   })
   await page.getByRole("button", { name: "Sign in with a passkey" }).click()
   await expect(page).toHaveURL(/\/$/)
   expect((await page.request.get("/api/v1/me")).status()).toBe(200)
-  await page.goto("/account")
-  await page
-    .getByRole("button", { name: "Remove passkey Test device" })
-    .click()
-  await expect(page.getByText("Passkey removed.")).toBeVisible()
-  await expect(page.getByText("No passkeys added yet.")).toBeVisible()
 })

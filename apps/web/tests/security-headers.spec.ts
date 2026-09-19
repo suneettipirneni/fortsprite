@@ -15,7 +15,7 @@ test("browser loads public pages under the security policy and rejects oversized
   expect(response?.headers()["x-frame-options"]).toBe("DENY")
   expect(response?.headers()["x-content-type-options"]).toBe("nosniff")
   await expect(
-    page.getByRole("button", { name: /Continue with Google/ }),
+    page.getByRole("button", { name: /Create account with a passkey/ }),
   ).toBeVisible()
   await page.goto("/privacy")
   await expect(

@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm"
 
 const { app } = await import("../src/app.js")
 const { db, pool } = await import("../src/db/client.js")
-const { user, session, account } = await import("../src/db/auth-schema.js")
+const { user, session, passkey } = await import("../src/db/auth-schema.js")
 const { sprites, collectionEntries } = await import("../src/db/schema.js")
 const userId = randomUUID()
 const otherId = randomUUID()
@@ -43,13 +43,6 @@ before(async () => {
     userId,
     expiresAt: new Date(Date.now() + 3_600_000),
     updatedAt: new Date(),
-  })
-  await db.insert(account).values({
-    id: randomUUID(),
-    userId,
-    accountId: randomUUID().replaceAll("-", ""),
-    providerId: "google",
-    scope: "openid,email,profile",
   })
   await db.insert(sprites).values({
     id: spriteId,
@@ -225,7 +218,7 @@ test("parallel desired-state writes preserve one valid row", async () => {
   assert.ok(entry.owned || !entry.mastered)
 })
 
-test("browser auth responses hide provider identity and token operations", async () => {
+test("browser auth responses hide internal identity and session fields", async () => {
   const response = await app.request("/api/auth/get-session", { headers })
   assert.equal(response.status, 200)
   const body = await response.json()
@@ -251,86 +244,61 @@ test("browser auth responses hide provider identity and token operations", async
   }
 })
 
-test("only configured social providers can start native Better Auth flows", async () => {
-  for (const [provider, host] of [
-    ["google", "accounts.google.com"],
-    ["apple", "appleid.apple.com"],
-  ] as const) {
-    const response = await app.request("/api/auth/sign-in/social", {
-      method: "POST",
-      headers: {
-        origin: "http://localhost:3000",
-        "content-type": "application/json",
-        "x-real-ip": `198.18.0.${provider === "google" ? "10" : "11"}`,
-      },
-      body: JSON.stringify({ provider, callbackURL: "/collection" }),
-    })
-    assert.equal(response.status, 200)
-    const authorization = new URL((await response.json()).url)
-    assert.equal(authorization.hostname, host)
-    assert.equal(authorization.searchParams.get("state")?.length! > 20, true)
-  }
-  assert.equal(
-    (
-      await app.request("/api/auth/sign-in/oauth2", {
-        method: "POST",
-        headers: {
-          origin: "http://localhost:3000",
-          "content-type": "application/json",
-        },
-        body: "{}",
-      })
-    ).status,
-    404,
-  )
+test("social, password, and generic OAuth operations are unavailable", async () => {
+  for (const [path, method] of [
+    ["sign-in/social", "POST"],
+    ["callback/google", "GET"],
+    ["callback/apple", "POST"],
+    ["link-social", "POST"],
+    ["unlink-account", "POST"],
+    ["sign-in/oauth2", "POST"],
+  ] as const)
+    assert.equal(
+      (
+        await app.request(`/api/auth/${path}`, {
+          method,
+          headers,
+          body: method === "POST" ? "{}" : undefined,
+        })
+      ).status,
+      404,
+    )
 })
 
-test("invalid OAuth callback state cannot create an account or session", async () => {
-  const response = await app.request(
-    "/api/auth/callback/google?code=forged&state=forged",
-  )
-  assert.equal(response.status, 302)
-  assert.ok(response.headers.get("location")?.includes("error"))
-  assert.equal(response.headers.get("location")?.includes("code=forged"), false)
-})
+test("the final passkey cannot be removed", async () => {
+  const firstId = randomUUID()
+  const secondId = randomUUID()
+  const values = (id: string) => ({
+    id,
+    userId,
+    name: id === firstId ? "Primary" : "Backup",
+    publicKey: "dGVzdA==",
+    credentialID: randomUUID(),
+    counter: 0,
+    deviceType: "singleDevice",
+    backedUp: false,
+    transports: "internal",
+  })
+  await db.insert(passkey).values(values(firstId))
 
-test("recovery providers can be linked but the last social account cannot be unlinked", async () => {
-  const unlink = (providerId: "apple" | "google") =>
-    app.request("/api/auth/unlink-account", {
+  const remove = (id: string) =>
+    app.request("/api/auth/passkey/delete-passkey", {
       method: "POST",
       headers,
-      body: JSON.stringify({ providerId }),
+      body: JSON.stringify({ id }),
     })
-  assert.equal((await unlink("google")).status, 400)
-  assert.equal(
-    (await db.select().from(account).where(eq(account.userId, userId))).length,
-    1,
-  )
 
-  await db.insert(account).values({
-    id: randomUUID(),
-    userId,
-    accountId: randomUUID().replaceAll("-", ""),
-    providerId: "apple",
-    scope: "name,email",
-  })
-  assert.equal((await unlink("google")).status, 200)
+  const blocked = await remove(firstId)
+  assert.equal(blocked.status, 409)
+  assert.equal((await blocked.json()).error.code, "LAST_PASSKEY")
+
+  await db.insert(passkey).values(values(secondId))
+  assert.equal((await remove(firstId)).status, 200)
   const remaining = await db
-    .select({ providerId: account.providerId })
-    .from(account)
-    .where(eq(account.userId, userId))
-  assert.deepEqual(remaining, [{ providerId: "apple" }])
-
-  const link = await app.request("/api/auth/link-social", {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      provider: "google",
-      callbackURL: "/account",
-    }),
-  })
-  assert.equal(link.status, 200)
-  assert.equal(new URL((await link.json()).url).hostname, "accounts.google.com")
+    .select({ id: passkey.id })
+    .from(passkey)
+    .where(eq(passkey.userId, userId))
+  assert.deepEqual(remaining, [{ id: secondId }])
 })
 
 test("sign out revokes the actual session used by collection endpoints", async () => {

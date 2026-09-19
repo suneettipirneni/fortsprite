@@ -7,19 +7,19 @@ export const metadata: Metadata = { title: "Privacy Policy" }
 const sections = [
   {
     heading: "Account sign-in",
-    body: "You can create a FortSprite account with Apple or Google and add passkeys after signing in. FortSprite never receives your provider password. For passkeys, we store the public credential and related device metadata needed to verify sign-in, never a private key.",
+    body: "You create and access a FortSprite account with passkeys. FortSprite stores the public credential and related device metadata needed to verify sign-in, never the private key, biometric, or device PIN.",
   },
   {
     heading: "Collection and friendship data",
     body: "FortSprite stores Sprite ownership, mastery, profile settings, friend requests, blocks, and collection-sharing choices. Friends connect using exact FortSprite handles, and both people must accept before either collection is shared. Collection entries are self-reported.",
   },
   {
-    heading: "Provider tokens and security",
-    body: "Authentication tokens are handled by the server-side authentication system and are not exposed through collection or friendship APIs. We retain security logs only as needed to protect accounts and diagnose failures.",
+    heading: "Authentication and security",
+    body: "Authentication sessions are handled by the server-side authentication system and are not exposed through collection or friendship APIs. We retain security logs only as needed to protect accounts and diagnose failures.",
   },
   {
     heading: "Your choices",
-    body: "You can update your profile, collection, linked providers, and passkeys at any time. Account deletion removes or irreversibly anonymizes FortSprite data according to the documented retention process; it does not delete your Apple, Google, or Fortnite accounts.",
+    body: "You can update your profile, collection, and passkeys at any time. Account deletion removes or irreversibly anonymizes FortSprite data according to the documented retention process; it does not delete or alter your Fortnite account.",
   },
 ]
 

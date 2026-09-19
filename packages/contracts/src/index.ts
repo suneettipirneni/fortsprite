@@ -17,21 +17,14 @@ export interface ViewerResponse {
   viewer: Viewer
 }
 
-export type CredentialSummary =
-  | {
-      id: string
-      kind: "social"
-      provider: "apple" | "google"
-      createdAt: string
-    }
-  | {
-      id: string
-      kind: "passkey"
-      name: string | null
-      deviceType: string
-      backedUp: boolean
-      createdAt: string | null
-    }
+export type CredentialSummary = {
+  id: string
+  kind: "passkey"
+  name: string | null
+  deviceType: string
+  backedUp: boolean
+  createdAt: string | null
+}
 
 export interface CredentialsResponse {
   credentials: CredentialSummary[]

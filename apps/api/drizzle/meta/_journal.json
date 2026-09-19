@@ -57,6 +57,13 @@
       "when": 1789774810870,
       "tag": "0007_glorious_radioactive_man",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789786800000,
+      "tag": "0008_protect_last_passkey",
+      "breakpoints": true
     }
   ]
 }

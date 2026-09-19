@@ -4,8 +4,7 @@ import { chmod, readFile, unlink, writeFile } from "node:fs/promises"
 import { eq, inArray } from "drizzle-orm"
 
 const { db, pool } = await import("../src/db/client.ts")
-const { user, session, account, rateLimit } =
-  await import("../src/db/auth-schema.ts")
+const { user, session, rateLimit } = await import("../src/db/auth-schema.ts")
 const { sprites, collectionEntries } = await import("../src/db/schema.ts")
 const { importCatalogSnapshot } = await import("../src/catalog.ts")
 const { userRateLimitKeys } = await import("../src/rate-limit.ts")
@@ -95,8 +94,6 @@ try {
             userId,
             displayName:
               index === 0 ? "Browser collector" : "Browser squadmate",
-            providerDisplayName:
-              index === 0 ? "Google Collector" : "Google Squadmate",
             handle: `browser_${randomUUID().slice(0, 8)}`,
             tokens,
             cookies,
@@ -109,19 +106,10 @@ try {
         .insert(user)
         .values({
           id: actor.userId,
-          name: actor.providerDisplayName,
+          name: actor.displayName,
           appDisplayName: actor.displayName,
           email: `${actor.userId}@test.invalid`,
           handle: actor.handle,
-        })
-      await db
-        .insert(account)
-        .values({
-          id: randomUUID(),
-          userId: actor.userId,
-          accountId: `google-${actor.userId}`,
-          providerId: "google",
-          scope: "openid,email,profile",
         })
       await db.insert(session).values(
         Object.values(actor.tokens).map((token) => ({

@@ -12,17 +12,14 @@ after(async () => {
   await pool.end()
 })
 
-test("social sign-in rate limit is enforced by Better Auth with a retry header", async () => {
+test("passkey registration rate limit is enforced with a retry header", async () => {
   let last: Response | undefined
   for (let i = 0; i < 11; i++) {
-    last = await app.request("/api/auth/sign-in/social", {
-      method: "POST",
+    last = await app.request("/api/auth/passkey/generate-register-options", {
       headers: {
         origin: "http://localhost:3000",
         "x-real-ip": ip,
-        "content-type": "application/json",
       },
-      body: JSON.stringify({ provider: "google" }),
     })
   }
   assert.equal(last?.status, 429)

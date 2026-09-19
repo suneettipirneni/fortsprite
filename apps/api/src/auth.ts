@@ -3,7 +3,6 @@ import { passkey } from "@better-auth/passkey"
 import { betterAuth } from "better-auth"
 import { APIError } from "better-auth/api"
 
-import { createAppleClientSecret } from "./apple-client-secret.ts"
 import { databaseSchema, db } from "./db/client.ts"
 import { env } from "./env.ts"
 
@@ -39,7 +38,8 @@ export const auth = betterAuth({
     window: 60,
     max: 100,
     customRules: {
-      "/sign-in/social": { window: 60, max: 10 },
+      "/passkey/generate-register-options": { window: 60, max: 10 },
+      "/passkey/verify-registration": { window: 60, max: 10 },
       "/passkey/generate-authenticate-options": { window: 60, max: 20 },
       "/passkey/verify-authentication": { window: 60, max: 20 },
       "/get-session": false,
@@ -48,22 +48,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: false,
   },
-  trustedOrigins: [env.webOrigin, "https://appleid.apple.com"],
-  socialProviders: {
-    google: {
-      clientId: env.googleClientId,
-      clientSecret: env.googleClientSecret,
-    },
-    apple: async () => ({
-      clientId: env.appleClientId,
-      clientSecret: await createAppleClientSecret({
-        clientId: env.appleClientId,
-        teamId: env.appleTeamId,
-        keyId: env.appleKeyId,
-        privateKey: env.applePrivateKey,
-      }),
-    }),
-  },
+  trustedOrigins: [env.webOrigin],
   user: {
     deleteUser: { enabled: true },
     additionalFields: {
@@ -79,16 +64,6 @@ export const auth = betterAuth({
         required: false,
         input: false,
       },
-    },
-  },
-  account: {
-    encryptOAuthTokens: true,
-    accountLinking: {
-      enabled: true,
-      disableImplicitLinking: true,
-      allowDifferentEmails: true,
-      allowUnlinkingAll: false,
-      updateUserInfoOnLink: false,
     },
   },
   advanced: {
@@ -109,9 +84,28 @@ export const auth = betterAuth({
         userVerification: "required",
       },
       registration: {
-        requireSession: true,
-        afterVerification: ({ verification }) => {
+        requireSession: false,
+        resolveUser: () => {
+          const id = crypto.randomUUID()
+          return { id, name: "FortSprite collector" }
+        },
+        afterVerification: async ({ ctx, verification, user }) => {
           requireVerifiedUser(verification.registrationInfo?.userVerified)
+
+          const existingUser = await ctx.context.internalAdapter.findUserById(
+            user.id,
+          )
+          if (!existingUser)
+            await ctx.context.internalAdapter.createUser(
+              {
+                id: user.id,
+                name: user.name,
+                email: `${user.id}@passkey.fortsprite.invalid`,
+                emailVerified: false,
+                handle: createInitialHandle(),
+              },
+              { method: "passkey" },
+            )
         },
       },
       authentication: {

@@ -29,14 +29,14 @@ export default function SignInPage({
           </Link>
           <div className="flex flex-col gap-3">
             <Badge variant="secondary" className="w-fit">
-              Your account, your choice
+              Passkeys only
             </Badge>
             <h1 className="text-balance text-3xl font-semibold tracking-tight">
               Keep your squad in sync.
             </h1>
             <p className="text-pretty text-base text-muted-foreground sm:text-sm">
-              Create a FortSprite account with Apple or Google, then add a
-              passkey for fast, phishing-resistant sign-in.
+              Create an account or sign in with a passkey. There are no
+              passwords and no social-provider accounts to connect.
             </p>
           </div>
           <Suspense fallback={null}>
@@ -51,8 +51,8 @@ export default function SignInPage({
             <div className="flex items-start gap-3">
               <ShieldCheckIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
               <p>
-                Apple and Google only establish your FortSprite identity. Your
-                provider password is never shared with FortSprite.
+                Your fingerprint, face scan, or device PIN stays with your
+                device. FortSprite never receives it.
               </p>
             </div>
             <div className="flex items-start gap-3">
@@ -63,6 +63,10 @@ export default function SignInPage({
                 it.
               </p>
             </div>
+            <p>
+              Add a second passkey after signing up. Without one, losing your
+              only passkey means losing access to the account.
+            </p>
           </div>
           <p className="text-pretty text-xs leading-5 text-muted-foreground">
             By continuing, you agree to the <Link href="/terms">Terms</Link> and

@@ -4,7 +4,7 @@
 
 A friend-first Fortnite Sprite collection tracker.
 
-Production: [fortsprite.net](https://fortsprite.net). See [deployment setup](docs/vercel.md) for the Apple, Google, and passkey configuration.
+Production: [fortsprite.net](https://fortsprite.net). See [deployment setup](docs/vercel.md) for passkey configuration.
 
 ## Workspace
 
@@ -26,7 +26,7 @@ pnpm install
 cp apps/web/.env.example apps/web/.env
 ```
 
-Fill in the database, Google OAuth, Apple Sign in, and passkey settings. `BETTER_AUTH_URL`, `WEB_ORIGIN`, and `PASSKEY_ORIGIN` are `http://localhost:3000` for local development, with `PASSKEY_RP_ID=localhost`. Register `/api/auth/callback/google` and `/api/auth/callback/apple` as the provider callback paths. Apple requires a Services ID, Team ID, Key ID, and PKCS8 private key. Use an HTTPS development origin when exercising Apple end to end.
+Fill in the database, Better Auth, and passkey settings. `BETTER_AUTH_URL`, `WEB_ORIGIN`, and `PASSKEY_ORIGIN` are `http://localhost:3000` for local development, with `PASSKEY_RP_ID=localhost`.
 
 Migration and import commands run in the API package. Supply those commands with the same server environment or copy the local settings to `apps/api/.env`.
 
@@ -40,7 +40,7 @@ Open `http://localhost:3000`. Check `http://localhost:3000/api/v1/health` if the
 
 Collection ownership and mastery are stored in PostgreSQL. Missing items cannot remain mastered. Friend availability derives from ownership and mutually accepted FortSprite sharing, with no per-item opt-in. The collection page and dashboard read saved counts.
 
-Friends connect through exact FortSprite handles, can accept collection sharing, compare both directions, and block or remove sharing. Account settings support profile editing, linked Apple and Google methods, passkeys, and confirmed deletion after a recent sign-in. A social provider remains connected as a recovery anchor, so passkey-only accounts are not created.
+Friends connect through exact FortSprite handles, can accept collection sharing, compare both directions, and block or remove sharing. Accounts are created and accessed with passkeys only. Account settings support profile editing, additional passkeys, and confirmed deletion after a recent sign-in. The final passkey cannot be removed without deleting the account.
 
 ## Verify changes
 
@@ -57,7 +57,7 @@ DATABASE_URL="$TEST_DATABASE_URL" pnpm --filter @fortsprite/api db:migrate
 TEST_DATABASE_URL="$TEST_DATABASE_URL" pnpm test
 ```
 
-The automated suite verifies provider flow initialization, local account behavior, and WebAuthn with a virtual authenticator. Real Apple and Google callbacks still require verification with registered provider credentials on the deployed origin.
+The automated suite verifies passkey-first account creation, local account behavior, and WebAuthn with a virtual authenticator. Platform passkeys still require verification on the deployed origin and supported production browsers.
 
 ## Catalog
 

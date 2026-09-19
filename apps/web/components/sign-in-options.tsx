@@ -5,8 +5,6 @@ import { FingerprintIcon, LoaderCircleIcon } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import { authClient } from "@/lib/auth-client"
 
-type Provider = "apple" | "google"
-
 function callbackUrl() {
   const requested = new URLSearchParams(window.location.search).get(
     "callbackUrl",
@@ -21,22 +19,24 @@ function callbackUrl() {
 }
 
 export function SignInOptions() {
-  const [pending, setPending] = useState<Provider | "passkey" | null>(null)
+  const [pending, setPending] = useState<"register" | "sign-in" | null>(null)
   const [error, setError] = useState<string>()
 
-  async function signInWith(provider: Provider) {
+  async function createAccount() {
     setError(undefined)
-    setPending(provider)
+    setPending("register")
     try {
-      const result = await authClient.signIn.social({
-        provider,
-        callbackURL: callbackUrl(),
-        errorCallbackURL: `${window.location.origin}/sign-in?error=auth`,
+      const result = await authClient.passkey.addPasskey({
+        name: "Primary passkey",
+        createSession: true,
       })
-      if (result.error)
-        setError(`${provider === "apple" ? "Apple" : "Google"} sign-in could not be started.`)
+      if (result.error) {
+        setError("Your passkey could not be created. Please try again.")
+        return
+      }
+      window.location.assign(callbackUrl())
     } catch {
-      setError("Sign-in could not be started. Please try again.")
+      setError("Your passkey could not be created. Please try again.")
     } finally {
       setPending(null)
     }
@@ -44,7 +44,7 @@ export function SignInOptions() {
 
   async function signInWithPasskey() {
     setError(undefined)
-    setPending("passkey")
+    setPending("sign-in")
     try {
       const result = await authClient.signIn.passkey()
       if (result.error) {
@@ -63,20 +63,15 @@ export function SignInOptions() {
     <div className="flex flex-col gap-3">
       <Button
         size="lg"
-        onClick={() => signInWith("apple")}
+        onClick={createAccount}
         disabled={pending !== null}
       >
-        {pending === "apple" ? <LoaderCircleIcon className="animate-spin" /> : null}
-        Continue with Apple
-      </Button>
-      <Button
-        size="lg"
-        variant="outline"
-        onClick={() => signInWith("google")}
-        disabled={pending !== null}
-      >
-        {pending === "google" ? <LoaderCircleIcon className="animate-spin" /> : null}
-        Continue with Google
+        {pending === "register" ? (
+          <LoaderCircleIcon className="animate-spin" />
+        ) : (
+          <FingerprintIcon />
+        )}
+        Create account with a passkey
       </Button>
       <Button
         size="lg"
@@ -84,7 +79,7 @@ export function SignInOptions() {
         onClick={signInWithPasskey}
         disabled={pending !== null}
       >
-        {pending === "passkey" ? (
+        {pending === "sign-in" ? (
           <LoaderCircleIcon className="animate-spin" />
         ) : (
           <FingerprintIcon />

@@ -149,10 +149,10 @@ test("payload limits inspect streamed bodies and protect API and auth routes", a
     assert.equal(response.status, 413)
     assert.equal((await response.json()).error.code, "PAYLOAD_TOO_LARGE")
   }
-  const authResponse = await app.request("/api/auth/sign-in/social", {
+  const authResponse = await app.request("/api/auth/passkey/verify-registration", {
     method: "POST",
     headers,
-    body: " ".repeat(33_000) + JSON.stringify({ provider: "google" }),
+    body: " ".repeat(33_000) + JSON.stringify({ response: {} }),
   })
   assert.equal(authResponse.status, 413)
 })

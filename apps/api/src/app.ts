@@ -2,10 +2,11 @@ import { limitBody } from "./body-limit.ts"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { requestId } from "hono/request-id"
-import { sql } from "drizzle-orm"
+import { count, eq, sql } from "drizzle-orm"
 
 import { auth } from "./auth.ts"
 import { db } from "./db/client.ts"
+import { passkey } from "./db/auth-schema.ts"
 import { env } from "./env.ts"
 import { collectionRoutes } from "./collection-routes.ts"
 import { friendRoutes } from "./friend-routes.ts"
@@ -59,14 +60,8 @@ app.use(
 app.on(["GET", "POST"], "/api/auth/*", async (context) => {
   const path = context.req.path.slice("/api/auth".length)
   const allowed = new Map([
-    ["/sign-in/social", ["POST"]],
-    ["/callback/google", ["GET"]],
-    ["/callback/apple", ["GET", "POST"]],
     ["/get-session", ["GET"]],
     ["/sign-out", ["POST"]],
-    ["/error", ["GET"]],
-    ["/link-social", ["POST"]],
-    ["/unlink-account", ["POST"]],
     ["/passkey/generate-register-options", ["GET"]],
     ["/passkey/verify-registration", ["POST"]],
     ["/passkey/generate-authenticate-options", ["GET"]],
@@ -85,24 +80,28 @@ app.on(["GET", "POST"], "/api/auth/*", async (context) => {
       404,
     )
   }
-  if (path === "/error")
-    return context.redirect(`${env.webOrigin}/sign-in?error=auth`)
-  let response: Response
-  try {
-    response = await auth.handler(context.req.raw)
-  } catch (error) {
-    if (path.startsWith("/callback/"))
-      return context.redirect(`${env.webOrigin}/sign-in?error=auth`)
-    throw error
+
+  if (path === "/passkey/delete-passkey") {
+    const session = await auth.api.getSession({ headers: context.req.raw.headers })
+    if (session) {
+      const [{ value }] = await db
+        .select({ value: count() })
+        .from(passkey)
+        .where(eq(passkey.userId, session.user.id))
+      if (value <= 1)
+        return context.json(
+          {
+            error: {
+              code: "LAST_PASSKEY",
+              message: "Add another passkey before removing this one.",
+            },
+          },
+          409,
+        )
+    }
   }
-  if (path.startsWith("/callback/") && response.status >= 400) {
-    const headers = new Headers({
-      location: `${env.webOrigin}/sign-in?error=auth`,
-    })
-    for (const cookie of response.headers.getSetCookie())
-      headers.append("set-cookie", cookie)
-    return new Response(null, { status: 302, headers })
-  }
+
+  const response = await auth.handler(context.req.raw)
   if (path !== "/get-session" || !response.ok) return response
   const body = await response.json()
   if (!body) return Response.json(null, { headers: response.headers })

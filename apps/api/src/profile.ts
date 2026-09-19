@@ -1,8 +1,8 @@
-import { and, asc, eq, inArray } from "drizzle-orm"
+import { asc, eq } from "drizzle-orm"
 import type { CredentialSummary, Viewer } from "@workspace/contracts"
 import { z } from "zod"
 import { db } from "./db/client.ts"
-import { account, passkey, user } from "./db/auth-schema.ts"
+import { passkey, user } from "./db/auth-schema.ts"
 
 function initials(displayName: string) {
   return (
@@ -39,53 +39,27 @@ export async function readCredentials(
   userId: string,
   database = db,
 ): Promise<CredentialSummary[]> {
-  const [socialAccounts, passkeys] = await Promise.all([
-    database
-      .select({
-        id: account.id,
-        provider: account.providerId,
-        createdAt: account.createdAt,
-      })
-      .from(account)
-      .where(
-        and(
-          eq(account.userId, userId),
-          inArray(account.providerId, ["apple", "google"]),
-        ),
-      )
-      .orderBy(asc(account.createdAt)),
-    database
-      .select({
-        id: passkey.id,
-        name: passkey.name,
-        deviceType: passkey.deviceType,
-        backedUp: passkey.backedUp,
-        createdAt: passkey.createdAt,
-      })
-      .from(passkey)
-      .where(eq(passkey.userId, userId))
-      .orderBy(asc(passkey.createdAt)),
-  ])
-  return [
-    ...socialAccounts.map(
-      (credential): CredentialSummary => ({
-        id: credential.id,
-        kind: "social",
-        provider: credential.provider as "apple" | "google",
-        createdAt: credential.createdAt.toISOString(),
-      }),
-    ),
-    ...passkeys.map(
-      (credential): CredentialSummary => ({
-        id: credential.id,
-        kind: "passkey",
-        name: credential.name,
-        deviceType: credential.deviceType,
-        backedUp: credential.backedUp,
-        createdAt: credential.createdAt?.toISOString() ?? null,
-      }),
-    ),
-  ]
+  const passkeys = await database
+    .select({
+      id: passkey.id,
+      name: passkey.name,
+      deviceType: passkey.deviceType,
+      backedUp: passkey.backedUp,
+      createdAt: passkey.createdAt,
+    })
+    .from(passkey)
+    .where(eq(passkey.userId, userId))
+    .orderBy(asc(passkey.createdAt))
+  return passkeys.map(
+    (credential): CredentialSummary => ({
+      id: credential.id,
+      kind: "passkey",
+      name: credential.name,
+      deviceType: credential.deviceType,
+      backedUp: credential.backedUp,
+      createdAt: credential.createdAt?.toISOString() ?? null,
+    }),
+  )
 }
 
 const displayName = z

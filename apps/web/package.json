@@ -14,11 +14,12 @@
     "test": "tsx --test tests/*.test.ts"
   },
   "dependencies": {
-    "@better-auth/passkey": "1.6.26",
+    "@better-auth/passkey": "1.7.5",
+    "@better-auth/utils": "0.4.2",
     "@fortsprite/api": "workspace:*",
     "@workspace/contracts": "workspace:*",
     "@workspace/ui": "workspace:*",
-    "better-auth": "^1.6.26",
+    "better-auth": "^1.7.5",
     "hono": "^4.13.7",
     "lucide-react": "^1.31.0",
     "next": "16.3.5",

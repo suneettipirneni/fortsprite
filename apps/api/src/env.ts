@@ -14,12 +14,6 @@ const requiredNames = [
   "BETTER_AUTH_SECRET",
   "BETTER_AUTH_URL",
   "WEB_ORIGIN",
-  "GOOGLE_CLIENT_ID",
-  "GOOGLE_CLIENT_SECRET",
-  "APPLE_CLIENT_ID",
-  "APPLE_TEAM_ID",
-  "APPLE_KEY_ID",
-  "APPLE_PRIVATE_KEY",
   "PASSKEY_RP_ID",
   "PASSKEY_ORIGIN",
 ] as const
@@ -109,22 +103,12 @@ if (
 )
   throw new Error("PASSKEY_RP_ID must be the PASSKEY_ORIGIN host or its parent domain")
 
-const applePrivateKey = required("APPLE_PRIVATE_KEY").replaceAll("\\n", "\n")
-if (!applePrivateKey.includes("-----BEGIN PRIVATE KEY-----"))
-  throw new Error("APPLE_PRIVATE_KEY must be a PKCS8 private key")
-
 export const env = {
   databaseUrl: requiredUrl("DATABASE_URL", ["postgresql:", "postgres:"]),
   betterAuthSecret,
   betterAuthUrl,
   webOrigin,
   betterAuthCookieDomain: process.env.BETTER_AUTH_COOKIE_DOMAIN?.trim(),
-  googleClientId: required("GOOGLE_CLIENT_ID"),
-  googleClientSecret: required("GOOGLE_CLIENT_SECRET"),
-  appleClientId: required("APPLE_CLIENT_ID"),
-  appleTeamId: required("APPLE_TEAM_ID"),
-  appleKeyId: required("APPLE_KEY_ID"),
-  applePrivateKey,
   passkeyRpId,
   passkeyOrigin,
 } as const

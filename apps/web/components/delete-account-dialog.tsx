@@ -56,8 +56,8 @@ export function DeleteAccountDialog({ handle }: { handle: string }) {
       </h2>
       <p className="max-w-2xl text-sm text-muted-foreground">
         Permanently delete your FortSprite profile, collection, sharing
-        relationships, passkeys, linked sign-in methods, and sessions. Your
-        Apple, Google, and Fortnite accounts remain unchanged.
+        relationships, passkeys, and sessions. Your Fortnite account remains
+        unchanged.
       </p>
       <AlertDialog
         open={open}
@@ -78,8 +78,7 @@ export function DeleteAccountDialog({ handle }: { handle: string }) {
             <AlertDialogTitle>Delete your FortSprite account?</AlertDialogTitle>
             <AlertDialogDescription>
               This permanently removes your FortSprite data and cannot be
-              undone. It does not delete or change your Apple, Google, or
-              Fortnite accounts.
+              undone. It does not delete or change your Fortnite account.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Field>

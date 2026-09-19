@@ -8,8 +8,6 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { authClient } from "@/lib/auth-client"
 
-type Provider = "apple" | "google"
-
 export function CredentialManager({
   credentials,
 }: {
@@ -22,12 +20,7 @@ export function CredentialManager({
     message: string
     error: boolean
   } | null>(null)
-  const social = credentials.filter(
-    (credential) => credential.kind === "social",
-  )
-  const passkeys = credentials.filter(
-    (credential) => credential.kind === "passkey",
-  )
+  const passkeys = credentials
 
   function finish(message: string) {
     setNotice({ message, error: false })
@@ -73,35 +66,6 @@ export function CredentialManager({
     }
   }
 
-  async function link(provider: Provider) {
-    setNotice(null)
-    setPending(provider)
-    try {
-      const result = await authClient.linkSocial({
-        provider,
-        callbackURL: `${window.location.origin}/account`,
-      })
-      if (result.error) fail("That sign-in method could not be linked.")
-    } catch {
-      fail("That sign-in method could not be linked.")
-    }
-  }
-
-  async function unlink(providerId: Provider) {
-    setNotice(null)
-    setPending(providerId)
-    try {
-      const result = await authClient.unlinkAccount({ providerId })
-      if (result.error) {
-        fail("That sign-in method could not be removed.")
-        return
-      }
-      finish("Sign-in method removed.")
-    } catch {
-      fail("That sign-in method could not be removed.")
-    }
-  }
-
   return (
     <section aria-labelledby="sign-in-methods" className="space-y-5 border-t border-border pt-6">
       <div>
@@ -109,46 +73,9 @@ export function CredentialManager({
           Sign-in methods
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Keep at least one Apple or Google account as a recovery method. Add
-          passkeys for everyday sign-in.
+          FortSprite uses passkeys only. Add a second passkey on another device
+          or password manager so you can still sign in if one is lost.
         </p>
-      </div>
-      <div className="divide-y divide-border rounded-xl border border-border">
-        {(["apple", "google"] as const).map((provider) => {
-          const credential = social.find(
-            (item) => item.kind === "social" && item.provider === provider,
-          )
-          const label = provider === "apple" ? "Apple" : "Google"
-          return (
-            <div key={provider} className="flex items-center justify-between gap-4 p-4">
-              <div>
-                <p className="font-medium">{label}</p>
-                <p className="text-sm text-muted-foreground">
-                  {credential ? "Connected" : "Not connected"}
-                </p>
-              </div>
-              {credential ? (
-                <Button
-                  variant="outline"
-                  disabled={pending !== null || social.length === 1}
-                  onClick={() => unlink(provider)}
-                >
-                  {pending === provider ? <LoaderCircleIcon className="animate-spin" /> : null}
-                  Remove
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  disabled={pending !== null}
-                  onClick={() => link(provider)}
-                >
-                  {pending === provider ? <LoaderCircleIcon className="animate-spin" /> : null}
-                  Connect
-                </Button>
-              )}
-            </div>
-          )
-        })}
       </div>
       <div className="space-y-3">
         <h3 className="font-medium">Passkeys</h3>
@@ -169,7 +96,7 @@ export function CredentialManager({
                 </div>
                 <Button
                   variant="outline"
-                  disabled={pending !== null}
+                  disabled={pending !== null || passkeys.length === 1}
                   aria-label={`Remove passkey ${credential.name || "Passkey"}`}
                   onClick={() => removePasskey(credential.id)}
                 >
@@ -201,6 +128,10 @@ export function CredentialManager({
           {notice.message}
         </p>
       ) : null}
+      <p className="text-xs leading-5 text-muted-foreground">
+        FortSprite cannot recover your account if every passkey is lost. The
+        final passkey can only be removed by deleting the account.
+      </p>
     </section>
   )
 }
