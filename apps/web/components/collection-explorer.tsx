@@ -60,16 +60,31 @@ const gridSizeOptions = [
   { value: "large", label: "Large grid", icon: SquareIcon },
 ] as const
 
-const verifiedDateFormatter = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "medium",
-  timeZone: "UTC",
-})
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const
 
-const updatedDateFormatter = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "medium",
-  timeStyle: "short",
-  timeZone: "UTC",
-})
+function formatUtcDate(date: Date) {
+  return `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
+}
+
+function formatUtcDateTime(date: Date) {
+  const hours = date.getUTCHours()
+  const displayHours = hours % 12 || 12
+  const minutes = String(date.getUTCMinutes()).padStart(2, "0")
+  return `${formatUtcDate(date)}, ${displayHours}:${minutes} ${hours < 12 ? "AM" : "PM"}`
+}
 
 export function CollectionExplorer({
   initialCollection,
@@ -332,7 +347,7 @@ export function CollectionExplorer({
         ) : null}
         <p className="text-xs text-muted-foreground">
           {updatedAt
-            ? `Collection updated ${updatedDateFormatter.format(new Date(updatedAt))}.`
+            ? `Collection updated ${formatUtcDateTime(new Date(updatedAt))}.`
             : "No collection changes saved yet."}
         </p>
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -431,7 +446,7 @@ export function CollectionExplorer({
         {sprites.length > 0 ? (
           <p className="border-t border-white/10 pt-4 text-xs text-muted-foreground">
             Catalog source checked{" "}
-            {verifiedDateFormatter.format(
+            {formatUtcDate(
               new Date(
                 sprites.reduce(
                   (latest, sprite) =>

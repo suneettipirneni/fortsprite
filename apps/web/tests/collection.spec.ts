@@ -67,7 +67,7 @@ test.beforeEach(async ({ page }, testInfo) => {
     ),
   ) as BrowserFixture
   await page.context().addCookies([
-    fixture.cookies[testInfo.project.name as "desktop" | "mobile"],
+    fixture.cookies[testInfo.project.name === "desktop" ? "desktop" : "mobile"],
   ])
   errors = []
   serverErrors = []
@@ -96,6 +96,10 @@ test.beforeEach(async ({ page }, testInfo) => {
   await expect(
     page.getByRole("heading", { name: "Sprite locker" }),
   ).toBeVisible()
+  await expect(page.getByTestId("virtualized-sprite-grid")).toHaveAttribute(
+    "data-hydrated",
+    "true",
+  )
 })
 
 test.afterEach(async () => {
@@ -139,6 +143,40 @@ test("meaningful collection renders without overflow or serious accessibility fa
   ).toEqual([])
   await page.screenshot({
     path: `/tmp/fortsprite-${testInfo.project.name}-collection.png`,
+    fullPage: false,
+  })
+})
+
+test("virtualized collection renders the final Sprite after a full-page scroll", async ({
+  page,
+}, testInfo) => {
+  const collection = await snapshot(page)
+  const last = collection.items
+    .toSorted((a, b) => a.displayOrder - b.displayOrder)
+    .at(-1)!
+  const virtualGrid = page.getByTestId("virtualized-sprite-grid")
+  const initialIds = await page.locator("article[data-sprite-id]").evaluateAll(
+    (articles) => articles.map((article) => article.getAttribute("data-sprite-id")),
+  )
+
+  await virtualGrid.evaluate((element) => {
+    const bounds = element.getBoundingClientRect()
+    window.scrollTo(0, window.scrollY + bounds.bottom - window.innerHeight / 2)
+  })
+
+  const finalTile = page.locator(`article[data-sprite-id="${last.id}"]`)
+  await expect(finalTile).toBeAttached()
+  await expect(finalTile).toBeVisible()
+  expect(
+    await page.locator("article[data-sprite-id]").evaluateAll(
+      (articles) => articles.map((article) => article.getAttribute("data-sprite-id")),
+    ),
+  ).not.toEqual(initialIds)
+  expect(await page.locator("article[data-sprite-id]").count()).toBeLessThan(
+    collection.items.length,
+  )
+  await page.screenshot({
+    path: `/tmp/fortsprite-${testInfo.project.name}-collection-bottom.png`,
     fullPage: false,
   })
 })
@@ -258,11 +296,14 @@ test("details support keyboard focus and modal removal restores the active filte
     await page.getByRole("heading", { name: "Sprite locker" }).hover()
   }
   await details(page).focus()
-  await expect(
-    page.getByText("No accepted friends have captured this Sprite yet", {
-      exact: true,
-    }),
-  ).toBeVisible()
+  await expect(details(page)).toBeFocused()
+  if (testInfo.project.name !== "mobile-webkit") {
+    await expect(
+      page.getByText("No accepted friends have captured this Sprite yet", {
+        exact: true,
+      }),
+    ).toBeVisible()
+  }
   await page.keyboard.press("Enter")
   await expect(page.getByRole("dialog")).toBeVisible()
   for (const { source, percent } of first.dropChances)

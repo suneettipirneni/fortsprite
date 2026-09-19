@@ -40,6 +40,8 @@ type VirtualizedSpriteGroupsProps = SpriteGridProps & {
 
 const GRID_GAP = 12
 const GROUP_GAP = 32
+const MOBILE_GRID_GAP = 8
+const MOBILE_GROUP_GAP = 20
 const subscribeToHydration = () => () => {}
 
 function useHydrated() {
@@ -125,6 +127,7 @@ function useVirtualContainerMeasurements() {
 function SpriteTiles({
   items,
   columns,
+  gap,
   view,
   pendingIds,
   availabilityKnown,
@@ -134,11 +137,15 @@ function SpriteTiles({
 }: Omit<SpriteGridProps, "gridSize"> & {
   items: Sprite[]
   columns: number
+  gap: number
 }) {
   return (
     <div
-      className="grid gap-3"
-      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      className="grid"
+      style={{
+        gap,
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+      }}
     >
       {items.map((sprite) => (
         <SpriteTile
@@ -162,9 +169,13 @@ export function VirtualizedSpriteGrid({
   gridSize,
   ...tileProps
 }: VirtualizedSpriteGridProps) {
+  "use no memo"
+
+  // React Compiler must not cache reads from TanStack Virtual's mutable instance.
   const hydrated = useHydrated()
   const { ref, width, scrollMargin } = useVirtualContainerMeasurements()
   const columns = columnsForWidth(width, view, gridSize)
+  const gap = width >= 640 ? GRID_GAP : MOBILE_GRID_GAP
   const rows = useMemo(() => {
     const nextRows: Sprite[][] = []
     for (let index = 0; index < items.length; index += columns) {
@@ -184,12 +195,11 @@ export function VirtualizedSpriteGrid({
     count: rows.length,
     enabled: hydrated,
     estimateSize,
-    gap: GRID_GAP,
+    gap,
     getItemKey,
     initialRect: { width: 0, height: 900 },
     overscan: 3,
     scrollMargin,
-    useFlushSync: false,
   })
   const virtualRows = virtualizer.getVirtualItems()
 
@@ -199,12 +209,14 @@ export function VirtualizedSpriteGrid({
       <div
         ref={ref}
         data-testid="virtualized-sprite-grid"
+        data-hydrated="false"
         data-total-items={items.length}
         data-rendered-items={initialItems.length}
       >
         <SpriteTiles
           items={initialItems}
           columns={columns}
+          gap={gap}
           view={view}
           {...tileProps}
         />
@@ -216,6 +228,7 @@ export function VirtualizedSpriteGrid({
     <div
       ref={ref}
       data-testid="virtualized-sprite-grid"
+      data-hydrated="true"
       data-total-items={items.length}
       data-rendered-items={virtualRows.reduce(
         (total, row) => total + (rows[row.index]?.length ?? 0),
@@ -243,6 +256,7 @@ export function VirtualizedSpriteGrid({
           <SpriteTiles
             items={rows[virtualRow.index] ?? []}
             columns={columns}
+            gap={gap}
             view={view}
             {...tileProps}
           />
@@ -258,9 +272,14 @@ export function VirtualizedSpriteGroups({
   gridSize,
   ...tileProps
 }: VirtualizedSpriteGroupsProps) {
+  "use no memo"
+
+  // React Compiler must not cache reads from TanStack Virtual's mutable instance.
   const hydrated = useHydrated()
   const { ref, width, scrollMargin } = useVirtualContainerMeasurements()
   const columns = columnsForWidth(width, view, gridSize)
+  const gridGap = width >= 640 ? GRID_GAP : MOBILE_GRID_GAP
+  const groupGap = width >= 640 ? GROUP_GAP : MOBILE_GROUP_GAP
   const getItemKey = useCallback(
     (index: number) => groups[index]?.[0] ?? index,
     [groups],
@@ -271,21 +290,20 @@ export function VirtualizedSpriteGroups({
       return (
         72 +
         Math.ceil(itemCount / columns) * estimatedRowHeight(view, gridSize) +
-        Math.max(0, Math.ceil(itemCount / columns) - 1) * GRID_GAP
+        Math.max(0, Math.ceil(itemCount / columns) - 1) * gridGap
       )
     },
-    [columns, gridSize, groups, view],
+    [columns, gridGap, gridSize, groups, view],
   )
   const virtualizer = useWindowVirtualizer({
     count: groups.length,
     enabled: hydrated,
     estimateSize,
-    gap: GROUP_GAP,
+    gap: groupGap,
     getItemKey,
     initialRect: { width: 0, height: 900 },
     overscan: 2,
     scrollMargin,
-    useFlushSync: false,
   })
   const virtualGroups = virtualizer.getVirtualItems()
 
@@ -295,10 +313,11 @@ export function VirtualizedSpriteGroups({
       <div
         ref={ref}
         data-testid="virtualized-sprite-groups"
+        data-hydrated="false"
         data-total-groups={groups.length}
         data-rendered-groups={groups.length > 0 ? 1 : 0}
       >
-        <section aria-label={baseName} className="space-y-4">
+        <section aria-label={baseName} className="space-y-3 sm:space-y-4">
           <div className="flex items-baseline justify-between gap-3 border-b border-white/15 pb-3">
             <h2 className="text-lg font-semibold">{baseName}</h2>
             <span className="text-xs text-muted-foreground">
@@ -308,6 +327,7 @@ export function VirtualizedSpriteGroups({
           <SpriteTiles
             items={items}
             columns={columns}
+            gap={gridGap}
             view={view}
             {...tileProps}
           />
@@ -320,6 +340,7 @@ export function VirtualizedSpriteGroups({
     <div
       ref={ref}
       data-testid="virtualized-sprite-groups"
+      data-hydrated="true"
       data-total-groups={groups.length}
       data-rendered-groups={virtualGroups.length}
       style={{
@@ -343,7 +364,7 @@ export function VirtualizedSpriteGroups({
               width: "100%",
             }}
           >
-            <section aria-label={baseName} className="space-y-4">
+            <section aria-label={baseName} className="space-y-3 sm:space-y-4">
               <div className="flex items-baseline justify-between gap-3 border-b border-white/15 pb-3">
                 <h2 className="text-lg font-semibold">{baseName}</h2>
                 <span className="text-xs text-muted-foreground">
@@ -353,6 +374,7 @@ export function VirtualizedSpriteGroups({
               <SpriteTiles
                 items={items}
                 columns={columns}
+                gap={gridGap}
                 view={view}
                 {...tileProps}
               />
