@@ -24,7 +24,7 @@ export function LegalPage({
 }) {
   return (
     <main className="isolate min-h-dvh bg-background">
-      <header className="border-b border-border">
+      <header className="border-b border-border pt-[env(safe-area-inset-top)]">
         <div className="mx-auto flex h-14 w-full max-w-4xl items-center justify-between px-4 sm:px-6">
           <Link
             href="/sign-in"

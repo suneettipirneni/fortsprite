@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 
 import { ThemeProvider } from "@workspace/ui/components/theme-provider"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
@@ -6,8 +6,11 @@ import "@workspace/ui/globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt"
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://fortsprite.net"),
+  applicationName: "FortSprite",
   title: {
     default: "FortSprite",
     template: "%s · FortSprite",
@@ -28,6 +31,20 @@ export const metadata: Metadata = {
       "Track your Fortnite Sprite collection and see which friends can help fill the gaps.",
     title: "FortSprite",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "FortSprite",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+}
+
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#061947",
+  viewportFit: "cover",
 }
 
 export default function RootLayout({
@@ -43,6 +60,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
           <TooltipProvider>{children}</TooltipProvider>
         </ThemeProvider>
+        <PwaInstallPrompt />
         <Analytics />
         <SpeedInsights />
       </body>

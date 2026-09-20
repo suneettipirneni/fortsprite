@@ -17,7 +17,7 @@ export default function SignInPage({
 }) {
   return (
     <main className="isolate grid min-h-dvh bg-background lg:grid-cols-2">
-      <section className="flex items-center justify-center p-6 sm:p-10">
+      <section className="flex items-center justify-center px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:p-10">
         <div className="flex w-full max-w-sm flex-col gap-8">
           <Link
             href="/"

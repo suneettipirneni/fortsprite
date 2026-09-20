@@ -223,7 +223,7 @@ export function AppShell({
 }) {
   return (
     <div className="locker-stage isolate min-h-dvh">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-background/75 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-background/75 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-[100rem] items-center gap-3 px-4 sm:px-6 lg:px-8">
           <MobileNavigation />
           <Brand />
