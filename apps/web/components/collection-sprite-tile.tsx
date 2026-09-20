@@ -110,7 +110,6 @@ export function SpriteTile({
                 className={cn("group w-full min-w-0 overflow-hidden text-left outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring", view === "list" ? "flex flex-1 items-center" : "block")}
               >
                 <SpritePortrait
-                  tone={sprite.tone}
                   variant={sprite.variant}
                   label={`${sprite.variant} ${sprite.baseName}`}
                   src={sprite.imagePath ?? undefined}
@@ -150,7 +149,6 @@ export function SpriteTile({
           >
             <div className="flex items-start gap-3">
               <SpritePortrait
-                tone={sprite.tone}
                 variant={sprite.variant}
                 label={`${sprite.variant} ${sprite.baseName}`}
                 src={sprite.imagePath ?? undefined}
@@ -271,7 +269,6 @@ export function SpriteTile({
 
         <div className="grid gap-4 sm:grid-cols-[9rem_1fr]">
           <SpritePortrait
-            tone={sprite.tone}
             variant={sprite.variant}
             label={`${sprite.variant} ${sprite.baseName}`}
             src={sprite.imagePath ?? undefined}

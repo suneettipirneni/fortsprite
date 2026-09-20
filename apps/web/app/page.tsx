@@ -117,7 +117,6 @@ async function DashboardContent() {
               className="flex min-w-0 flex-col gap-3 bg-sidebar p-4"
             >
               <SpritePortrait
-                tone={sprite.tone}
                 variant={sprite.variant}
                 label={`${sprite.variant} ${sprite.baseName}`}
                 src={sprite.imagePath ?? undefined}
@@ -168,7 +167,6 @@ async function DashboardContent() {
                 className="group grid min-w-0 grid-cols-[5rem_1fr] gap-4 rounded-xl border border-border bg-card p-3 outline-none hover:bg-accent/45 focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <SpritePortrait
-                  tone={sprite.tone}
                   variant={sprite.variant}
                   label={`${sprite.variant} ${sprite.baseName}`}
                   src={sprite.imagePath ?? undefined}

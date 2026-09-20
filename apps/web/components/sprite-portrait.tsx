@@ -2,53 +2,10 @@ import Image from "next/image"
 
 import { cn } from "@workspace/ui/lib/utils"
 
-import type { SpriteTone } from "@/lib/catalog-presentation"
-
-const toneClasses: Record<
-  SpriteTone,
-  { frame: string; body: string; glow: string }
-> = {
-  aqua: {
-    frame: "bg-chart-1/12",
-    body: "bg-chart-1",
-    glow: "bg-chart-1/35",
-  },
-  gold: {
-    frame: "bg-chart-2/15",
-    body: "bg-chart-2",
-    glow: "bg-chart-2/35",
-  },
-  violet: {
-    frame: "bg-chart-3/12",
-    body: "bg-chart-3",
-    glow: "bg-chart-3/35",
-  },
-  green: {
-    frame: "bg-chart-4/12",
-    body: "bg-chart-4",
-    glow: "bg-chart-4/35",
-  },
-  ember: {
-    frame: "bg-chart-5/12",
-    body: "bg-chart-5",
-    glow: "bg-chart-5/35",
-  },
-}
-
-const variantFrameClasses: Record<string, string> = {
-  Base: "bg-chart-1/30",
-  Gold: "bg-chart-2/38",
-  Gummy: "bg-chart-5/34",
-  Galaxy: "bg-chart-3/38",
-  Gem: "bg-chart-4/34",
-  Holofoil: "bg-linear-to-br from-chart-1/40 via-chart-3/35 to-chart-4/40",
-  Cube: "bg-chart-3/48",
-  Quack: "bg-chart-2/45",
-}
+import { variantStyle } from "@/lib/variant-style"
 
 type SpritePortraitProps = {
-  tone: SpriteTone
-  variant?: string
+  variant: string
   label: string
   src?: string
   sizes?: string
@@ -56,26 +13,22 @@ type SpritePortraitProps = {
 }
 
 export function SpritePortrait({
-  tone,
   variant,
   label,
   src,
   sizes = "(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 14rem",
   className,
 }: SpritePortraitProps) {
-  const classes = toneClasses[tone]
-  const frameClass = variant
-    ? (variantFrameClasses[variant] ?? classes.frame)
-    : classes.frame
+  const classes = variantStyle(variant)
 
   if (src) {
     return (
       <div
         className={cn(
           "relative isolate aspect-[5/4] overflow-hidden rounded-[min(1.2vw,1rem)]",
-          frameClass,
           className,
         )}
+        style={classes.frame}
       >
         <Image
           src={src}
@@ -94,9 +47,9 @@ export function SpritePortrait({
       role="img"
       className={cn(
         "relative isolate aspect-[5/4] overflow-hidden rounded-[min(1.2vw,1rem)]",
-        frameClass,
         className,
       )}
+      style={classes.frame}
     >
       <div
         className={cn(

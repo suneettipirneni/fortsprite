@@ -1,7 +1,6 @@
 import { cn } from "@workspace/ui/lib/utils"
 import { FriendHelperList } from "@/components/friend-helper-list"
 import { SpritePortrait } from "@/components/sprite-portrait"
-import { spriteTone } from "@/lib/catalog-presentation"
 import type { CatalogResult } from "@/lib/catalog-filter"
 
 export function CatalogResultCard({
@@ -24,7 +23,6 @@ export function CatalogResultCard({
     >
       <div className="flex min-w-0 items-center gap-3">
         <SpritePortrait
-          tone={spriteTone(item.variant)}
           variant={item.variant}
           label={`${item.variant} ${item.baseName}`}
           src={item.imagePath ?? undefined}
