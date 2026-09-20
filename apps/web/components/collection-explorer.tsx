@@ -9,7 +9,13 @@ import {
   useState,
   useSyncExternalStore,
 } from "react"
-import { Grid2X2Icon, Grid3X3Icon, ListIcon, Rows3Icon, SearchIcon, SquareIcon } from "lucide-react"
+import {
+  Grid2X2Icon,
+  Grid3X3Icon,
+  ListIcon,
+  Rows3Icon,
+  SquareIcon,
+} from "lucide-react"
 
 import { ToggleGroup, ToggleGroupItem } from "@workspace/ui/components/toggle-group"
 import {
@@ -19,12 +25,11 @@ import {
 } from "@workspace/ui/components/tooltip"
 
 import { FilterSelect } from "@/components/filter-select"
-import { Button } from "@workspace/ui/components/button"
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@workspace/ui/components/input-group"
+  CollectionQueryBar,
+  type CollectionQueryToken,
+} from "@/components/collection-query-bar"
+import { Button } from "@workspace/ui/components/button"
 import {
   Empty,
   EmptyContent,
@@ -40,7 +45,8 @@ import type { CollectionNotice } from "@/components/collection-sprite-tile"
 import {
   filterCollection,
   type CatalogSort,
-  type OwnershipFilter,
+  type CaptureFilter,
+  type MasteryFilter,
 } from "@/lib/collection-filter"
 import {
   completionPercent,
@@ -171,21 +177,51 @@ export function CollectionExplorer({
   )
   const [gridSize, setGridSize] = useState<CollectionGridSize>("medium")
   const [query, setQuery] = useState("")
-  const [ownership, setOwnership] = useState<OwnershipFilter>("all")
-  const [variant, setVariant] = useState("all")
-  const [rarity, setRarity] = useState("all")
+  const [filterTokens, setFilterTokens] = useState<CollectionQueryToken[]>([])
   const [sort, setSort] = useState<CatalogSort>("catalog")
   const deferredQuery = useDeferredValue(query)
-  const activeFilterRef = useRef<HTMLButtonElement>(null)
+  const queryInputRef = useRef<HTMLInputElement>(null)
+
+  const capture =
+    (filterTokens.find((token) => token.group === "capture")?.value as
+      | CaptureFilter
+      | undefined) ?? null
+  const mastery =
+    (filterTokens.find((token) => token.group === "mastery")?.value as
+      | MasteryFilter
+      | undefined) ?? null
+  const variants = filterTokens
+    .filter((token) => token.group === "variant")
+    .map((token) => token.value)
+  const rarities = filterTokens
+    .filter((token) => token.group === "rarity")
+    .map((token) => token.value)
 
   const filteredSprites = filterCollection(sprites, {
     query: deferredQuery,
-    ownership,
-    variant,
-    rarity,
+    capture,
+    mastery,
+    variants,
+    rarities,
     sort,
   })
   const currentSeasonId = latestSeasonId(sprites)
+
+  const variantProgress = new Map<
+    string,
+    { captured: number; mastered: number; total: number }
+  >()
+  for (const sprite of sprites) {
+    const progress = variantProgress.get(sprite.baseName) ?? {
+      captured: 0,
+      mastered: 0,
+      total: 0,
+    }
+    progress.total += 1
+    if (sprite.owned) progress.captured += 1
+    if (sprite.mastered) progress.mastered += 1
+    variantProgress.set(sprite.baseName, progress)
+  }
 
   const spriteGroups = new Map<string, Sprite[]>()
   if (view === "grouped") {
@@ -195,26 +231,83 @@ export function CollectionExplorer({
       else spriteGroups.set(sprite.baseName, [sprite])
     }
   }
-  const groupedSprites = [...spriteGroups]
+  const groupedSprites = [...spriteGroups].map(([baseName, items]) => ({
+    baseName,
+    items,
+    progress: variantProgress.get(baseName) ?? {
+      captured: 0,
+      mastered: 0,
+      total: items.length,
+    },
+  }))
 
   const ownedCount = sprites.filter((sprite) => sprite.owned).length
   const masteredCount = sprites.filter((sprite) => sprite.mastered).length
-  const filters = [
-    { value: "all", label: "All", count: sprites.length },
-    { value: "missing", label: "Missing", count: sprites.length - ownedCount },
-    { value: "owned", label: "Captured", count: ownedCount },
-    { value: "mastered", label: "Mastered", count: masteredCount },
-  ] as const
+  const filterOptions: CollectionQueryToken[] = [
+    {
+      id: "capture:captured",
+      group: "capture",
+      groupLabel: "Capture",
+      label: "Captured",
+      value: "captured",
+      count: ownedCount,
+    },
+    {
+      id: "capture:missing",
+      group: "capture",
+      groupLabel: "Capture",
+      label: "Missing",
+      value: "missing",
+      count: sprites.length - ownedCount,
+    },
+    {
+      id: "mastery:mastered",
+      group: "mastery",
+      groupLabel: "Mastery",
+      label: "Mastered",
+      value: "mastered",
+      count: masteredCount,
+    },
+    {
+      id: "mastery:not-mastered",
+      group: "mastery",
+      groupLabel: "Mastery",
+      label: "Not mastered",
+      value: "not-mastered",
+      count: sprites.length - masteredCount,
+    },
+    ...variantOptions.map((option) => ({
+      id: `variant:${option}`,
+      group: "variant" as const,
+      groupLabel: "Variant",
+      label: option,
+      value: option,
+      count: sprites.filter((sprite) => sprite.variant === option).length,
+    })),
+    ...rarityOptions.map((option) => ({
+      id: `rarity:${option}`,
+      group: "rarity" as const,
+      groupLabel: "Rarity",
+      label: option,
+      value: option,
+      count: sprites.filter((sprite) => sprite.rarity === option).length,
+    })),
+  ]
 
   function updateSprite(sprite: Sprite, change: CollectionChange) {
     setNotice((current) => (current?.spriteId === sprite.id ? null : current))
     const updated = sync.change(sprite.id, change)
     const leavesFilter =
-      (ownership === "missing" && updated.owned) ||
-      (ownership === "owned" && !updated.owned) ||
-      (ownership === "mastered" && !updated.mastered)
+      filterCollection([{ ...sprite, ...updated }], {
+        query: deferredQuery,
+        capture,
+        mastery,
+        variants,
+        rarities,
+        sort,
+      }).length === 0
 
-    if (leavesFilter) activeFilterRef.current?.focus()
+    if (leavesFilter) queryInputRef.current?.focus()
   }
 
   const gridProps = {
@@ -224,7 +317,7 @@ export function CollectionExplorer({
     availabilityKnown: true,
     currentSeasonId,
     notice,
-    onRemovedFocus: () => activeFilterRef.current?.focus(),
+    onRemovedFocus: () => queryInputRef.current?.focus(),
     onChange: updateSprite,
   }
 
@@ -264,81 +357,23 @@ export function CollectionExplorer({
         className="isolate flex flex-col gap-5 border-t border-white/15 pt-5 antialiased sm:col-span-2"
       >
         <div className="flex flex-col gap-3">
-          <InputGroup className="h-11 w-full bg-background/32">
-            <InputGroupAddon>
-              <SearchIcon />
-            </InputGroupAddon>
-            <InputGroupInput
-              name="sprite-search"
-              aria-label="Search collection"
-              placeholder="Search collection"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
+          <div className="grid min-w-0 gap-2 xl:grid-cols-[minmax(0,1fr)_11rem]">
+            <CollectionQueryBar
+              query={query}
+              onQueryChange={setQuery}
+              tokens={filterTokens}
+              options={filterOptions}
+              onTokensChange={setFilterTokens}
+              inputRef={queryInputRef}
             />
-          </InputGroup>
-          <div className="flex flex-col justify-between gap-3 xl:flex-row">
-            <div
-              role="group"
-              aria-label="Filter collection status"
-              className="flex gap-1 overflow-x-auto rounded-lg bg-background/25 p-1"
-            >
-              {filters.map((filter) => (
-                <Button
-                  key={filter.value}
-                  ref={ownership === filter.value ? activeFilterRef : undefined}
-                  type="button"
-                  variant={ownership === filter.value ? "secondary" : "ghost"}
-                  aria-pressed={ownership === filter.value}
-                  onClick={() => setOwnership(filter.value)}
-                  className="h-12 min-w-12 flex-1 gap-2 px-2 text-sm sm:h-9 sm:px-3"
-                >
-                  {filter.label}
-                  <span className="text-xs tabular-nums opacity-70 max-sm:hidden">
-                    {filter.count}
-                  </span>
-                </Button>
-              ))}
-            </div>
-            <div className="grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-3">
-              <FilterSelect
-                name="sprite-variant"
-                value={variant}
-                onValueChange={setVariant}
-                label="Filter by variant"
-                placeholder="Variant"
-              >
-                <SelectGroup>
-                  <SelectItem value="all">All variants</SelectItem>
-                  {variantOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </FilterSelect>
-              <FilterSelect
-                name="sprite-rarity"
-                value={rarity}
-                onValueChange={setRarity}
-                label="Filter by rarity"
-                placeholder="Rarity"
-              >
-                <SelectGroup>
-                  <SelectItem value="all">All rarities</SelectItem>
-                  {rarityOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </FilterSelect>
+            <div className="min-w-0">
               <FilterSelect
                 name="sprite-sort"
                 value={sort}
                 onValueChange={(value) => setSort(value as CatalogSort)}
                 label="Sort collection"
                 placeholder="Sort"
-                className="xl:min-w-44"
+                className="w-full"
               >
                 <SelectGroup>
                   <SelectItem value="catalog">Catalog order</SelectItem>
@@ -352,6 +387,10 @@ export function CollectionExplorer({
               </FilterSelect>
             </div>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Combine tokens to narrow the catalog, such as Captured + Not
+            mastered. Multiple variants or rarities match any selected value.
+          </p>
         </div>
 
         {notice ? (
@@ -447,9 +486,7 @@ export function CollectionExplorer({
                 variant="outline"
                 onClick={() => {
                   setQuery("")
-                  setOwnership("all")
-                  setVariant("all")
-                  setRarity("all")
+                  setFilterTokens([])
                 }}
               >
                 Clear filters

@@ -1,12 +1,14 @@
 import type { CollectionItem } from "@workspace/contracts"
 
-export type OwnershipFilter = "all" | "owned" | "missing" | "mastered"
+export type CaptureFilter = "captured" | "missing"
+export type MasteryFilter = "mastered" | "not-mastered"
 export type CatalogSort = "catalog" | "season-newest" | "season-oldest"
 export type CollectionFilters = {
   query: string
-  ownership: OwnershipFilter
-  variant: string
-  rarity: string
+  capture: CaptureFilter | null
+  mastery: MasteryFilter | null
+  variants: string[]
+  rarities: string[]
   sort: CatalogSort
 }
 
@@ -14,7 +16,7 @@ export function filterCollection<T extends CollectionItem>(
   sprites: T[],
   filters: CollectionFilters,
 ): T[] {
-  const { query, ownership, variant, rarity, sort } = filters
+  const { query, capture, mastery, variants, rarities, sort } = filters
   const normalizedQuery = query.trim().toLowerCase()
 
   const matchingSprites = sprites.filter((sprite) => {
@@ -23,18 +25,25 @@ export function filterCollection<T extends CollectionItem>(
       `${sprite.variant} ${sprite.baseName} ${sprite.season ?? "Season unavailable"}`
         .toLowerCase()
         .includes(normalizedQuery)
-    const matchesOwnership =
-      ownership === "all" ||
-      (ownership === "owned" && sprite.owned) ||
-      (ownership === "missing" && !sprite.owned) ||
-      (ownership === "mastered" && sprite.mastered)
-    const matchesVariant = variant === "all" || sprite.variant === variant
+    const matchesCapture =
+      capture === null ||
+      (capture === "captured" && sprite.owned) ||
+      (capture === "missing" && !sprite.owned)
+    const matchesMastery =
+      mastery === null ||
+      (mastery === "mastered" && sprite.mastered) ||
+      (mastery === "not-mastered" && !sprite.mastered)
+    const matchesVariant =
+      variants.length === 0 || variants.includes(sprite.variant)
+    const matchesRarity =
+      rarities.length === 0 || rarities.includes(sprite.rarity)
 
     return (
       matchesQuery &&
-      matchesOwnership &&
+      matchesCapture &&
+      matchesMastery &&
       matchesVariant &&
-      (rarity === "all" || sprite.rarity === rarity)
+      matchesRarity
     )
   })
 

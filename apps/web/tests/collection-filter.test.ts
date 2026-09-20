@@ -8,9 +8,10 @@ import {
 
 const defaults: CollectionFilters = {
   query: "",
-  ownership: "all",
-  variant: "all",
-  rarity: "all",
+  capture: null,
+  mastery: null,
+  variants: [],
+  rarities: [],
   sort: "catalog",
 }
 function item(
@@ -72,7 +73,7 @@ test("collection search keeps variant-name order, season text and normalized whi
   )
 })
 
-test("ownership, mastery, rarity and variant filters intersect", () => {
+test("capture, mastery, rarity and variant tokens intersect", () => {
   const items = [
     item("mastered", { owned: true, mastered: true }),
     item("owned", { owned: true, mastered: false }),
@@ -84,9 +85,9 @@ test("ownership, mastery, rarity and variant filters intersect", () => {
     ids(
       filterCollection(items, {
         ...defaults,
-        ownership: "mastered",
-        rarity: "Rare",
-        variant: "Gold",
+        mastery: "mastered",
+        rarities: ["Rare"],
+        variants: ["Gold"],
       }),
     ),
     ["mastered"],
@@ -95,16 +96,63 @@ test("ownership, mastery, rarity and variant filters intersect", () => {
     ids(
       filterCollection(items, {
         ...defaults,
-        ownership: "owned",
-        rarity: "Rare",
-        variant: "Gold",
+        capture: "captured",
+        rarities: ["Rare"],
+        variants: ["Gold"],
       }),
     ),
     ["mastered", "owned"],
   )
   assert.deepEqual(
-    ids(filterCollection(items, { ...defaults, ownership: "missing" })),
+    ids(filterCollection(items, { ...defaults, capture: "missing" })),
     ["missing"],
+  )
+})
+
+test("captured and not mastered compose without including missing Sprites", () => {
+  const items = [
+    item("mastered", { owned: true, mastered: true }),
+    item("captured", { owned: true, mastered: false }),
+    item("missing"),
+  ]
+
+  assert.deepEqual(
+    ids(
+      filterCollection(items, {
+        ...defaults,
+        capture: "captured",
+        mastery: "not-mastered",
+      }),
+    ),
+    ["captured"],
+  )
+  assert.deepEqual(
+    ids(
+      filterCollection(items, {
+        ...defaults,
+        mastery: "not-mastered",
+      }),
+    ),
+    ["captured", "missing"],
+  )
+})
+
+test("multiple values are ORed within a token category", () => {
+  const items = [
+    item("gold-rare"),
+    item("base-epic", { variant: "Base", rarity: "Epic" }),
+    item("silver-uncommon", { variant: "Silver", rarity: "Uncommon" }),
+  ]
+
+  assert.deepEqual(
+    ids(
+      filterCollection(items, {
+        ...defaults,
+        variants: ["Gold", "Base"],
+        rarities: ["Rare", "Epic"],
+      }),
+    ),
+    ["gold-rare", "base-epic"],
   )
 })
 

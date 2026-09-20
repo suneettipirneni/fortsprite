@@ -22,7 +22,12 @@ export function limitBody(maxSize: number) {
       // the actual stream too, including internally constructed server-action requests.
       const headers = new Headers(request.headers)
       headers.delete("content-length")
-      context.req.raw = new Request(request, { headers })
+      context.req.raw = new Request(request.url, {
+        method: request.method,
+        headers,
+        body: request.body,
+        duplex: "half",
+      } as RequestInit)
     }
     return limit(context, next)
   })

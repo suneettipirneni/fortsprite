@@ -16,6 +16,11 @@ function pngDimensions(contents: Buffer) {
   }
 }
 
+function pngColorType(contents: Buffer) {
+  assert.equal(contents.toString("ascii", 12, 16), "IHDR")
+  return contents[25]
+}
+
 test("the install manifest includes standalone and maskable app icons", async () => {
   const value = manifest()
 
@@ -35,12 +40,25 @@ test("the install manifest includes standalone and maskable app icons", async ()
   ] as const
 
   for (const [path, expectedSize] of expectedIcons) {
-    const dimensions = pngDimensions(await readFile(`${appRoot}/${path}`))
+    const contents = await readFile(`${appRoot}/${path}`)
+    const dimensions = pngDimensions(contents)
     assert.deepEqual(dimensions, {
       width: expectedSize,
       height: expectedSize,
     })
+    assert.ok(contents.byteLength > 5_000, `${path} must contain visible artwork`)
   }
+
+  assert.equal(
+    pngColorType(await readFile(`${appRoot}/app/apple-icon.png`)),
+    2,
+    "the Apple touch icon must be opaque truecolor",
+  )
+  assert.equal(
+    pngColorType(await readFile(`${appRoot}/public/icons/icon-maskable-512.png`)),
+    2,
+    "the maskable icon must have an opaque background",
+  )
 })
 
 test("the service worker leaves authenticated routes and APIs network-only", async () => {

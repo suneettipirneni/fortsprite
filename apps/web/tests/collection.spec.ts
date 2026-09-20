@@ -34,6 +34,19 @@ const details = (page: Page) =>
 const captured = (page: Page) =>
   tile(page).getByRole("button", { name: /^Captured / })
 const mastered = (page: Page) => tile(page).locator('[aria-label^="Mastered "]')
+const queryChip = (page: Page, group: string, label: string) =>
+  page
+    .locator('[data-slot="combobox-chip"]')
+    .filter({ hasText: `${group}${label}` })
+
+async function addFilterToken(page: Page, label: string) {
+  const option = page.getByRole("option", {
+    name: new RegExp(`^${label}\\b`),
+  })
+  if (!(await option.isVisible()))
+    await page.getByRole("button", { name: "Add collection filter" }).click()
+  await option.click()
+}
 
 async function assertPersisted(
   page: Page,
@@ -75,6 +88,11 @@ test.beforeEach(async ({ page }, testInfo) => {
   page.on("pageerror", (error) => errors.push(error.stack ?? error.message))
   page.on("console", (message) => {
     if (message.type() !== "error") return
+    if (
+      message.text().includes("va.vercel-scripts.com") &&
+      message.text().includes("Content Security Policy")
+    )
+      return
     if (message.text().includes("500 (Internal Server Error)"))
       serverErrors.push(message.text())
     else {
@@ -253,27 +271,25 @@ test("rarity and search filters narrow results and empty-state reset restores th
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   const virtualGrid = page.getByTestId("virtualized-sprite-grid")
   const count = Number(await virtualGrid.getAttribute("data-total-items"))
-  await page.getByRole("combobox", { name: "Filter by rarity" }).click()
-  await page.getByRole("option", { name: "Rare", exact: true }).click()
+  await addFilterToken(page, "Rare")
+  await expect(queryChip(page, "Rarity", "Rare")).toBeVisible()
   const rare = await snapshot(page)
   await expect(virtualGrid).toHaveAttribute(
     "data-total-items",
     String(rare.items.filter((item) => item.rarity === "Rare").length),
   )
   await page
-    .getByRole("textbox", { name: "Search collection" })
+    .getByRole("combobox", { name: "Search collection" })
     .fill("zzzz-no-such-sprite")
   await expect(page.getByText("No Sprites match these filters")).toBeVisible()
   await page.getByRole("button", { name: "Clear filters" }).click()
   await expect(
-    page.getByRole("textbox", { name: "Search collection" }),
+    page.getByRole("combobox", { name: "Search collection" }),
   ).toHaveValue("")
-  await expect(
-    page.getByRole("combobox", { name: "Filter by rarity" }),
-  ).toHaveText("All rarities")
+  await expect(queryChip(page, "Rarity", "Rare")).toHaveCount(0)
   await expect(virtualGrid).toHaveAttribute("data-total-items", String(count))
   await page
-    .getByRole("textbox", { name: "Search collection" })
+    .getByRole("combobox", { name: "Search collection" })
     .fill(first.baseName)
   const expected = rare.items.filter((item) =>
     `${item.variant} ${item.baseName} ${item.season ?? "Season unavailable"}`
@@ -284,6 +300,36 @@ test("rarity and search filters narrow results and empty-state reset restores th
     "data-total-items",
     String(expected.length),
   )
+})
+
+test("query tokens compose captured with not mastered", async ({ page }, testInfo) => {
+  await captured(page).click()
+  await assertPersisted(page, { owned: true, mastered: false })
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
+  await addFilterToken(page, "Captured")
+  await addFilterToken(page, "Not mastered")
+  await page.keyboard.press("Escape")
+
+  await expect(queryChip(page, "Capture", "Captured")).toBeVisible()
+  await expect(queryChip(page, "Mastery", "Not mastered")).toBeVisible()
+  const collection = await snapshot(page)
+  await expect(page.getByTestId("virtualized-sprite-grid")).toHaveAttribute(
+    "data-total-items",
+    String(
+      collection.items.filter((item) => item.owned && !item.mastered).length,
+    ),
+  )
+  if (process.env.COLLECTION_SCREENSHOT_DIR) {
+    await page.screenshot({
+      path: `${process.env.COLLECTION_SCREENSHOT_DIR}/${testInfo.project.name}-query-tokens.png`,
+      animations: "disabled",
+      scale: "css",
+    })
+  }
+
+  await addFilterToken(page, "Mastered")
+  await expect(queryChip(page, "Mastery", "Not mastered")).toHaveCount(0)
+  await expect(queryChip(page, "Mastery", "Mastered")).toBeVisible()
 })
 
 test("details support keyboard focus and modal removal restores the active filter focus", async ({
@@ -332,10 +378,7 @@ test("details support keyboard focus and modal removal restores the active filte
     .getByRole("button", { name: "Done", exact: true })
     .click()
   await expect(details(page)).toBeFocused()
-  const missing = page
-    .getByRole("group", { name: "Filter collection status" })
-    .getByRole("button", { name: /^Missing/ })
-  await missing.click()
+  await addFilterToken(page, "Missing")
   await details(page).click()
   await page
     .getByRole("dialog")
@@ -343,7 +386,7 @@ test("details support keyboard focus and modal removal restores the active filte
     .click()
   await expect(page.getByRole("dialog")).toHaveCount(0)
   await expect(tile(page)).toHaveCount(0)
-  await expect(missing).toBeFocused()
+  await expect(page.getByRole("combobox", { name: "Search collection" })).toBeFocused()
   await assertPersisted(page, { owned: true, mastered: false })
 })
 
@@ -354,7 +397,7 @@ test("rapid collection actions stay optimistic and coalesce to the last intent",
   const gate = new Promise<void>((resolve) => {
     release = resolve
   })
-  const search = page.getByRole("textbox", { name: "Search collection" })
+  const search = page.getByRole("combobox", { name: "Search collection" })
   await search.fill(first.baseName)
   let requests = 0
   await page.route("**/collection", async (route) => {
@@ -451,6 +494,13 @@ test("grouped view keeps each base Sprite and its variants in one section", asyn
   const virtualGroups = page.getByTestId("virtualized-sprite-groups")
   const section = page.getByRole("region", { name: first.baseName, exact: true })
   await expect(section.getByRole("heading", { name: first.baseName, exact: true, level: 2 })).toBeVisible()
+  const variantProgress = section.getByLabel(
+    `0 of ${expected.length} variants captured`,
+  )
+  await expect(variantProgress).toBeVisible()
+  await expect(
+    section.getByLabel(`0 of ${expected.length} variants mastered`),
+  ).toBeVisible()
   await expect(virtualGroups).toHaveAttribute("data-total-groups", String(expectedGroupCount))
   expect(await page.locator("section").count()).toBeLessThan(expectedGroupCount)
   await expect(section.locator("article")).toHaveCount(expected.length)
@@ -473,11 +523,14 @@ test("grouped view keeps each base Sprite and its variants in one section", asyn
   }
   await captured(page).click()
   await expect(captured(page)).toHaveAttribute("aria-pressed", "true")
+  await expect(
+    section.getByLabel(`1 of ${expected.length} variants captured`),
+  ).toBeVisible()
   await expect(tile(page).getByRole("status")).toHaveCount(0)
   await assertPersisted(page, { owned: true, mastered: false })
-  await page.getByRole("textbox", { name: "Search collection", exact: true }).fill(first.baseName)
+  await page.getByRole("combobox", { name: "Search collection", exact: true }).fill(first.baseName)
   await expect(section.locator("article")).toHaveCount(expected.length)
-  await page.getByRole("textbox", { name: "Search collection", exact: true }).fill("no-such-sprite-123")
+  await page.getByRole("combobox", { name: "Search collection", exact: true }).fill("no-such-sprite-123")
   await expect(page.getByText("No Sprites match these filters", { exact: true })).toBeVisible()
   await expect(page.locator("section")).toHaveCount(0)
   await page.getByRole("button", { name: "Clear filters", exact: true }).click()

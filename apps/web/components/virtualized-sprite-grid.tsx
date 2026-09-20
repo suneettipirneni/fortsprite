@@ -10,6 +10,7 @@ import {
   useSyncExternalStore,
 } from "react"
 import { useWindowVirtualizer } from "@tanstack/react-virtual"
+import { Badge } from "@workspace/ui/components/badge"
 
 import type { CollectionChange } from "@/lib/collection-state"
 import type { Sprite } from "@/lib/catalog-presentation"
@@ -36,7 +37,11 @@ type VirtualizedSpriteGridProps = SpriteGridProps & {
 }
 
 type VirtualizedSpriteGroupsProps = SpriteGridProps & {
-  groups: Array<[baseName: string, items: Sprite[]]>
+  groups: Array<{
+    baseName: string
+    items: Sprite[]
+    progress: { captured: number; mastered: number; total: number }
+  }>
 }
 
 const GRID_GAP = 12
@@ -166,6 +171,44 @@ function SpriteTiles({
   )
 }
 
+function SpriteGroupHeading({
+  baseName,
+  captured,
+  mastered,
+  total,
+}: {
+  baseName: string
+  captured: number
+  mastered: number
+  total: number
+}) {
+  return (
+    <div className="flex min-w-0 flex-wrap items-center gap-2 border-b border-white/15 pb-3">
+      <h2 className="truncate text-lg font-semibold">{baseName}</h2>
+      <Badge
+        variant="outline"
+        aria-label={`${captured} of ${total} variants captured`}
+        className="shrink-0 border-white/15 bg-white/5 font-normal tabular-nums text-muted-foreground"
+      >
+        <span className="text-foreground">{captured}</span>
+        <span aria-hidden="true">/</span>
+        <span>{total}</span>
+        <span>captured</span>
+      </Badge>
+      <Badge
+        variant="outline"
+        aria-label={`${mastered} of ${total} variants mastered`}
+        className="shrink-0 border-white/15 bg-white/5 font-normal tabular-nums text-muted-foreground"
+      >
+        <span className="text-foreground">{mastered}</span>
+        <span aria-hidden="true">/</span>
+        <span>{total}</span>
+        <span>mastered</span>
+      </Badge>
+    </div>
+  )
+}
+
 export function VirtualizedSpriteGrid({
   items,
   view,
@@ -284,12 +327,12 @@ export function VirtualizedSpriteGroups({
   const gridGap = width >= 640 ? GRID_GAP : MOBILE_GRID_GAP
   const groupGap = width >= 640 ? GROUP_GAP : MOBILE_GROUP_GAP
   const getItemKey = useCallback(
-    (index: number) => groups[index]?.[0] ?? index,
+    (index: number) => groups[index]?.baseName ?? index,
     [groups],
   )
   const estimateSize = useCallback(
     (index: number) => {
-      const itemCount = groups[index]?.[1].length ?? 1
+      const itemCount = groups[index]?.items.length ?? 1
       return (
         72 +
         Math.ceil(itemCount / columns) * estimatedRowHeight(view, gridSize) +
@@ -311,7 +354,11 @@ export function VirtualizedSpriteGroups({
   const virtualGroups = virtualizer.getVirtualItems()
 
   if (!hydrated) {
-    const [baseName, items] = groups[0] ?? ["", []]
+    const { baseName, items, progress } = groups[0] ?? {
+      baseName: "",
+      items: [],
+      progress: { captured: 0, mastered: 0, total: 0 },
+    }
     return (
       <div
         ref={ref}
@@ -321,12 +368,7 @@ export function VirtualizedSpriteGroups({
         data-rendered-groups={groups.length > 0 ? 1 : 0}
       >
         <section aria-label={baseName} className="space-y-3 sm:space-y-4">
-          <div className="flex items-baseline justify-between gap-3 border-b border-white/15 pb-3">
-            <h2 className="text-lg font-semibold">{baseName}</h2>
-            <span className="text-xs text-muted-foreground">
-              {items.length} {items.length === 1 ? "variant" : "variants"}
-            </span>
-          </div>
+          <SpriteGroupHeading baseName={baseName} {...progress} />
           <SpriteTiles
             items={items}
             columns={columns}
@@ -353,7 +395,11 @@ export function VirtualizedSpriteGroups({
       }}
     >
       {virtualGroups.map((virtualGroup) => {
-        const [baseName, items] = groups[virtualGroup.index] ?? ["", []]
+        const { baseName, items, progress } = groups[virtualGroup.index] ?? {
+          baseName: "",
+          items: [],
+          progress: { captured: 0, mastered: 0, total: 0 },
+        }
         return (
           <div
             key={virtualGroup.key}
@@ -368,12 +414,7 @@ export function VirtualizedSpriteGroups({
             }}
           >
             <section aria-label={baseName} className="space-y-3 sm:space-y-4">
-              <div className="flex items-baseline justify-between gap-3 border-b border-white/15 pb-3">
-                <h2 className="text-lg font-semibold">{baseName}</h2>
-                <span className="text-xs text-muted-foreground">
-                  {items.length} {items.length === 1 ? "variant" : "variants"}
-                </span>
-              </div>
+              <SpriteGroupHeading baseName={baseName} {...progress} />
               <SpriteTiles
                 items={items}
                 columns={columns}
