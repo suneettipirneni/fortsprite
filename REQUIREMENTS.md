@@ -11,8 +11,8 @@ FortSprite is an unofficial companion app that lets signed-in users:
 1. Record which Fortnite Sprite catalog items they own.
 2. Record which owned catalog items they have mastered.
 3. Connect with other FortSprite users as friends.
-4. Automatically appear as available to help friends with items they own.
-5. See which missing items are available through accepted friends.
+4. Automatically appear as available to help friends with current-season items they own.
+5. See which current-season missing items are available through accepted friends.
 6. Compare collections with a friend so both users can coordinate in Fortnite.
 
 The MVP is a tracker and coordination tool. FortSprite owns its account identity through Better Auth with passkey credentials. It does not read or synchronize Fortnite gameplay or collection data, alter an in-game collection, transfer an item, guarantee a trade, or provide in-app chat or payments.
@@ -31,7 +31,7 @@ FortSprite must not depend on Fortnite.GG at runtime. Catalog data will be store
 - “Sprite” means an exact collectible catalog item, including its variant. For example, a Base Water Sprite and a Gold Water Sprite are two different catalog items.
 - “Owns” means the user says the item is present in their Fortnite collection. FortSprite does not independently verify this claim.
 - “Mastered” means the user says an owned item has reached its in-game mastery state. Mastery is tracked independently per exact catalog item but cannot be true for a missing item.
-- “Can help” means an accepted friend owns that exact item. Availability is derived from ownership and friendship, with no separate opt-in or mastery requirement. It does not imply willingness, a transfer, or a guarantee.
+- “Can help” means an accepted friend owns that exact item and the item belongs to the latest released catalog season. Availability is derived from current-season membership, ownership, and friendship, with no separate opt-in or mastery requirement. It does not imply willingness, a transfer, or a guarantee. Older items remain independently trackable but are not help-eligible.
 - A “friend” is another user with an accepted friendship. Pending requests do not grant friend access.
 
 ## 3. Actors and permissions
@@ -227,7 +227,9 @@ Given the server rejects the mutation, then the UI restores the persisted state 
 
 #### HELP-001 — Derive availability from ownership (`P0`)
 
-Given a user owns an item, then accepted friends automatically see that the user may be able to help with that item, whether or not it is mastered.
+Given a user owns an item from the latest released catalog season, then accepted friends automatically see that the user may be able to help with that item, whether or not it is mastered.
+
+Given a user owns an item from an older season or with no verified season, then the item remains in their collection but is excluded from helper results and friend comparisons.
 
 Given a user does not own an item, then they are not available to help with it. No per-item help flag or opt-in control exists.
 
@@ -237,7 +239,7 @@ Given a user marks an item missing, then subsequent friend availability reads ex
 
 Given a visitor, pending requester, declined requester, blocked user, or unrelated authenticated user, when they request someone’s help availability, then no help data is returned.
 
-Given an accepted friend, when they request a friend’s availability, then all currently owned items are returned.
+Given an accepted friend, when they request a friend’s availability, then only owned items from the latest released catalog season are returned.
 
 #### HELP-003 — Availability freshness (`P0`)
 
@@ -283,7 +285,7 @@ Given a relationship changes, then the next collection and comparison read deriv
 
 #### OVER-001 — Summarize missing-item coverage (`P0`)
 
-Given the current user is missing `M` released items, then the overview shows:
+Given the current user is missing `M` items from the latest released catalog season, then the overview shows:
 
 - the total missing count;
 - the number of missing items for which at least one accepted friend owns the item; and

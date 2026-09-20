@@ -96,7 +96,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   await expect(
     page.getByRole("heading", { name: "Sprite locker" }),
   ).toBeVisible()
-  await expect(page.getByTestId("virtualized-sprite-grid")).toHaveAttribute(
+  await expect(page.getByTestId("virtualized-sprite-groups")).toHaveAttribute(
     "data-hydrated",
     "true",
   )
@@ -125,6 +125,7 @@ test("meaningful collection renders without overflow or serious accessibility fa
   await expect(page.locator("nextjs-dialog")).toHaveCount(0)
   await expect(captured(page)).toHaveAttribute("aria-pressed", "false")
   await expect(mastered(page)).toBeDisabled()
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   const virtualGrid = page.getByTestId("virtualized-sprite-grid")
   await expect(virtualGrid).toHaveAttribute(
     "data-total-items",
@@ -154,6 +155,7 @@ test("virtualized collection renders the final Sprite after a full-page scroll",
   const last = collection.items
     .toSorted((a, b) => a.displayOrder - b.displayOrder)
     .at(-1)!
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   const virtualGrid = page.getByTestId("virtualized-sprite-grid")
   const initialIds = await page.locator("article[data-sprite-id]").evaluateAll(
     (articles) => articles.map((article) => article.getAttribute("data-sprite-id")),
@@ -248,6 +250,7 @@ test("failed save leaves persisted state unchanged and offers a truthful retry",
 test("rarity and search filters narrow results and empty-state reset restores the catalog", async ({
   page,
 }) => {
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   const virtualGrid = page.getByTestId("virtualized-sprite-grid")
   const count = Number(await virtualGrid.getAttribute("data-total-items"))
   await page.getByRole("combobox", { name: "Filter by rarity" }).click()
@@ -384,6 +387,7 @@ test("rapid collection actions stay optimistic and coalesce to the last intent",
 
 test("collection switches between list and three grid sizes", async ({ page }, testInfo) => {
   const width = () => tile(page).evaluate((element) => element.getBoundingClientRect().width)
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   await page.getByRole("radio", { name: "Small grid", exact: true }).click()
   const screenshot = async (view: string) => {
     if (!process.env.COLLECTION_SCREENSHOT_DIR) return
@@ -441,7 +445,9 @@ test("grouped view keeps each base Sprite and its variants in one section", asyn
   const collection = await snapshot(page)
   const expected = collection.items.filter((item) => item.baseName === first.baseName)
   const expectedGroupCount = new Set(collection.items.map((item) => item.baseName)).size
-  await page.getByRole("radio", { name: "Grouped view", exact: true }).click()
+  await expect(
+    page.getByRole("radio", { name: "Grouped view", exact: true }),
+  ).toHaveAttribute("aria-checked", "true")
   const virtualGroups = page.getByTestId("virtualized-sprite-groups")
   const section = page.getByRole("region", { name: first.baseName, exact: true })
   await expect(section.getByRole("heading", { name: first.baseName, exact: true, level: 2 })).toBeVisible()
@@ -479,4 +485,20 @@ test("grouped view keeps each base Sprite and its variants in one section", asyn
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   await expect(page.locator("section")).toHaveCount(0)
   await expect(page.getByRole("radio", { name: "Small grid", exact: true })).toHaveAttribute("aria-checked", "true")
+})
+
+test("collection view preference persists across reloads", async ({ page }) => {
+  const listView = page.getByRole("radio", { name: "List view", exact: true })
+  await listView.click()
+  await expect(listView).toHaveAttribute("aria-checked", "true")
+
+  await page.reload()
+
+  await expect(
+    page.getByRole("radio", { name: "List view", exact: true }),
+  ).toHaveAttribute("aria-checked", "true")
+  await expect(page.getByTestId("virtualized-sprite-grid")).toHaveAttribute(
+    "data-hydrated",
+    "true",
+  )
 })

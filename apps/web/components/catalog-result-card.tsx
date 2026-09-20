@@ -1,5 +1,5 @@
-import Link from "next/link"
 import { cn } from "@workspace/ui/lib/utils"
+import { FriendHelperList } from "@/components/friend-helper-list"
 import { SpritePortrait } from "@/components/sprite-portrait"
 import { spriteTone } from "@/lib/catalog-presentation"
 import type { CatalogResult } from "@/lib/catalog-filter"
@@ -45,24 +45,7 @@ export function CatalogResultCard({
               Friend availability unavailable
             </p>
           ) : item.helpers?.length ? (
-            <ul className="space-y-2">
-              {item.helpers.map((friend) => (
-                <li key={friend.id}>
-                  <Link
-                    href={`/friends/${friend.id}`}
-                    className="inline-flex min-h-11 max-w-full items-center break-all underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    {friend.displayName}
-                  </Link>
-                  {friend.fortniteDisplayName ? (
-                    <p className="break-words text-xs text-muted-foreground">
-                      Fortnite name (user-provided) ·{" "}
-                      {friend.fortniteDisplayName}
-                    </p>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
+            <FriendHelperList friends={item.helpers} />
           ) : (
             <p className="text-muted-foreground">
               No sharing friend has captured this Sprite yet.

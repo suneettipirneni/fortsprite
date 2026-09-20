@@ -25,6 +25,7 @@ type SpriteGridProps = {
   gridSize: CollectionGridSize
   pendingIds: Set<string>
   availabilityKnown: boolean
+  currentSeasonId: number | null
   notice: CollectionNotice | null
   onRemovedFocus: () => void
   onChange: (sprite: Sprite, change: CollectionChange) => void
@@ -131,6 +132,7 @@ function SpriteTiles({
   view,
   pendingIds,
   availabilityKnown,
+  currentSeasonId,
   notice,
   onRemovedFocus,
   onChange,
@@ -154,6 +156,7 @@ function SpriteTiles({
           view={view}
           pending={pendingIds.has(sprite.id)}
           availabilityKnown={availabilityKnown}
+          currentSeasonId={currentSeasonId}
           onRemovedFocus={onRemovedFocus}
           notice={notice?.spriteId === sprite.id ? notice : null}
           onChange={(change) => onChange(sprite, change)}

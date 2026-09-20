@@ -11,7 +11,7 @@ const sections = [
   },
   {
     heading: "User-provided information",
-    body: "Ownership, mastery, and display names are provided by users. Friend availability follows ownership. FortSprite does not guarantee that a collection entry is accurate or that another player can help obtain an item.",
+    body: "Ownership, mastery, and display names are provided by users. Friend availability follows ownership for current-season Sprites only. FortSprite does not guarantee that a collection entry is accurate or that another player can help obtain an item.",
   },
   {
     heading: "No transfers or transactions",

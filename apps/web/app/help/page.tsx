@@ -35,8 +35,10 @@ export default function HelpPage() {
             </AccordionTrigger>
             <AccordionContent>
               It means an accepted friend has marked that Sprite as captured.
-              Captured Sprites are automatically available to friends, whether
-              mastered or not. It is not a guaranteed trade or transfer.
+              Captured Sprites from the current season are automatically
+              available to friends, whether mastered or not. Older Sprites
+              remain in your collection but are not shown as available help.
+              It is not a guaranteed trade or transfer.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="privacy">

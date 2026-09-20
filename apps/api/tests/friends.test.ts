@@ -19,6 +19,7 @@ const viewerId = randomUUID()
 const friendId = randomUUID()
 const blockedId = randomUUID()
 const spriteId = randomUUID()
+const previousSeasonSpriteId = randomUUID()
 
 before(async () => {
   await db.insert(user).values([
@@ -41,27 +42,43 @@ before(async () => {
       handle: `blocked_${blockedId.slice(0, 6)}`,
     },
   ])
-  await db.insert(sprites).values({
-    id: spriteId,
-    slug: `friend-test-${spriteId}`,
-    stableKey: `friend-test:${spriteId}`,
-    baseName: "Friend Test Sprite",
-    variantName: "Base",
-    rarity: "Rare",
-    releaseStatus: "released",
-    sourceUrl: "https://example.test/friend-sprite",
-    sourceVerifiedAt: new Date(),
-  })
-  await db.insert(collectionEntries).values({
-    userId: friendId,
-    spriteId,
-    owned: true,
-  })
+  await db.insert(sprites).values([
+    {
+      id: spriteId,
+      slug: `friend-test-${spriteId}`,
+      stableKey: `friend-test:${spriteId}`,
+      baseName: "Current Season Friend Test Sprite",
+      variantName: "Base",
+      rarity: "Rare",
+      releaseStatus: "released",
+      sourceSeasonId: 2_147_483_647,
+      sourceUrl: "https://example.test/friend-sprite",
+      sourceVerifiedAt: new Date(),
+    },
+    {
+      id: previousSeasonSpriteId,
+      slug: `friend-test-${previousSeasonSpriteId}`,
+      stableKey: `friend-test:${previousSeasonSpriteId}`,
+      baseName: "Previous Season Friend Test Sprite",
+      variantName: "Base",
+      rarity: "Rare",
+      releaseStatus: "released",
+      sourceSeasonId: 2_147_483_646,
+      sourceUrl: "https://example.test/previous-friend-sprite",
+      sourceVerifiedAt: new Date(),
+    },
+  ])
+  await db.insert(collectionEntries).values([
+    { userId: friendId, spriteId, owned: true },
+    { userId: friendId, spriteId: previousSeasonSpriteId, owned: true },
+  ])
 })
 
 after(async () => {
   await db.delete(user).where(inArray(user.id, [viewerId, friendId, blockedId]))
-  await db.delete(sprites).where(eq(sprites.id, spriteId))
+  await db
+    .delete(sprites)
+    .where(inArray(sprites.id, [spriteId, previousSeasonSpriteId]))
   await pool.end()
 })
 
@@ -81,13 +98,15 @@ test("exact usernames create local requests without provider identities", async 
   )
 })
 
-test("accepted sharing alone unlocks helpers and comparison", async () => {
+test("accepted sharing exposes only current-season helpers and comparison items", async () => {
   await changeSharing(friendId, viewerId, "accept")
-  const [helper] = await getHelpers(viewerId)
+  const helpers = await getHelpers(viewerId)
+  assert.equal(helpers.length, 1)
+  const [helper] = helpers
   assert.equal(helper?.spriteId, spriteId)
   assert.equal(helper?.profile.id, friendId)
   const comparison = await getComparison(viewerId, friendId)
-  assert.equal(comparison.forYou[0]?.id, spriteId)
+  assert.deepEqual(comparison.forYou.map((item) => item.id), [spriteId])
   await changeSharing(viewerId, friendId, "remove")
   assert.deepEqual(await getHelpers(viewerId), [])
   await assert.rejects(

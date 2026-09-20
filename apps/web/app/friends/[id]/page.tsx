@@ -80,8 +80,8 @@ async function ComparisonContent({
           You and {comparison.friend.displayName}
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Captured Sprites can help friends regardless of mastery. Coordinate
-          together in Fortnite.
+          Current-season captured Sprites can help friends regardless of
+          mastery. Coordinate together in Fortnite.
         </p>
         {comparison.friend.fortniteDisplayName ? (
           <p className="mt-2 break-words text-sm">

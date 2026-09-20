@@ -125,12 +125,20 @@ try {
       .select()
       .from(sprites)
       .where(eq(sprites.releaseStatus, "released"))
-    selected.sort(
+    const latestSeasonId = Math.max(
+      ...selected.flatMap((sprite) =>
+        sprite.sourceSeasonId === null ? [] : [sprite.sourceSeasonId],
+      ),
+    )
+    const currentSeason = selected.filter(
+      (sprite) => sprite.sourceSeasonId === latestSeasonId,
+    )
+    currentSeason.sort(
       (a, b) => a.displayOrder - b.displayOrder || a.slug.localeCompare(b.slug),
     )
-    const [first, second] = selected
+    const [first, second] = currentSeason
     if (!first || !second)
-      throw new Error("Browser fixtures need two released Sprites")
+      throw new Error("Browser fixtures need two current-season released Sprites")
     const a = actors.a!
     const b = actors.b!
     await db.insert(collectionEntries).values([

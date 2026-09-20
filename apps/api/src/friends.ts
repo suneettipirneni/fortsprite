@@ -76,6 +76,14 @@ function acceptedFriendCondition(
     and not exists (select 1 from ${blocks} where ${blocks.blockerId} = ${friendId} and ${blocks.blockedId} = ${viewerId})`
 }
 
+function latestReleasedSeasonCondition() {
+  return sql`${sprites.sourceSeasonId} = (
+    select max(latest_sprites.source_season_id)
+    from ${sprites} as latest_sprites
+    where latest_sprites.release_status = 'released'
+  )`
+}
+
 export async function sharingFriends(viewerId: string, database = db) {
   const [relationships, blocked] = await Promise.all([
     database
@@ -276,6 +284,7 @@ export async function getHelpers(viewerId: string, database = db) {
       and(
         eq(collectionEntries.owned, true),
         eq(sprites.releaseStatus, "released"),
+        latestReleasedSeasonCondition(),
         acceptedFriendCondition(viewerId, user.id),
       ),
     )
@@ -308,7 +317,13 @@ export async function getComparison(
       friendOwned: sql<boolean>`exists (select 1 from ${collectionEntries} where ${collectionEntries.userId} = ${friendId} and ${collectionEntries.spriteId} = ${sprites.id} and ${collectionEntries.owned})`,
     })
     .from(user)
-    .leftJoin(sprites, eq(sprites.releaseStatus, "released"))
+    .leftJoin(
+      sprites,
+      and(
+        eq(sprites.releaseStatus, "released"),
+        latestReleasedSeasonCondition(),
+      ),
+    )
     .where(
       and(eq(user.id, friendId), acceptedFriendCondition(viewerId, user.id)),
     )

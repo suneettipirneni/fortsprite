@@ -55,6 +55,7 @@ before(async () => {
       variantName: "Base",
       rarity: "Rare",
       releaseStatus: "released" as const,
+      sourceSeasonId: 2_147_483_647,
       sourceUrl: "https://example.test/benchmark",
       sourceVerifiedAt: new Date("2026-01-01T00:00:00Z"),
     })),

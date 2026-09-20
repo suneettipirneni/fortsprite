@@ -31,6 +31,7 @@ import {
 
 import type { CollectionChange } from "@/lib/collection-state"
 import type { Sprite } from "@/lib/catalog-presentation"
+import { FriendHelperList } from "@/components/friend-helper-list"
 import { SpritePortrait } from "@/components/sprite-portrait"
 
 export type CollectionNotice = { spriteId: string; message: string }
@@ -55,11 +56,13 @@ export function SpriteTile({
   notice,
   onRemovedFocus,
   availabilityKnown,
+  currentSeasonId,
 }: {
   sprite: Sprite
   view?: "list" | "grid"
   pending: boolean
   availabilityKnown: boolean
+  currentSeasonId: number | null
   notice: CollectionNotice | null
   onRemovedFocus: () => void
   onChange: (change: CollectionChange) => void
@@ -67,11 +70,15 @@ export function SpriteTile({
   const triggerRef = useRef<HTMLButtonElement>(null)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const helpEligible =
+    currentSeasonId !== null && sprite.sourceSeasonId === currentSeasonId
   const helperLabel = !availabilityKnown
     ? "Friend availability unavailable"
-    : sprite.helpers.length === 1
-      ? "1 friend with this Sprite"
-      : `${sprite.helpers.length} friends with this Sprite`
+    : !helpEligible
+      ? "Not eligible for friend help outside the current season"
+      : sprite.helpers.length === 1
+        ? "1 friend with this Sprite"
+        : `${sprite.helpers.length} friends with this Sprite`
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -126,6 +133,7 @@ export function SpriteTile({
                     {sprite.variant}
                   </p>
                   {availabilityKnown &&
+                  helpEligible &&
                   sprite.helpers.length > 0 &&
                   !sprite.owned ? (
                     <p className="mt-1 text-base text-muted-foreground sm:text-sm">
@@ -164,9 +172,11 @@ export function SpriteTile({
                 <p className="text-muted-foreground">
                   {!availabilityKnown
                     ? "Friend availability unavailable"
-                    : sprite.helpers.length > 0
-                      ? `Help from ${sprite.helpers.map((friend) => friend.displayName).join(", ")}`
-                      : "No accepted friends have captured this Sprite yet"}
+                    : !helpEligible
+                      ? "Only current-season Sprites are eligible for friend help"
+                      : sprite.helpers.length > 0
+                        ? `Help from ${sprite.helpers.map((friend) => friend.displayName).join(", ")}`
+                        : "No accepted friends have captured this Sprite yet"}
                 </p>
               </div>
             </div>
@@ -308,7 +318,11 @@ export function SpriteTile({
                 Friends with this Sprite
               </dt>
               <dd className="tabular-nums text-muted-foreground">
-                {availabilityKnown ? sprite.helpers.length : "Unavailable"}
+                {!availabilityKnown
+                  ? "Unavailable"
+                  : helpEligible
+                    ? sprite.helpers.length
+                    : "Not eligible"}
               </dd>
             </div>
             <div className="min-w-0">
@@ -399,16 +413,14 @@ export function SpriteTile({
             </p>
           ) : null}
           <p className="text-sm text-muted-foreground">
-            Once captured, your accepted friends will see that you may be able
-            to help.
+            {helpEligible
+              ? "Current-season captures appear as potential help to accepted friends."
+              : "Older-season captures remain tracked but are not eligible for friend help."}
           </p>
         </div>
 
-        {availabilityKnown && sprite.helpers.length > 0 ? (
-          <p className="text-pretty text-base text-muted-foreground sm:text-sm">
-            Available from{" "}
-            {sprite.helpers.map((friend) => friend.displayName).join(", ")}.
-          </p>
+        {availabilityKnown && helpEligible && sprite.helpers.length > 0 ? (
+          <FriendHelperList friends={sprite.helpers} />
         ) : null}
 
         {notice ? (

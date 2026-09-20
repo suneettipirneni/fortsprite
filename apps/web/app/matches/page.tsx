@@ -7,6 +7,7 @@ import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
 import { CatalogResults } from "@/components/catalog-results"
 import { getCollection } from "@/lib/api"
+import { latestSeasonItems } from "@/lib/catalog-season"
 
 export const metadata: Metadata = { title: "Friends can help" }
 
@@ -41,7 +42,9 @@ export default function MatchesPage() {
 
 async function MatchResults() {
   const collection = await getCollection()
-  const missing = collection.items.filter((item) => !item.owned)
+  const currentSeason = latestSeasonItems(collection.items)
+  const currentSeasonName = currentSeason.find((item) => item.season)?.season
+  const missing = currentSeason.filter((item) => !item.owned)
   const available = missing.filter((item) => item.helpers.length > 0).length
   return (
     <>
@@ -60,19 +63,23 @@ async function MatchResults() {
         ))}
       </dl>
       <p className="text-xs text-muted-foreground">
-        Ownership is self-reported and does not guarantee availability in
-        Fortnite.
+        Only {currentSeasonName ?? "latest-season"} Sprites are eligible. Ownership
+        is self-reported and does not guarantee availability in Fortnite.
       </p>
       <CatalogResults
         items={missing}
-        title="Missing Sprites"
-        description="Filter your collection gaps by name, rarity, variant, or friend availability."
+        title={
+          currentSeasonName
+            ? `${currentSeasonName} missing Sprites`
+            : "Latest-season missing Sprites"
+        }
+        description="Filter current-season collection gaps by name, rarity, variant, or friend availability."
         showAvailability
         availabilityKnown
         emptyMessage={
-          collection.progress.total === 0
-            ? "The released catalog is not available yet."
-            : "You have captured every released Sprite. Your locker is complete."
+          currentSeason.length === 0
+            ? "The current-season catalog is not available yet."
+            : "You have captured every current-season Sprite."
         }
       />
     </>

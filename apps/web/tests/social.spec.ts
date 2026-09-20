@@ -113,6 +113,15 @@ test("exact-username requests unlock mutual collection comparison", async ({
       .find((item) => item.id === theirs!.id)
       ?.helpers.map((friend) => friend.id),
   ).toEqual([fixture.actors.b.userId])
+
+  await page.goto("/matches")
+  const helperLink = page
+    .getByRole("link")
+    .filter({ hasText: fixture.actors.b.displayName })
+  await expect(helperLink).toBeVisible()
+  await expect(helperLink).toContainText(`@${fixture.actors.b.handle}`)
+
+  await page.goto("/friends")
   await page.getByRole("link", { name: "Compare" }).click()
   await expect(
     page.getByRole("heading", {

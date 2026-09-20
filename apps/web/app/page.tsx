@@ -10,6 +10,7 @@ import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
 import { SpritePortrait } from "@/components/sprite-portrait"
 import { getCollection, getSharing, getViewer } from "@/lib/api"
+import { latestSeasonItems } from "@/lib/catalog-season"
 import { completionPercent, presentSprite } from "@/lib/catalog-presentation"
 
 async function DashboardContent() {
@@ -17,7 +18,9 @@ async function DashboardContent() {
     getCollection(),
     getSharing(),
   ])
-  const missingSprites = collection.items
+  const currentSeason = latestSeasonItems(collection.items)
+  const currentSeasonName = currentSeason.find((item) => item.season)?.season
+  const missingSprites = currentSeason
     .filter((sprite) => !sprite.owned)
     .map(presentSprite)
   const availableCount = missingSprites.filter(
@@ -87,10 +90,10 @@ async function DashboardContent() {
                 id="reach-heading"
                 className="max-w-[18ch] text-balance text-3xl font-semibold tracking-tight sm:text-4xl"
               >
-                {`${availableCount} collection gaps within reach.`}
+                {`${availableCount} current-season gaps within reach.`}
               </h2>
               <p className="max-w-[54ch] text-pretty text-base text-sidebar-foreground/65 sm:text-sm">
-                {`You are missing ${missingSprites.length} released Sprites. Sharing friends have captured ${availableCount} of them. ${missingSprites.length - availableCount} have no current friend coverage.`}
+                {`You are missing ${missingSprites.length} ${currentSeasonName ?? "current-season"} Sprites. Sharing friends have captured ${availableCount} of them. ${missingSprites.length - availableCount} have no current friend coverage.`}
               </p>
             </div>
           </div>
@@ -103,9 +106,9 @@ async function DashboardContent() {
         <div className="grid grid-cols-2 gap-px bg-sidebar-border p-px sm:grid-cols-4 lg:grid-cols-2">
           {missingSprites.length === 0 ? (
             <p className="col-span-full flex items-center justify-center p-8 text-center text-sidebar-foreground/65">
-              {collection.progress.total === 0
-                ? "The Sprite catalog is not available yet."
-                : "Every released Sprite is in your locker. Keep hunting for mastery."}
+              {currentSeason.length === 0
+                ? "The current-season Sprite catalog is not available yet."
+                : "Every current-season Sprite is in your locker. Keep hunting for mastery."}
             </p>
           ) : null}
           {missingSprites.slice(0, 4).map((sprite) => (

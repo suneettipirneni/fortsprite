@@ -47,12 +47,20 @@ import {
   presentSprite,
   type Sprite,
 } from "@/lib/catalog-presentation"
+import { latestSeasonId } from "@/lib/catalog-season"
 import { updateCollectionAction } from "@/app/actions/collection"
 import {
   VirtualizedSpriteGrid,
   VirtualizedSpriteGroups,
   type CollectionGridSize,
 } from "@/components/virtualized-sprite-grid"
+import {
+  getCollectionViewServerSnapshot,
+  getCollectionViewSnapshot,
+  isCollectionView,
+  saveCollectionView,
+  subscribeToCollectionView,
+} from "@/lib/collection-view-preference"
 
 const gridSizeOptions = [
   { value: "small", label: "Small grid", icon: Grid3X3Icon },
@@ -156,7 +164,11 @@ export function CollectionExplorer({
   }
   const variantOptions = [...new Set(sprites.map((sprite) => sprite.variant))]
   const rarityOptions = [...new Set(sprites.map((sprite) => sprite.rarity))]
-  const [view, setView] = useState<"list" | "grid" | "grouped">("grid")
+  const view = useSyncExternalStore(
+    subscribeToCollectionView,
+    getCollectionViewSnapshot,
+    getCollectionViewServerSnapshot,
+  )
   const [gridSize, setGridSize] = useState<CollectionGridSize>("medium")
   const [query, setQuery] = useState("")
   const [ownership, setOwnership] = useState<OwnershipFilter>("all")
@@ -173,6 +185,7 @@ export function CollectionExplorer({
     rarity,
     sort,
   })
+  const currentSeasonId = latestSeasonId(sprites)
 
   const spriteGroups = new Map<string, Sprite[]>()
   if (view === "grouped") {
@@ -209,6 +222,7 @@ export function CollectionExplorer({
     gridSize,
     pendingIds,
     availabilityKnown: true,
+    currentSeasonId,
     notice,
     onRemovedFocus: () => activeFilterRef.current?.focus(),
     onChange: updateSprite,
@@ -359,7 +373,7 @@ export function CollectionExplorer({
               type="single"
               value={view}
               onValueChange={(value) => {
-                if (value === "list" || value === "grid" || value === "grouped") setView(value)
+                if (isCollectionView(value)) saveCollectionView(value)
               }}
               aria-label="Collection view"
               variant="outline"
