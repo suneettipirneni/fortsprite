@@ -18,6 +18,7 @@
     "@better-auth/utils": "0.4.2",
     "@fortsprite/api": "workspace:*",
     "@tanstack/react-virtual": "^3.14.13",
+    "@vercel/analytics": "^2.0.1",
     "@workspace/contracts": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.7.5",

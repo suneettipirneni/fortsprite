@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { ThemeProvider } from "@workspace/ui/components/theme-provider"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import "@workspace/ui/globals.css"
+import { Analytics } from "@vercel/analytics/next"
+
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fortsprite.net"),
@@ -41,6 +43,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
           <TooltipProvider>{children}</TooltipProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )
