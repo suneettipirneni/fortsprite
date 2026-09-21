@@ -39,6 +39,7 @@ import type { CollectionChange } from "@/lib/collection-state"
 import type { Sprite } from "@/lib/catalog-presentation"
 import { FriendHelperList } from "@/components/friend-helper-list"
 import { SpritePortrait } from "@/components/sprite-portrait"
+import { SpriteRarityBadge } from "@/components/sprite-rarity-badge"
 
 export type CollectionNotice = { spriteId: string; message: string }
 
@@ -144,9 +145,9 @@ export function SpriteTile({
                 {sprite.mastered ? (
                   <span
                     data-testid="mastered-crown"
-                    className="pointer-events-none absolute top-2 left-2 flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm ring-1 ring-primary"
+                    className="pointer-events-none absolute top-1.5 left-1.5 flex size-5 items-center justify-center rounded-full bg-mastered text-mastered-foreground shadow-sm ring-1 ring-mastered"
                   >
-                    <CrownIcon aria-hidden="true" className="size-3.5" />
+                    <CrownIcon aria-hidden="true" className="size-3" />
                   </span>
                 ) : null}
               </div>
@@ -161,12 +162,10 @@ export function SpriteTile({
                   <h3 className="min-w-0 flex-1 truncate text-base font-semibold sm:text-sm">
                     {sprite.baseName}
                   </h3>
-                  <Badge
-                    variant="outline"
-                    className="shrink-0 border-white/10 bg-white/5 px-1.5 py-0.5 text-xs text-foreground/65"
-                  >
-                    {sprite.rarity}
-                  </Badge>
+                  <SpriteRarityBadge
+                    rarity={sprite.rarity}
+                    className="shrink-0 px-1.5 py-0.5 text-xs"
+                  />
                 </div>
                 <p className="truncate text-base text-foreground/65 sm:text-sm">
                   {sprite.variant}
@@ -383,28 +382,26 @@ function SpriteDetails({
 }) {
   return (
     <>
-      <div className="grid grid-cols-[7rem_minmax(0,1fr)] overflow-hidden border-b border-white/10 bg-muted/25 sm:grid-cols-[12rem_minmax(0,1fr)]">
-        <div className="relative bg-background/35">
+      <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-center gap-3 border-b border-white/10 bg-muted/25 p-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6 sm:p-6">
+        <div className="relative shrink-0 overflow-hidden rounded-[min(2vw,var(--radius-xl))] bg-background/35 outline-1 -outline-offset-1 outline-white/10">
           <SpritePortrait
             variant={sprite.variant}
             label={`${sprite.variant} ${sprite.baseName}`}
             src={sprite.imagePath ?? undefined}
-            sizes="192px"
+            sizes="(min-width: 640px) 160px, 104px"
             className="aspect-square w-full rounded-none"
           />
           {sprite.mastered ? (
-            <span className="pointer-events-none absolute top-3 left-3 flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm ring-1 ring-primary">
-              <CrownIcon aria-hidden="true" className="size-4" />
+            <span className="pointer-events-none absolute top-1.5 left-1.5 flex size-5 items-center justify-center rounded-full bg-mastered text-mastered-foreground shadow-sm ring-1 ring-mastered">
+              <CrownIcon aria-hidden="true" className="size-3" />
             </span>
           ) : null}
         </div>
-        <div className="flex min-w-0 flex-col justify-center gap-2.5 px-4 py-5 sm:p-6 lg:pr-14">
+        <div className="flex min-w-0 flex-col justify-center gap-2.5 py-1 sm:py-2 lg:pr-10">
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-            <Badge variant="outline" className="bg-background/35">
-              {sprite.rarity}
-            </Badge>
+            <SpriteRarityBadge rarity={sprite.rarity} />
             <Badge
-              variant={sprite.owned ? "default" : "outline"}
+              variant={sprite.owned ? "captured" : "outline"}
               className={!sprite.owned ? "bg-background/35" : undefined}
             >
               {sprite.owned ? (
@@ -415,7 +412,7 @@ function SpriteDetails({
               {sprite.owned ? "Captured" : "Missing"}
             </Badge>
             {sprite.mastered ? (
-              <Badge variant="secondary">
+              <Badge variant="mastered">
                 <CrownIcon aria-hidden="true" data-icon="inline-start" />
                 Mastered
               </Badge>

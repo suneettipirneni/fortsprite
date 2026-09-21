@@ -186,21 +186,21 @@ function SpriteGroupHeading({
     <div className="flex min-w-0 flex-wrap items-center gap-2 border-b border-white/10 pb-3">
       <h2 className="truncate text-lg font-semibold">{baseName}</h2>
       <Badge
-        variant="outline"
+        variant="captured"
         aria-label={`${captured} of ${total} variants captured`}
-        className="shrink-0 border-white/10 bg-white/5 font-normal tabular-nums text-muted-foreground"
+        className="shrink-0 font-normal tabular-nums"
       >
-        <span className="text-foreground">{captured}</span>
+        <span className="font-semibold">{captured}</span>
         <span aria-hidden="true">/</span>
         <span>{total}</span>
         <span>captured</span>
       </Badge>
       <Badge
-        variant="outline"
+        variant="mastered"
         aria-label={`${mastered} of ${total} variants mastered`}
-        className="shrink-0 border-white/10 bg-white/5 font-normal tabular-nums text-muted-foreground"
+        className="shrink-0 font-normal tabular-nums"
       >
-        <span className="text-foreground">{mastered}</span>
+        <span className="font-semibold">{mastered}</span>
         <span aria-hidden="true">/</span>
         <span>{total}</span>
         <span>mastered</span>

@@ -17,6 +17,14 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-captured: var(--captured);
+  --color-captured-foreground: var(--captured-foreground);
+  --color-mastered: var(--mastered);
+  --color-mastered-foreground: var(--mastered-foreground);
+  --color-rarity-rare: var(--rarity-rare);
+  --color-rarity-epic: var(--rarity-epic);
+  --color-rarity-legendary: var(--rarity-legendary);
+  --color-rarity-mythic: var(--rarity-mythic);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -59,6 +67,14 @@
   --popover-foreground: oklch(0.98 0.01 240);
   --primary: oklch(0.9 0.17 136);
   --primary-foreground: oklch(0.2 0.065 257);
+  --captured: var(--primary);
+  --captured-foreground: var(--primary-foreground);
+  --mastered: oklch(0.84 0.17 87);
+  --mastered-foreground: oklch(0.22 0.045 72);
+  --rarity-rare: oklch(0.72 0.17 248);
+  --rarity-epic: oklch(0.73 0.19 305);
+  --rarity-legendary: oklch(0.77 0.18 58);
+  --rarity-mythic: oklch(0.84 0.17 87);
   --secondary: oklch(0.68 0.08 230 / 22%);
   --secondary-foreground: oklch(0.98 0.01 240);
   --muted: oklch(0.57 0.07 236 / 18%);
@@ -142,6 +158,20 @@
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1;
+}
+
+@utility rarity-special-badge {
+  border-color: oklch(1 0 0 / 14%);
+  background-color: oklch(1 0 0 / 4%);
+  background-image: linear-gradient(
+    105deg,
+    color-mix(in oklch, var(--rarity-rare) 20%, transparent) 0%,
+    color-mix(in oklch, var(--rarity-epic) 20%, transparent) 27%,
+    oklch(0.72 0.22 350 / 20%) 51%,
+    color-mix(in oklch, var(--rarity-legendary) 20%, transparent) 75%,
+    color-mix(in oklch, var(--captured) 20%, transparent) 100%
+  );
+  color: var(--foreground);
 }
 
 @layer base {
