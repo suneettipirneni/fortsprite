@@ -41,6 +41,10 @@ export interface PublicProfile {
   initials: string
 }
 
+export type SpriteHelper = PublicProfile & {
+  mastered: boolean
+}
+
 export interface CatalogItem {
   id: string
   slug: string
@@ -72,7 +76,7 @@ export type CollectionEntry = CollectionState & {
 
 export type CollectionItem = CatalogItem &
   CollectionEntry & {
-    helpers: PublicProfile[]
+    helpers: SpriteHelper[]
   }
 
 export interface CollectionProgress {

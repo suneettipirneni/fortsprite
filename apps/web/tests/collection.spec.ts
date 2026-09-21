@@ -452,7 +452,7 @@ test("collection switches between list and three grid sizes", async ({ page }, t
   await page.getByRole("radio", { name: "Medium grid", exact: true }).click()
   const mediumWidth = await width()
   await screenshot("grid-medium")
-  expect(mediumWidth).toBeGreaterThanOrEqual(smallWidth)
+  expect(mediumWidth).toBeGreaterThan(smallWidth)
   await page.getByRole("radio", { name: "Large grid", exact: true }).click()
   expect(await width()).toBeGreaterThan(mediumWidth)
   await screenshot("grid-large")
@@ -460,6 +460,9 @@ test("collection switches between list and three grid sizes", async ({ page }, t
   await page.getByRole("radio", { name: "List view", exact: true }).click()
   await expect(page.getByRole("radiogroup", { name: "Grid size", exact: true })).toHaveCount(0)
   expect(await tile(page).evaluate((element) => getComputedStyle(element).flexDirection)).toBe("row")
+  await expect(
+    page.locator("article[data-sprite-id]").getByText(/^\d+ can help/),
+  ).toHaveCount(0)
   await expect(captured(page)).toBeVisible()
   await captured(page).click()
   await expect(captured(page)).toHaveAttribute("aria-pressed", "true")

@@ -1,6 +1,6 @@
 import Link from "next/link"
-import { ArrowUpRightIcon } from "lucide-react"
-import type { PublicProfile } from "@workspace/contracts"
+import { ArrowUpRightIcon, CrownIcon } from "lucide-react"
+import type { SpriteHelper } from "@workspace/contracts"
 
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Badge } from "@workspace/ui/components/badge"
@@ -10,7 +10,7 @@ export function FriendHelperList({
   friends,
   className,
 }: {
-  friends: PublicProfile[]
+  friends: SpriteHelper[]
   className?: string
 }) {
   return (
@@ -44,10 +44,18 @@ export function FriendHelperList({
                   </span>
                 ) : null}
               </span>
-              <ArrowUpRightIcon
-                aria-hidden="true"
-                className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
-              />
+              <span className="flex shrink-0 items-center gap-2">
+                {friend.mastered ? (
+                  <Badge variant="mastered">
+                    <CrownIcon aria-hidden="true" data-icon="inline-start" />
+                    Mastered
+                  </Badge>
+                ) : null}
+                <ArrowUpRightIcon
+                  aria-hidden="true"
+                  className="size-4 text-muted-foreground transition-colors group-hover:text-foreground"
+                />
+              </span>
             </Link>
           </li>
         ))}

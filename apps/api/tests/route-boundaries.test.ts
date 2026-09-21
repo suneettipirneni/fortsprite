@@ -72,6 +72,7 @@ test("collection routes call the injected helper reader only after authenticatio
       return [
         {
           spriteId,
+          mastered: true,
           profile: {
             id: friend,
             handle: "route_friend",
@@ -93,6 +94,11 @@ test("collection routes call the injected helper reader only after authenticatio
     body.items.find((item: { id: string }) => item.id === spriteId).helpers[0]
       .id,
     friend,
+  )
+  assert.equal(
+    body.items.find((item: { id: string }) => item.id === spriteId).helpers[0]
+      .mastered,
+    true,
   )
   assert.equal(
     (await app.request("/alternate/collection?unknown=true", { headers }))

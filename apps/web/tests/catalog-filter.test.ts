@@ -38,6 +38,7 @@ const helper = {
   displayName: "Friend",
   initials: "F",
   fortniteDisplayName: null,
+  mastered: false,
 }
 const all = {
   query: "",

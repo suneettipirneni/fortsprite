@@ -69,7 +69,7 @@ function columnsForWidth(
     if (width >= 1024) return 8
     if (width >= 768) return 6
     if (width >= 576) return 4
-    if (width >= 400) return 3
+    if (width >= 336) return 3
     return 2
   }
 

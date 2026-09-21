@@ -274,7 +274,12 @@ export async function changeSharing(
 export async function getHelpers(viewerId: string, database = db) {
   const rows = await database
     .select({
-      spriteIds: sql<string[]>`array_agg(${collectionEntries.spriteId})`,
+      entries: sql<{ spriteId: string; mastered: boolean }[]>`
+        jsonb_agg(jsonb_build_object(
+          'spriteId', ${collectionEntries.spriteId},
+          'mastered', ${collectionEntries.mastered}
+        ))
+      `,
       profile: profileColumns,
     })
     .from(collectionEntries)
@@ -291,7 +296,11 @@ export async function getHelpers(viewerId: string, database = db) {
     .groupBy(user.id)
   return rows.flatMap((row) => {
     const profile = publicProfile(row.profile)
-    return row.spriteIds.map((spriteId) => ({ spriteId, profile }))
+    return row.entries.map(({ spriteId, mastered }) => ({
+      spriteId,
+      mastered,
+      profile,
+    }))
   })
 }
 

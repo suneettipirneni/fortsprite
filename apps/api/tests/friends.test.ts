@@ -69,7 +69,7 @@ before(async () => {
     },
   ])
   await db.insert(collectionEntries).values([
-    { userId: friendId, spriteId, owned: true },
+    { userId: friendId, spriteId, owned: true, mastered: true },
     { userId: friendId, spriteId: previousSeasonSpriteId, owned: true },
   ])
 })
@@ -104,6 +104,7 @@ test("accepted sharing exposes only current-season helpers and comparison items"
   assert.equal(helpers.length, 1)
   const [helper] = helpers
   assert.equal(helper?.spriteId, spriteId)
+  assert.equal(helper?.mastered, true)
   assert.equal(helper?.profile.id, friendId)
   const comparison = await getComparison(viewerId, friendId)
   assert.deepEqual(comparison.forYou.map((item) => item.id), [spriteId])

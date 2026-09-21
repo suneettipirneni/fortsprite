@@ -1,4 +1,5 @@
 import { Hono } from "hono"
+import type { SpriteHelper } from "@workspace/contracts"
 import {
   type ApiEnvironment,
   type SessionReader,
@@ -46,10 +47,10 @@ export function createCollectionRoutes({
       getCollection(context.get("userId"), query.data, database),
       readHelpers(context.get("userId"), database),
     ])
-    const helpers = new Map<string, (typeof availableHelpers)[number]["profile"][]>()
+    const helpers = new Map<string, SpriteHelper[]>()
     for (const helper of availableHelpers) {
       const profiles = helpers.get(helper.spriteId) ?? []
-      profiles.push(helper.profile)
+      profiles.push({ ...helper.profile, mastered: helper.mastered })
       helpers.set(helper.spriteId, profiles)
     }
     return context.json({

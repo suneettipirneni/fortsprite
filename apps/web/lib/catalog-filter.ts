@@ -1,6 +1,6 @@
-import type { CatalogItem, PublicProfile } from "@workspace/contracts"
+import type { CatalogItem, SpriteHelper } from "@workspace/contracts"
 
-export type CatalogResult = CatalogItem & { helpers?: PublicProfile[] }
+export type CatalogResult = CatalogItem & { helpers?: SpriteHelper[] }
 export type CatalogFilters = {
   query: string
   rarity: string

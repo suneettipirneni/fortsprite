@@ -80,13 +80,16 @@ export function SpriteTile({
   const [dialogOpen, setDialogOpen] = useState(false)
   const helpEligible =
     currentSeasonId !== null && sprite.sourceSeasonId === currentSeasonId
+  const masteredHelperCount = sprite.helpers.filter(
+    (friend) => friend.mastered,
+  ).length
   const helperLabel = !availabilityKnown
     ? "Friend availability unavailable"
     : !helpEligible
       ? "Not eligible for friend help outside the current season"
       : sprite.helpers.length === 1
         ? "1 friend with this Sprite"
-        : `${sprite.helpers.length} friends with this Sprite`
+        : `${sprite.helpers.length} friends with this Sprite${masteredHelperCount > 0 ? `, ${masteredHelperCount} mastered` : ""}`
   const restoreTriggerFocus = (event: Event) => {
     event.preventDefault()
     if (triggerRef.current?.isConnected) triggerRef.current.focus()
@@ -182,12 +185,16 @@ export function SpriteTile({
                 >
                   {sprite.variant}
                 </p>
-                {availabilityKnown &&
+                {view !== "list" &&
+                availabilityKnown &&
                 helpEligible &&
                 sprite.helpers.length > 0 &&
                 !sprite.owned ? (
-                  <p className="mt-1 text-base text-muted-foreground sm:text-sm">
+                  <p className="mt-1 truncate text-base text-muted-foreground sm:text-sm">
                     {sprite.helpers.length} can help
+                    {masteredHelperCount > 0
+                      ? ` · ${masteredHelperCount} mastered`
+                      : ""}
                   </p>
                 ) : null}
               </div>
@@ -223,7 +230,7 @@ export function SpriteTile({
                     : !helpEligible
                       ? "Only current-season Sprites are eligible for friend help"
                       : sprite.helpers.length > 0
-                        ? `Help from ${sprite.helpers.map((friend) => friend.displayName).join(", ")}`
+                        ? `Help from ${sprite.helpers.map((friend) => `${friend.displayName}${friend.mastered ? " (mastered)" : ""}`).join(", ")}`
                         : "No accepted friends have captured this Sprite yet"}
                 </p>
               </div>
