@@ -50,10 +50,10 @@ const verifiedDateFormatter = new Intl.DateTimeFormat("en-US", {
 })
 
 const collectionToggleClassName =
-  "h-12 w-full justify-start gap-2 rounded-lg border-white/12 px-3 text-base font-medium text-foreground/75 hover:border-white/24 hover:bg-white/5 hover:text-foreground aria-pressed:bg-foreground/95 data-[state=on]:border-transparent data-[state=on]:bg-foreground/95 data-[state=on]:text-background data-[state=on]:hover:bg-foreground disabled:text-foreground/50 disabled:opacity-100 sm:h-10 sm:text-sm"
+  "h-12 w-full justify-start gap-2 rounded-lg border-white/12 px-3 text-base font-medium text-foreground/75 hover:border-white/24 hover:bg-white/5 hover:text-foreground disabled:text-foreground/50 disabled:opacity-100 sm:h-10 sm:text-sm"
 
 const quickToggleClassName =
-  "h-11 w-full min-w-0 rounded-lg border-white/12 px-2 text-foreground/65 hover:border-white/24 hover:bg-white/5 hover:text-foreground aria-pressed:border-transparent aria-pressed:bg-foreground/95 data-[state=on]:bg-foreground/95 aria-pressed:text-background aria-pressed:hover:bg-foreground disabled:text-foreground/35 disabled:opacity-100 focus-visible:ring-inset sm:h-9"
+  "h-11 w-full min-w-0 rounded-lg border-white/12 px-2 text-foreground/65 hover:border-white/24 hover:bg-white/5 hover:text-foreground disabled:text-foreground/35 disabled:opacity-100 focus-visible:ring-inset sm:h-9"
 
 export function SpriteTile({
   sprite,
@@ -159,7 +159,12 @@ export function SpriteTile({
                 )}
               >
                 <div className="flex items-center justify-between gap-1 sm:gap-2">
-                  <h3 className="min-w-0 flex-1 truncate text-base font-semibold sm:text-sm">
+                  <h3
+                    className={cn(
+                      "min-w-0 flex-1 truncate font-semibold",
+                      view === "grid" ? "text-sm" : "text-base sm:text-sm",
+                    )}
+                  >
                     {sprite.baseName}
                   </h3>
                   <SpriteRarityBadge
@@ -167,7 +172,14 @@ export function SpriteTile({
                     className="shrink-0 px-1.5 py-0.5 text-xs"
                   />
                 </div>
-                <p className="truncate text-base text-foreground/65 sm:text-sm">
+                <p
+                  className={cn(
+                    "truncate text-foreground/65",
+                    view === "grid"
+                      ? "text-xs sm:text-sm"
+                      : "text-base sm:text-sm",
+                  )}
+                >
                   {sprite.variant}
                 </p>
                 {availabilityKnown &&
@@ -242,7 +254,7 @@ export function SpriteTile({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Toggle
-                      variant="outline"
+                      variant="captured"
                       aria-label={`Captured ${sprite.variant} ${sprite.baseName}`}
                       pressed={sprite.owned}
                       onPressedChange={(checked) =>
@@ -267,7 +279,7 @@ export function SpriteTile({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Toggle
-                      variant="outline"
+                      variant="mastered"
                       aria-label={`Mastered ${sprite.variant} ${sprite.baseName}`}
                       pressed={sprite.mastered}
                       disabled={!sprite.owned}
@@ -521,7 +533,7 @@ function SpriteDetails({
               </p>
             ) : null}
             <Toggle
-              variant="outline"
+              variant="captured"
               aria-label={`Captured ${sprite.variant} ${sprite.baseName}`}
               pressed={sprite.owned}
               onPressedChange={(checked) =>
@@ -537,7 +549,7 @@ function SpriteDetails({
               Captured
             </Toggle>
             <Toggle
-              variant="outline"
+              variant="mastered"
               aria-label={`Mastered ${sprite.variant} ${sprite.baseName}`}
               aria-describedby={
                 !sprite.owned ? `dialog-hint-${sprite.id}` : undefined
