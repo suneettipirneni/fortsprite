@@ -8,6 +8,7 @@ import { Button } from "@workspace/ui/components/button"
 
 const DISMISSED_AT_KEY = "fortsprite:pwa-install-dismissed-at"
 const PROMPT_AGAIN_AFTER_MS = 14 * 24 * 60 * 60 * 1000
+const PROMPT_DELAY_MS = 4_000
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
@@ -50,17 +51,22 @@ export function PwaInstallPrompt() {
     )
       return
 
+    let revealTimer: number | undefined
+    const reveal = () => {
+      window.clearTimeout(revealTimer)
+      revealTimer = window.setTimeout(() => setVisible(true), PROMPT_DELAY_MS)
+    }
     const iosPromptTimer = window.setTimeout(() => {
       if (isIosSafari()) {
         setShowIosInstructions(true)
-        setVisible(true)
+        reveal()
       }
     }, 0)
 
     const handleInstallPrompt = (event: Event) => {
       event.preventDefault()
       setInstallEvent(event as BeforeInstallPromptEvent)
-      setVisible(true)
+      reveal()
     }
     const handleInstalled = () => {
       setVisible(false)
@@ -73,6 +79,7 @@ export function PwaInstallPrompt() {
 
     return () => {
       window.clearTimeout(iosPromptTimer)
+      window.clearTimeout(revealTimer)
       window.removeEventListener("beforeinstallprompt", handleInstallPrompt)
       window.removeEventListener("appinstalled", handleInstalled)
     }
@@ -111,7 +118,7 @@ export function PwaInstallPrompt() {
   return (
     <aside
       aria-label="Install FortSprite"
-      className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-50 mx-auto max-w-md rounded-xl border border-white/15 bg-popover/96 p-4 text-popover-foreground shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:right-4 sm:bottom-4"
+      className="install-safe-bottom fixed inset-x-3 z-50 mx-auto max-w-md rounded-xl bg-popover/96 p-4 text-popover-foreground shadow-2xl ring-1 ring-white/12 backdrop-blur-xl sm:inset-x-auto sm:right-4 sm:bottom-4"
     >
       <div className="flex items-start gap-3">
         <Image
@@ -123,11 +130,11 @@ export function PwaInstallPrompt() {
         />
         <div className="min-w-0 flex-1">
           <p className="font-semibold">Install FortSprite</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {showIosInstructions
-              ? "For quick access, tap Share, then Add to Home Screen."
-              : "Keep your collection one tap away in a full-screen app."}
-          </p>
+          {!showIosInstructions ? (
+            <p className="mt-1 text-sm text-muted-foreground">
+              Keep your collection one tap away in a full-screen app.
+            </p>
+          ) : null}
           {installEvent ? (
             <Button type="button" size="sm" className="mt-3" onClick={install}>
               <DownloadIcon />
@@ -146,9 +153,13 @@ export function PwaInstallPrompt() {
           size="icon-sm"
           aria-label="Dismiss install suggestion"
           onClick={dismiss}
-          className="-mt-1 -mr-1 shrink-0"
+          className="relative -mt-1 -mr-1 shrink-0"
         >
           <XIcon />
+          <span
+            aria-hidden="true"
+            className="pointer-fine:hidden absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2"
+          />
         </Button>
       </div>
     </aside>

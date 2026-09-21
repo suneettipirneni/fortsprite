@@ -34,7 +34,7 @@ test("a verified passkey atomically creates the account and its first session", 
   await page.goto("/sign-in")
   await page.getByRole("textbox", { name: "Username" }).fill(username)
   await page
-    .getByRole("button", { name: "Create account with a passkey" })
+    .getByRole("button", { name: "Create account" })
     .click()
   await expect(
     page.getByRole("alert").filter({
@@ -57,7 +57,7 @@ test("a verified passkey atomically creates the account and its first session", 
     await route.continue({ postData: JSON.stringify(body) })
   })
   await page
-    .getByRole("button", { name: "Create account with a passkey" })
+    .getByRole("button", { name: "Create account" })
     .click()
   await expect(
     page.getByRole("alert").filter({
@@ -68,7 +68,7 @@ test("a verified passkey atomically creates the account and its first session", 
 
   removeCreateSession = false
   await page
-    .getByRole("button", { name: "Create account with a passkey" })
+    .getByRole("button", { name: "Create account" })
     .click()
   await expect(page).toHaveURL(/\/$/)
 
@@ -105,14 +105,14 @@ test("protected redirects preserve destination and the account-neutral sign-in p
     page.getByRole("heading", { name: "Keep your squad in sync." }),
   ).toBeVisible()
   await expect(
-    page.getByRole("button", { name: "Create account with a passkey" }),
+    page.getByRole("button", { name: "Create account" }),
   ).toBeDisabled()
   await expect(page.getByRole("textbox", { name: "Username" })).toHaveAttribute(
     "required",
     "",
   )
   await expect(
-    page.getByRole("button", { name: "Sign in with a passkey" }),
+    page.getByRole("button", { name: "Sign in" }),
   ).toBeVisible()
   expect(
     await page.evaluate(

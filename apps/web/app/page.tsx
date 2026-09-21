@@ -32,11 +32,11 @@ async function DashboardContent() {
 
   return (
     <>
-      <section aria-labelledby="progress-heading">
+      <section aria-labelledby="progress-heading" className="@container">
         <h2 id="progress-heading" className="sr-only">
           Collection progress
         </h2>
-        <dl className="grid grid-cols-2 border-y border-border sm:grid-cols-4">
+        <dl className="grid grid-cols-2 border-y border-white/10 @min-[36rem]:grid-cols-4">
           <div className="flex flex-col gap-1 py-5 pr-4">
             <dt className="truncate text-base text-muted-foreground sm:text-sm">
               Collected
@@ -45,7 +45,7 @@ async function DashboardContent() {
               {collection.progress.owned}
             </dd>
           </div>
-          <div className="flex flex-col gap-1 border-l border-border py-5 pl-4 sm:px-6">
+          <div className="flex flex-col gap-1 border-l border-white/10 py-5 pl-4 @min-[36rem]:px-6">
             <dt className="truncate text-base text-muted-foreground sm:text-sm">
               Completion
             </dt>
@@ -57,7 +57,7 @@ async function DashboardContent() {
               %
             </dd>
           </div>
-          <div className="flex flex-col gap-1 border-t border-border py-5 pr-4 sm:border-t-0 sm:border-l sm:px-6">
+          <div className="flex flex-col gap-1 border-t border-white/10 py-5 pr-4 @min-[36rem]:border-t-0 @min-[36rem]:border-l @min-[36rem]:px-6">
             <dt className="truncate text-base text-muted-foreground sm:text-sm">
               Sharing friends
             </dt>
@@ -65,7 +65,7 @@ async function DashboardContent() {
               {acceptedFriends.length}
             </dd>
           </div>
-          <div className="flex flex-col gap-1 border-t border-l border-border py-5 pl-4 sm:border-t-0 sm:pl-6">
+          <div className="flex flex-col gap-1 border-t border-l border-white/10 py-5 pl-4 @min-[36rem]:border-t-0 @min-[36rem]:pl-6">
             <dt className="truncate text-base text-muted-foreground sm:text-sm">
               Mastered
             </dt>
@@ -78,7 +78,7 @@ async function DashboardContent() {
 
       <section
         aria-labelledby="reach-heading"
-        className="grid overflow-hidden rounded-xl bg-sidebar text-sidebar-foreground ring-1 ring-sidebar-border lg:grid-cols-[7fr_5fr]"
+        className="grid overflow-hidden rounded-2xl bg-card/80 text-card-foreground shadow-sm ring-1 ring-white/10 backdrop-blur-sm lg:grid-cols-[3fr_2fr]"
       >
         <div className="flex flex-col justify-between gap-8 p-5 sm:p-8">
           <div className="flex flex-col gap-4">
@@ -103,7 +103,7 @@ async function DashboardContent() {
             </Button>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-px bg-sidebar-border p-px sm:grid-cols-4 lg:grid-cols-2">
+        <div className="grid grid-cols-2 gap-px bg-white/8 p-px sm:grid-cols-4 lg:grid-cols-2">
           {missingSprites.length === 0 ? (
             <p className="col-span-full flex items-center justify-center p-8 text-center text-sidebar-foreground/65">
               {currentSeason.length === 0
@@ -114,7 +114,7 @@ async function DashboardContent() {
           {missingSprites.slice(0, 4).map((sprite) => (
             <div
               key={sprite.id}
-              className="flex min-w-0 flex-col gap-3 bg-sidebar p-4"
+              className="flex min-w-0 flex-col gap-3 bg-background/32 p-4"
             >
               <SpritePortrait
                 variant={sprite.variant}
@@ -134,7 +134,7 @@ async function DashboardContent() {
         </div>
       </section>
 
-      <div className="grid gap-10 lg:grid-cols-[7fr_5fr]">
+      <div className="grid gap-8 lg:grid-cols-[3fr_2fr]">
         <section aria-labelledby="nearby-heading" className="min-w-0">
           <div className="flex items-end justify-between gap-4">
             <div>
@@ -164,7 +164,7 @@ async function DashboardContent() {
               <Link
                 key={sprite.id}
                 href="/collection"
-                className="group grid min-w-0 grid-cols-[5rem_1fr] gap-4 rounded-xl border border-border bg-card p-3 outline-none hover:bg-accent/45 focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="group grid min-w-0 grid-cols-[5rem_1fr] gap-4 rounded-xl bg-card/72 p-3 shadow-sm ring-1 ring-white/10 outline-none hover:bg-accent/45 focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <SpritePortrait
                   variant={sprite.variant}
@@ -239,8 +239,8 @@ async function DashboardContent() {
 export default function DashboardPage() {
   return (
     <AuthenticatedAppShell>
-      <div className="mx-auto flex w-full max-w-[90rem] flex-col gap-10 p-4 sm:p-6 lg:p-8">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="app-page flex flex-col gap-8 sm:gap-10">
+        <div className="flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between sm:pb-8">
           <div>
             <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
               Collection command

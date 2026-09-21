@@ -15,8 +15,9 @@ export const metadata: Metadata = { title: "Help" }
 export default function HelpPage() {
   return (
     <AuthenticatedAppShell>
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 p-4 sm:p-6 lg:p-8">
-        <div>
+      <div className="app-page">
+        <div className="flex max-w-3xl flex-col gap-8">
+          <div className="border-b border-white/10 pb-6 sm:pb-8">
           <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
             Help
           </p>
@@ -27,8 +28,8 @@ export default function HelpPage() {
             FortSprite coordinates collectors. It does not connect to or modify
             a Fortnite account.
           </p>
-        </div>
-        <Accordion type="single" collapsible>
+          </div>
+          <Accordion type="single" collapsible>
           <AccordionItem value="availability">
             <AccordionTrigger>
               What does “available to help” mean?
@@ -55,8 +56,9 @@ export default function HelpPage() {
               user-provided. Availability follows ownership and friendship.
             </AccordionContent>
           </AccordionItem>
-        </Accordion>
-        <SupportContact />
+          </Accordion>
+          <SupportContact />
+        </div>
       </div>
     </AuthenticatedAppShell>
   )

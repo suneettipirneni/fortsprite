@@ -286,10 +286,10 @@ test("a verified resident passkey can be added and used to sign back in", async 
     authenticatorId: backupAuthenticatorId,
     isUserVerified: false,
   })
-  await page.getByRole("button", { name: "Sign in with a passkey" }).click()
+  await page.getByRole("button", { name: "Sign in" }).click()
   await expect(
     page.getByRole("alert").filter({
-      hasText: "That passkey could not sign you in. Please try again.",
+      hasText: "We could not sign you in. Please try again.",
     }),
   ).toBeVisible()
   expect((await page.request.get("/api/v1/me")).status()).toBe(401)
@@ -298,7 +298,7 @@ test("a verified resident passkey can be added and used to sign back in", async 
     authenticatorId: backupAuthenticatorId,
     isUserVerified: true,
   })
-  await page.getByRole("button", { name: "Sign in with a passkey" }).click()
+  await page.getByRole("button", { name: "Sign in" }).click()
   await expect(page).toHaveURL(/\/$/)
   expect((await page.request.get("/api/v1/me")).status()).toBe(200)
 })

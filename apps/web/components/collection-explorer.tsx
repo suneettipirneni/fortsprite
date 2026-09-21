@@ -326,27 +326,27 @@ export function CollectionExplorer({
       <div
         aria-live="polite"
         aria-atomic="true"
-        className="flex shrink-0 gap-6 tabular-nums sm:gap-8"
+        className="grid shrink-0 grid-cols-2 gap-0 tabular-nums"
       >
-        <div>
-          <p className="text-sm">
-            <span className="text-2xl font-semibold text-foreground">
+        <div className="pr-6">
+          <p className="text-base sm:text-sm">
+            <span className="text-3xl font-semibold tracking-tight text-foreground">
               {ownedCount}
             </span>{" "}
             captured
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-base text-muted-foreground sm:text-sm">
             {completionPercent(ownedCount, sprites.length)}% of {sprites.length}
           </p>
         </div>
-        <div className="border-l border-white/15 pl-6 sm:pl-8">
-          <p className="text-sm">
-            <span className="text-2xl font-semibold text-foreground">
+        <div className="border-l border-white/10 pl-6 sm:pl-8">
+          <p className="text-base sm:text-sm">
+            <span className="text-3xl font-semibold tracking-tight text-foreground">
               {masteredCount}
             </span>{" "}
             mastered
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-base text-muted-foreground sm:text-sm">
             {completionPercent(masteredCount, sprites.length)}% of{" "}
             {sprites.length}
           </p>
@@ -354,7 +354,7 @@ export function CollectionExplorer({
       </div>
       <div
         data-testid="collection-content"
-        className="isolate flex flex-col gap-5 border-t border-white/15 pt-5 antialiased sm:col-span-2"
+        className="isolate flex flex-col gap-6 border-t border-white/10 pt-6 antialiased sm:col-span-2 sm:pt-8"
       >
         <div className="flex flex-col gap-3">
           <div className="grid min-w-0 gap-2 xl:grid-cols-[minmax(0,1fr)_11rem]">
@@ -387,7 +387,7 @@ export function CollectionExplorer({
               </FilterSelect>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="hidden max-w-[72ch] text-pretty text-sm text-muted-foreground sm:block">
             Combine tokens to narrow the catalog, such as Captured + Not
             mastered. Multiple variants or rarities match any selected value.
           </p>
@@ -398,13 +398,13 @@ export function CollectionExplorer({
             {notice.message}
           </p>
         ) : null}
-        <p className="text-xs text-muted-foreground">
+        <p className="text-base text-muted-foreground sm:text-sm">
           {updatedAt
             ? `Collection updated ${formatUtcDateTime(new Date(updatedAt))}.`
             : "No collection changes saved yet."}
         </p>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p role="status" className="text-xs text-muted-foreground">
+          <p role="status" className="text-base text-muted-foreground sm:text-sm">
             Showing {filteredSprites.length} of {sprites.length} Sprites
           </p>
           <div className="flex flex-wrap items-center gap-3">
@@ -418,13 +418,13 @@ export function CollectionExplorer({
               variant="outline"
               spacing={0}
             >
-              <ToggleGroupItem value="list" aria-label="List view" className="h-11 px-3">
+              <ToggleGroupItem value="list" aria-label="List view" className="h-11 px-3 sm:h-9">
                 <ListIcon aria-hidden="true" /> List
               </ToggleGroupItem>
-              <ToggleGroupItem value="grid" aria-label="Grid view" className="h-11 px-3">
+              <ToggleGroupItem value="grid" aria-label="Grid view" className="h-11 px-3 sm:h-9">
                 <Grid2X2Icon aria-hidden="true" /> Grid
               </ToggleGroupItem>
-              <ToggleGroupItem value="grouped" aria-label="Grouped view" className="h-11 px-3">
+              <ToggleGroupItem value="grouped" aria-label="Grouped view" className="h-11 px-3 sm:h-9">
                 <Rows3Icon aria-hidden="true" /> Grouped
               </ToggleGroupItem>
             </ToggleGroup>
@@ -447,7 +447,7 @@ export function CollectionExplorer({
                       <ToggleGroupItem
                         value={value}
                         aria-label={label}
-                        className="size-11 aria-checked:bg-muted"
+                        className="size-11 aria-checked:bg-muted sm:size-9"
                       >
                         <Icon aria-hidden="true" />
                       </ToggleGroupItem>
@@ -495,7 +495,7 @@ export function CollectionExplorer({
           </Empty>
         )}
         {sprites.length > 0 ? (
-          <p className="border-t border-white/10 pt-4 text-xs text-muted-foreground">
+          <p className="border-t border-white/10 pt-5 text-base text-muted-foreground sm:text-sm">
             Catalog source checked{" "}
             {formatUtcDate(
               new Date(

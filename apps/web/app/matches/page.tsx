@@ -14,8 +14,8 @@ export const metadata: Metadata = { title: "Friends can help" }
 export default function MatchesPage() {
   return (
     <AuthenticatedAppShell>
-      <div className="mx-auto max-w-6xl space-y-8 p-4 sm:p-6 lg:p-8">
-        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+      <div className="app-page flex flex-col gap-8">
+        <div className="flex max-w-6xl flex-col justify-between gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:pb-8">
           <div>
             <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
               Friends can help
@@ -23,7 +23,7 @@ export default function MatchesPage() {
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               Find your next capture.
             </h1>
-            <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
+            <p className="mt-2 max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
               See which missing Sprites your sharing friends have captured. Each
               Sprite appears once, with all eligible friends underneath.
             </p>
@@ -47,7 +47,7 @@ async function MatchResults() {
   const missing = currentSeason.filter((item) => !item.owned)
   const available = missing.filter((item) => item.helpers.length > 0).length
   return (
-    <>
+    <div className="flex max-w-6xl flex-col gap-8">
       <dl className="grid grid-cols-1 divide-y divide-border border-y border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
         {[
           ["Missing", missing.length],
@@ -62,7 +62,7 @@ async function MatchResults() {
           </div>
         ))}
       </dl>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-base text-muted-foreground sm:text-sm">
         Only {currentSeasonName ?? "latest-season"} Sprites are eligible. Ownership
         is self-reported and does not guarantee availability in Fortnite.
       </p>
@@ -82,6 +82,6 @@ async function MatchResults() {
             : "You have captured every current-season Sprite."
         }
       />
-    </>
+    </div>
   )
 }

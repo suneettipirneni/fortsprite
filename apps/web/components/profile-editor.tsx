@@ -42,7 +42,7 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
   }, null)
 
   return (
-    <form action={formAction} className="max-w-xl space-y-6">
+    <form action={formAction} className="flex max-w-xl flex-col gap-6">
       <fieldset disabled={pending}>
         <legend className="sr-only">Edit your FortSprite profile</legend>
         <FieldGroup>
@@ -113,7 +113,7 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
           </Field>
         </FieldGroup>
       </fieldset>
-      <Button type="submit" className="min-h-11" disabled={pending}>
+      <Button type="submit" size="lg" disabled={pending}>
         {pending ? "Saving…" : "Save profile"}
       </Button>
       {result && !pending ? (

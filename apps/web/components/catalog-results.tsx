@@ -44,12 +44,14 @@ export function CatalogResults({
   })
 
   return (
-    <section aria-labelledby={titleId} className="min-w-0 space-y-5">
+    <section aria-labelledby={titleId} className="flex min-w-0 flex-col gap-5">
       <div>
         <h2 id={titleId} className="text-2xl font-semibold tracking-tight">
           {title}
         </h2>
-        <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+        <p className="mt-2 text-pretty text-base text-muted-foreground sm:text-sm">
+          {description}
+        </p>
       </div>
       <div className="space-y-2">
         <Input
@@ -105,7 +107,7 @@ export function CatalogResults({
           </FilterSelect>
         ) : null}
       </div>
-      <p role="status" className="text-xs text-muted-foreground">
+      <p role="status" className="text-base text-muted-foreground sm:text-sm">
         Showing {filtered.length} of {items.length} Sprites
       </p>
       {filtered.length === 0 ? (

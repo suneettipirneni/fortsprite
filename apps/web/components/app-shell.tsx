@@ -71,7 +71,7 @@ function Brand() {
     <Link
       href="/"
       aria-label="Homepage"
-      className="flex shrink-0 items-center gap-2 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+      className="flex shrink-0 items-center gap-2.5 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <FortSpriteIcon size={32} className="shrink-0 text-[#9cfab5]" />
       <span className="locker-display text-lg text-foreground">FortSprite</span>
@@ -96,8 +96,8 @@ function NavigationLinkContent({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wide text-foreground/70 outline-none hover:bg-white/8 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
-        active && "bg-white/12 text-foreground",
+        "flex h-9 items-center rounded-lg px-3 text-sm font-medium text-foreground/65 outline-none hover:bg-white/6 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
+        active && "bg-white/9 text-foreground",
       )}
     >
       {label}
@@ -223,8 +223,8 @@ export function AppShell({
 }) {
   return (
     <div className="locker-stage isolate min-h-dvh">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-background/75 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
-        <div className="mx-auto flex h-16 w-full max-w-[100rem] items-center gap-3 px-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-40 border-b border-white/8 bg-background/68 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+        <div className="mx-auto flex h-16 w-full max-w-[90rem] items-center gap-3 px-4 sm:h-15 sm:px-6 lg:px-8">
           <MobileNavigation />
           <Brand />
 

@@ -99,7 +99,7 @@ export function CollectionQueryBar({
     >
       <ComboboxChips
         ref={anchor}
-        className="min-h-12 gap-1.5 border-white/15 bg-background/32 px-2 py-1.5 sm:min-h-11"
+        className="min-h-12 gap-1.5 border-white/12 bg-background/28 px-2 py-1.5 shadow-sm sm:min-h-10"
       >
         <SearchIcon
           aria-hidden="true"
@@ -109,7 +109,7 @@ export function CollectionQueryBar({
           <ComboboxChip
             key={token.id}
             aria-label={`${token.groupLabel}: ${token.label}`}
-            className="h-7 gap-1.5 rounded-md border border-white/10 bg-white/10 px-2 text-sm"
+            className="h-7 gap-1.5 rounded-md border border-white/8 bg-white/8 px-2 text-sm"
           >
             <span className="text-muted-foreground">{token.groupLabel}</span>
             <span>{token.label}</span>
@@ -139,9 +139,13 @@ export function CollectionQueryBar({
         ) : null}
         <ComboboxTrigger
           aria-label="Add collection filter"
-          className="flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-white/8 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="relative flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-white/8 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           <FilterIcon aria-hidden="true" />
+          <span
+            aria-hidden="true"
+            className="pointer-fine:hidden absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2"
+          />
         </ComboboxTrigger>
       </ComboboxChips>
       <ComboboxContent anchor={anchor} align="start" className="w-(--anchor-width)">
@@ -159,7 +163,7 @@ export function CollectionQueryBar({
                 {groupOptions.map((option) => (
                   <ComboboxItem key={option.id} value={option}>
                     <span>{option.label}</span>
-                    <span className="ml-auto pr-6 text-xs tabular-nums text-muted-foreground">
+                    <span className="ml-auto pr-6 text-sm tabular-nums text-muted-foreground">
                       {option.count}
                     </span>
                   </ComboboxItem>

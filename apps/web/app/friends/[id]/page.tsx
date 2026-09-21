@@ -20,7 +20,7 @@ export default function ComparisonPage({
     <AuthenticatedAppShell>
       <Suspense
         fallback={
-          <div className="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+          <div className="app-page max-w-6xl">
             <ContentLoading />
           </div>
         }
@@ -46,7 +46,7 @@ async function ComparisonContent({
       result.error instanceof FortSpriteApiError &&
       [403, 404].includes(result.error.status)
     return (
-      <div className="mx-auto max-w-3xl space-y-5 p-4 sm:p-6 lg:p-8">
+      <div className="app-page flex max-w-3xl flex-col gap-5">
         <h1 className="text-3xl font-semibold">
           {denied
             ? "This collection is not shared with you"
@@ -68,9 +68,9 @@ async function ComparisonContent({
   }
   const comparison = result.data
   return (
-    <div className="mx-auto max-w-6xl space-y-8 p-4 sm:p-6 lg:p-8">
-      <div>
-        <Button asChild variant="ghost" className="mb-3 min-h-11">
+    <div className="app-page flex flex-col gap-8">
+      <div className="max-w-6xl border-b border-white/10 pb-6 sm:pb-8">
+        <Button asChild variant="ghost" className="min-h-11 sm:min-h-9">
           <Link href="/friends">Back to friends</Link>
         </Button>
         <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
@@ -79,7 +79,7 @@ async function ComparisonContent({
         <h1 className="break-words text-3xl font-semibold tracking-tight sm:text-4xl">
           You and {comparison.friend.displayName}
         </h1>
-        <p className="mt-3 text-sm text-muted-foreground">
+        <p className="mt-2 max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
           Current-season captured Sprites can help friends regardless of
           mastery. Coordinate together in Fortnite.
         </p>
@@ -89,7 +89,7 @@ async function ComparisonContent({
             {comparison.friend.fortniteDisplayName}
           </p>
         ) : null}
-        <p className="mt-2 text-xs text-muted-foreground">
+        <p className="mt-2 text-base text-muted-foreground sm:text-sm">
           Refreshed{" "}
           <time dateTime={comparison.refreshedAt}>
             {new Date(comparison.refreshedAt).toLocaleString("en-US", {
@@ -99,7 +99,7 @@ async function ComparisonContent({
           .
         </p>
       </div>
-      <div className="grid gap-10 lg:grid-cols-2">
+      <div className="grid max-w-6xl gap-8 lg:grid-cols-2">
         <CatalogResults
           items={comparison.forYou}
           title="Sprites for you"

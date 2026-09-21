@@ -77,12 +77,11 @@ export default function OpenGraphImage() {
           <div
             style={{
               fontSize: 40,
-              fontStyle: "italic",
-              fontWeight: 800,
-              letterSpacing: -1.5,
+              fontWeight: 700,
+              letterSpacing: -1,
             }}
           >
-            FORTSPRITE
+            FortSprite
           </div>
         </div>
 
@@ -146,7 +145,7 @@ export default function OpenGraphImage() {
               width: 8,
             }}
           />
-          FORTSPRITE.NET
+          fortsprite.net
         </div>
       </div>
 

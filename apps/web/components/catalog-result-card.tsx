@@ -17,7 +17,7 @@ export function CatalogResultCard({
   return (
     <article
       className={cn(
-        "min-w-0 rounded-xl border border-border bg-card p-3",
+        "min-w-0 rounded-xl bg-card/72 p-3 shadow-sm ring-1 ring-white/10",
         className,
       )}
     >
@@ -37,7 +37,7 @@ export function CatalogResultCard({
         </div>
       </div>
       {showAvailability ? (
-        <div className="mt-3 border-t border-border pt-3 text-sm">
+        <div className="mt-3 border-t border-white/10 pt-3 text-sm">
           {!availabilityKnown ? (
             <p className="text-muted-foreground">
               Friend availability unavailable

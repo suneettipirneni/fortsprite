@@ -24,7 +24,10 @@ export function FilterSelect({
     <Select {...props}>
       <SelectTrigger
         aria-label={label}
-        className={cn("w-full data-[size=default]:h-11", className)}
+        className={cn(
+          "w-full data-[size=default]:h-11 sm:data-[size=default]:h-9",
+          className,
+        )}
       >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

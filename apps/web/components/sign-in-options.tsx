@@ -53,7 +53,7 @@ export function SignInOptions() {
       }
       window.location.assign(callbackUrl())
     } catch {
-      setError("Your passkey could not be created. Please try again.")
+      setError("Your account could not be created. Please try again.")
     } finally {
       setPending(null)
     }
@@ -65,12 +65,12 @@ export function SignInOptions() {
     try {
       const result = await authClient.signIn.passkey()
       if (result.error) {
-        setError("That passkey could not sign you in. Please try again.")
+        setError("We could not sign you in. Please try again.")
         return
       }
       window.location.assign(callbackUrl())
     } catch {
-      setError("That passkey could not sign you in. Please try again.")
+      setError("We could not sign you in. Please try again.")
     } finally {
       setPending(null)
     }
@@ -111,7 +111,7 @@ export function SignInOptions() {
           ) : (
             <FingerprintIcon />
           )}
-          Create account with a passkey
+          Create account
         </Button>
       </form>
       <Button
@@ -126,7 +126,7 @@ export function SignInOptions() {
         ) : (
           <FingerprintIcon />
         )}
-        Sign in with a passkey
+        Sign in
       </Button>
       {error ? (
         <p role="alert" className="text-sm text-destructive">

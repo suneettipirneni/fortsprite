@@ -1,9 +1,6 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import Link from "next/link"
-import { LockKeyholeIcon, ShieldCheckIcon } from "lucide-react"
-
-import { Badge } from "@workspace/ui/components/badge"
 
 import { SignInOptions } from "@/components/sign-in-options"
 import { FortSpriteIcon } from "@/components/fortsprite-icon"
@@ -16,30 +13,20 @@ export default function SignInPage({
   searchParams: Promise<{ error?: string }>
 }) {
   return (
-    <main className="isolate grid min-h-dvh bg-background lg:grid-cols-2">
-      <section className="flex items-center justify-center px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:p-10">
-        <div className="flex w-full max-w-sm flex-col gap-8">
+    <main className="locker-stage isolate grid min-h-dvh lg:grid-cols-2">
+      <section className="auth-safe-area flex items-center justify-center bg-background/28 px-6 backdrop-blur-sm sm:p-10">
+        <div className="flex w-full max-w-xs flex-col gap-7">
           <Link
             href="/"
             aria-label="Homepage"
-            className="flex items-center gap-2 font-mono text-sm font-semibold tracking-wide"
+            className="flex items-center gap-2 text-base font-semibold tracking-tight"
           >
-            <FortSpriteIcon size={40} className="shrink-0 text-[#9cfab5]" />
-            FORTSPRITE
+            <FortSpriteIcon size={36} className="shrink-0 text-[#9cfab5]" />
+            FortSprite
           </Link>
-          <div className="flex flex-col gap-3">
-            <Badge variant="secondary" className="w-fit">
-              Passkeys only
-            </Badge>
-            <h1 className="text-balance text-3xl font-semibold tracking-tight">
-              Keep your squad in sync.
-            </h1>
-            <p className="text-pretty text-base text-muted-foreground sm:text-sm">
-              Choose a username and create a passkey, or sign in with one you
-              already have. There are no passwords or social-provider accounts
-              to connect.
-            </p>
-          </div>
+          <h1 className="text-balance text-3xl font-semibold tracking-tight">
+            Keep your squad in sync.
+          </h1>
           <Suspense fallback={null}>
             <SignInError searchParams={searchParams} />
           </Suspense>
@@ -48,43 +35,22 @@ export default function SignInPage({
             Unofficial fan-made tool. Not affiliated with, endorsed by, or
             sponsored by Epic Games.
           </p>
-          <div className="grid gap-3 rounded-xl bg-muted p-4 text-sm text-muted-foreground">
-            <div className="flex items-start gap-3">
-              <ShieldCheckIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
-              <p>
-                Your fingerprint, face scan, or device PIN stays with your
-                device. FortSprite never receives it.
-              </p>
-            </div>
-            <div className="flex items-start gap-3">
-              <LockKeyholeIcon className="mt-0.5 size-4 shrink-0 text-foreground" />
-              <p>
-                A passkey stays protected by your device or password manager.
-                FortSprite stores only the public credential needed to verify
-                it.
-              </p>
-            </div>
-            <p>
-              Add a second passkey after signing up. Without one, losing your
-              only passkey means losing access to the account.
-            </p>
-          </div>
-          <p className="text-pretty text-xs leading-5 text-muted-foreground">
+          <p className="text-pretty text-sm text-muted-foreground">
             By continuing, you agree to the <Link href="/terms">Terms</Link> and
             acknowledge the <Link href="/privacy">Privacy Policy</Link>.
           </p>
         </div>
       </section>
-      <aside className="hidden bg-sidebar p-10 text-sidebar-foreground lg:flex lg:flex-col lg:justify-between">
-        <p className="font-mono text-sm uppercase tracking-wide text-sidebar-foreground/55">
+      <aside className="relative hidden border-l border-white/8 bg-sidebar/38 p-12 text-sidebar-foreground backdrop-blur-sm lg:flex lg:items-center">
+        <p className="absolute top-12 left-12 font-mono text-sm uppercase tracking-wide text-sidebar-foreground/55">
           Squad intelligence
         </p>
-        <div className="flex max-w-xl flex-col gap-5">
-          <FortSpriteIcon size={128} className="text-[#9cfab5]" />
-          <p className="text-balance text-5xl font-semibold tracking-tight">
+        <div className="flex max-w-lg flex-col gap-6">
+          <FortSpriteIcon size={96} className="text-[#9cfab5]" />
+          <p className="max-w-[18ch] text-balance text-5xl font-semibold tracking-tight">
             Your next find may already belong to a friend.
           </p>
-          <p className="max-w-[48ch] text-pretty text-base text-sidebar-foreground/65">
+          <p className="max-w-[48ch] text-pretty text-base text-sidebar-foreground/68">
             Track every variant, find friends with the Sprites you need, and
             spend less time asking the whole group who has what.
           </p>

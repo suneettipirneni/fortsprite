@@ -1,22 +1,27 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { CheckIcon, CircleIcon, SparklesIcon } from "lucide-react"
+import { CheckIcon, CircleIcon, CrownIcon } from "lucide-react"
 
 import { cn } from "@workspace/ui/lib/utils"
 
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
+import { Separator } from "@workspace/ui/components/separator"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
-  DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@workspace/ui/components/dialog"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerTitle,
+} from "@workspace/ui/components/drawer"
 import {
   HoverCard,
   HoverCardContent,
@@ -28,6 +33,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
+import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 
 import type { CollectionChange } from "@/lib/collection-state"
 import type { Sprite } from "@/lib/catalog-presentation"
@@ -43,10 +49,10 @@ const verifiedDateFormatter = new Intl.DateTimeFormat("en-US", {
 })
 
 const collectionToggleClassName =
-  "h-12 w-full justify-start gap-2 rounded-md border-white/15 px-3 text-base font-medium text-foreground/75 hover:border-white/30 hover:bg-white/5 hover:text-foreground aria-pressed:bg-foreground/95 data-[state=on]:border-transparent data-[state=on]:bg-foreground/95 data-[state=on]:text-background data-[state=on]:hover:bg-foreground disabled:text-foreground/50 disabled:opacity-100 sm:text-sm"
+  "h-12 w-full justify-start gap-2 rounded-lg border-white/12 px-3 text-base font-medium text-foreground/75 hover:border-white/24 hover:bg-white/5 hover:text-foreground aria-pressed:bg-foreground/95 data-[state=on]:border-transparent data-[state=on]:bg-foreground/95 data-[state=on]:text-background data-[state=on]:hover:bg-foreground disabled:text-foreground/50 disabled:opacity-100 sm:h-10 sm:text-sm"
 
 const quickToggleClassName =
-  "h-11 w-full min-w-0 rounded-md border-white/15 px-2 text-foreground/65 hover:border-white/30 hover:bg-white/5 hover:text-foreground aria-pressed:border-transparent aria-pressed:bg-foreground/95 data-[state=on]:bg-foreground/95 aria-pressed:text-background aria-pressed:hover:bg-foreground disabled:text-foreground/35 disabled:opacity-100 focus-visible:ring-inset sm:h-9"
+  "h-11 w-full min-w-0 rounded-lg border-white/12 px-2 text-foreground/65 hover:border-white/24 hover:bg-white/5 hover:text-foreground aria-pressed:border-transparent aria-pressed:bg-foreground/95 data-[state=on]:bg-foreground/95 aria-pressed:text-background aria-pressed:hover:bg-foreground disabled:text-foreground/35 disabled:opacity-100 focus-visible:ring-inset sm:h-9"
 
 export function SpriteTile({
   sprite,
@@ -68,6 +74,7 @@ export function SpriteTile({
   onChange: (change: CollectionChange) => void
 }) {
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const isMobile = useIsMobile()
   const [previewOpen, setPreviewOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const helpEligible =
@@ -79,69 +86,101 @@ export function SpriteTile({
       : sprite.helpers.length === 1
         ? "1 friend with this Sprite"
         : `${sprite.helpers.length} friends with this Sprite`
+  const restoreTriggerFocus = (event: Event) => {
+    event.preventDefault()
+    if (triggerRef.current?.isConnected) triggerRef.current.focus()
+    else onRemovedFocus()
+  }
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <>
       <HoverCard
         open={!dialogOpen && previewOpen}
         onOpenChange={setPreviewOpen}
       >
         <article
-          className={cn("flex min-w-0 overflow-hidden rounded-xl bg-background shadow-sm ring-1 ring-inset ring-white/15", view === "list" ? "flex-row items-center" : "flex-col")}
+          className={cn(
+            "flex min-w-0 overflow-hidden rounded-xl bg-card/76 shadow-sm ring-1 ring-inset ring-white/10 backdrop-blur-sm",
+            view === "list" ? "flex-row items-center" : "flex-col",
+          )}
           data-sprite-id={sprite.id}
           data-mastered={sprite.mastered || undefined}
           aria-busy={pending}
-          style={
-            sprite.mastered
-              ? { outline: "2px solid var(--primary)", outlineOffset: "2px" }
-              : undefined
-          }
         >
           <HoverCardTrigger asChild>
-            <DialogTrigger asChild>
-              <button
-                ref={triggerRef}
-                type="button"
-                data-sprite-variant={sprite.variant}
-                onFocus={() => setPreviewOpen(true)}
-                onBlur={() => setPreviewOpen(false)}
-                onClick={() => setPreviewOpen(false)}
-                aria-label={`Open ${sprite.variant} ${sprite.baseName} details. ${sprite.rarity} rarity, ${sprite.owned ? "captured" : "missing"}, ${sprite.mastered ? "mastered" : "not mastered"}, ${helperLabel}.`}
-                className={cn("group w-full min-w-0 overflow-hidden text-left outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring", view === "list" ? "flex flex-1 items-center" : "block")}
+            <button
+              ref={triggerRef}
+              type="button"
+              data-sprite-variant={sprite.variant}
+              onFocus={() => setPreviewOpen(true)}
+              onBlur={() => setPreviewOpen(false)}
+              onClick={() => {
+                setPreviewOpen(false)
+                setDialogOpen(true)
+              }}
+              aria-label={`Open ${sprite.variant} ${sprite.baseName} details. ${sprite.rarity} rarity, ${sprite.owned ? "captured" : "missing"}, ${sprite.mastered ? "mastered" : "not mastered"}, ${helperLabel}.`}
+              className={cn(
+                "group w-full min-w-0 overflow-hidden text-left outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring",
+                view === "list" ? "flex flex-1 items-center" : "block",
+              )}
+            >
+              <div
+                className={cn(
+                  "relative shrink-0",
+                  view === "list" ? "w-16 sm:w-20" : "w-full",
+                )}
               >
                 <SpritePortrait
                   variant={sprite.variant}
                   label={`${sprite.variant} ${sprite.baseName}`}
                   src={sprite.imagePath ?? undefined}
-                  className={view === "list" ? "aspect-square w-16 shrink-0 rounded-none sm:w-20" : "aspect-[4/3] w-full rounded-none"}
+                  className={
+                    view === "list"
+                      ? "aspect-square w-full rounded-none"
+                      : "aspect-[4/3] w-full rounded-none"
+                  }
                   sizes={view === "list" ? "80px" : undefined}
                 />
-                <div className={cn("min-w-0 p-2 sm:p-3", view === "grid" && "border-t border-white/10", view === "list" && "flex-1")}>
-                  <div className="flex items-center justify-between gap-1 sm:gap-2">
-                    <h3 className="min-w-0 flex-1 truncate text-sm font-semibold sm:text-base">
-                      {sprite.baseName}
-                    </h3>
-                    <Badge
-                      variant="outline"
-                      className="shrink-0 border-white/15 bg-white/5 px-1.5 py-0.5 text-[10px] text-foreground/65 sm:text-[11px]"
-                    >
-                      {sprite.rarity}
-                    </Badge>
-                  </div>
-                  <p className="truncate text-base text-foreground/65 sm:text-sm">
-                    {sprite.variant}
-                  </p>
-                  {availabilityKnown &&
-                  helpEligible &&
-                  sprite.helpers.length > 0 &&
-                  !sprite.owned ? (
-                    <p className="mt-1 text-base text-muted-foreground sm:text-sm">
-                      {sprite.helpers.length} can help
-                    </p>
-                  ) : null}
+                {sprite.mastered ? (
+                  <span
+                    data-testid="mastered-crown"
+                    className="pointer-events-none absolute top-2 left-2 flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm ring-1 ring-primary"
+                  >
+                    <CrownIcon aria-hidden="true" className="size-3.5" />
+                  </span>
+                ) : null}
+              </div>
+              <div
+                className={cn(
+                  "min-w-0 p-2 sm:p-3",
+                  view === "grid" && "border-t border-white/10",
+                  view === "list" && "flex-1",
+                )}
+              >
+                <div className="flex items-center justify-between gap-1 sm:gap-2">
+                  <h3 className="min-w-0 flex-1 truncate text-base font-semibold sm:text-sm">
+                    {sprite.baseName}
+                  </h3>
+                  <Badge
+                    variant="outline"
+                    className="shrink-0 border-white/10 bg-white/5 px-1.5 py-0.5 text-xs text-foreground/65"
+                  >
+                    {sprite.rarity}
+                  </Badge>
                 </div>
-              </button>
-            </DialogTrigger>
+                <p className="truncate text-base text-foreground/65 sm:text-sm">
+                  {sprite.variant}
+                </p>
+                {availabilityKnown &&
+                helpEligible &&
+                sprite.helpers.length > 0 &&
+                !sprite.owned ? (
+                  <p className="mt-1 text-base text-muted-foreground sm:text-sm">
+                    {sprite.helpers.length} can help
+                  </p>
+                ) : null}
+              </div>
+            </button>
           </HoverCardTrigger>
           <HoverCardContent
             className="w-72 max-w-[calc(100vw-2rem)]"
@@ -155,7 +194,7 @@ export function SpriteTile({
                 className="w-16 shrink-0"
                 sizes="64px"
               />
-              <div className="space-y-1 text-sm">
+              <div className="flex flex-col gap-1 text-sm">
                 <p className="font-semibold">
                   {sprite.variant} {sprite.baseName}
                 </p>
@@ -179,7 +218,13 @@ export function SpriteTile({
               </div>
             </div>
           </HoverCardContent>
-          <div className={view === "list" ? "w-28 shrink-0 px-2 sm:w-36 sm:px-3" : "mt-auto px-3 pb-3"}>
+          <div
+            className={
+              view === "list"
+                ? "w-28 shrink-0 px-2 sm:w-36 sm:px-3"
+                : "mt-auto px-3 pb-3"
+            }
+          >
             {pending ? (
               <p className="sr-only" role="status">
                 Saving changes…
@@ -233,7 +278,7 @@ export function SpriteTile({
                       }
                       className={quickToggleClassName}
                     >
-                      <SparklesIcon aria-hidden="true" className="size-4" />
+                      <CrownIcon aria-hidden="true" className="size-4" />
                     </Toggle>
                   </TooltipTrigger>
                   {sprite.owned ? (
@@ -248,172 +293,283 @@ export function SpriteTile({
         </article>
       </HoverCard>
 
-      <DialogContent
-        aria-busy={pending}
-        onCloseAutoFocus={(event) => {
-          if (!triggerRef.current?.isConnected) {
-            event.preventDefault()
-            onRemovedFocus()
-          }
-        }}
-        className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-lg"
-      >
-        <DialogHeader>
-          <DialogTitle>
-            {sprite.variant} {sprite.baseName}
-          </DialogTitle>
-          <DialogDescription>
-            Review catalog metadata and update this Sprite’s collection state.
-          </DialogDescription>
-        </DialogHeader>
+      {isMobile ? (
+        <Drawer open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DrawerContent
+            aria-busy={pending}
+            onCloseAutoFocus={restoreTriggerFocus}
+            className="overflow-hidden data-[vaul-drawer-direction=bottom]:max-h-[92dvh]"
+          >
+            <DrawerTitle className="sr-only">
+              {sprite.variant} {sprite.baseName}
+            </DrawerTitle>
+            <DrawerDescription className="sr-only">
+              Sprite details and collection controls.
+            </DrawerDescription>
+            <div className="min-h-0 overflow-y-auto overscroll-contain">
+              <SpriteDetails
+                sprite={sprite}
+                pending={pending}
+                availabilityKnown={availabilityKnown}
+                helpEligible={helpEligible}
+                notice={notice}
+                onChange={onChange}
+              />
+            </div>
+            <DrawerFooter className="shrink-0 border-t border-white/10 bg-popover px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDialogOpen(false)}
+              >
+                Done
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent
+            aria-busy={pending}
+            onCloseAutoFocus={restoreTriggerFocus}
+            className="max-h-[calc(100dvh-2rem)] grid-rows-[minmax(0,1fr)_auto] gap-0 overflow-hidden p-0 sm:max-w-2xl"
+          >
+            <DialogTitle className="sr-only">
+              {sprite.variant} {sprite.baseName}
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              Sprite details and collection controls.
+            </DialogDescription>
+            <div className="min-h-0 overflow-y-auto overscroll-contain">
+              <SpriteDetails
+                sprite={sprite}
+                pending={pending}
+                availabilityKnown={availabilityKnown}
+                helpEligible={helpEligible}
+                notice={notice}
+                onChange={onChange}
+              />
+            </div>
+            <DialogFooter className="m-0 shrink-0 rounded-none px-4 py-3 sm:px-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDialogOpen(false)}
+              >
+                Done
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
+  )
+}
 
-        <div className="grid gap-4 sm:grid-cols-[9rem_1fr]">
+function SpriteDetails({
+  sprite,
+  pending,
+  availabilityKnown,
+  helpEligible,
+  notice,
+  onChange,
+}: {
+  sprite: Sprite
+  pending: boolean
+  availabilityKnown: boolean
+  helpEligible: boolean
+  notice: CollectionNotice | null
+  onChange: (change: CollectionChange) => void
+}) {
+  return (
+    <>
+      <div className="grid grid-cols-[7rem_minmax(0,1fr)] overflow-hidden border-b border-white/10 bg-muted/25 sm:grid-cols-[12rem_minmax(0,1fr)]">
+        <div className="relative bg-background/35">
           <SpritePortrait
             variant={sprite.variant}
             label={`${sprite.variant} ${sprite.baseName}`}
             src={sprite.imagePath ?? undefined}
-            sizes="144px"
-            className="aspect-square"
+            sizes="192px"
+            className="aspect-square w-full rounded-none"
           />
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-lg bg-muted p-3 text-base sm:text-sm">
-            <div className="min-w-0">
-              <dt className="font-medium text-foreground">Variant</dt>
-              <dd className="truncate text-muted-foreground">
-                {sprite.variant}
-              </dd>
-            </div>
-            <div className="min-w-0">
-              <dt className="font-medium text-foreground">Rarity</dt>
-              <dd className="truncate text-muted-foreground">
-                {sprite.rarity}
-              </dd>
-            </div>
-            <div className="min-w-0">
-              <dt className="font-medium text-foreground">Sprite Dust</dt>
-              <dd className="tabular-nums text-muted-foreground">
-                {sprite.spriteDustValue === null
-                  ? "Unavailable"
-                  : dustFormatter.format(sprite.spriteDustValue)}
-              </dd>
-            </div>
-            <div className="min-w-0">
-              <dt className="font-medium text-foreground">Drop chance</dt>
-              <dd className="text-muted-foreground tabular-nums">
-                {sprite.dropChances.length > 0
-                  ? sprite.dropChances.map(({ source, percent }) => (
-                      <div key={source}>
-                        {source}: {percent}%
-                      </div>
-                    ))
-                  : sprite.dropChancePercent === null
-                    ? "Unavailable"
-                    : `${sprite.dropChancePercent}%`}
-              </dd>
-            </div>
-            <div className="min-w-0">
-              <dt className="font-medium text-foreground">
-                Friends with this Sprite
-              </dt>
-              <dd className="tabular-nums text-muted-foreground">
-                {!availabilityKnown
-                  ? "Unavailable"
-                  : helpEligible
-                    ? sprite.helpers.length
-                    : "Not eligible"}
-              </dd>
-            </div>
-            <div className="min-w-0">
-              <dt className="font-medium text-foreground">Status</dt>
-              <dd className="truncate text-muted-foreground">
-                {sprite.owned ? "Captured" : "Missing"}
-              </dd>
-            </div>
-          </dl>
+          {sprite.mastered ? (
+            <span className="pointer-events-none absolute top-3 left-3 flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm ring-1 ring-primary">
+              <CrownIcon aria-hidden="true" className="size-4" />
+            </span>
+          ) : null}
         </div>
-
-        <div className="flex flex-col gap-2 rounded-lg bg-muted p-3">
-          <p className="text-pretty">
-            {sprite.description ??
-              "No description is available for this Sprite."}
-          </p>
-          {sprite.levelProgression ? (
-            <p className="text-pretty text-muted-foreground">
-              {sprite.levelProgression}
-            </p>
-          ) : null}
-          {sprite.location ? (
-            <p className="text-pretty text-muted-foreground">
-              Location: {sprite.location}.
-            </p>
-          ) : null}
-          <p className="text-muted-foreground">
-            Source checked{" "}
-            <a
-              href={sprite.sourcePage}
-              target="_blank"
-              rel="noreferrer"
-              className="underline underline-offset-4 hover:text-foreground"
+        <div className="flex min-w-0 flex-col justify-center gap-2.5 px-4 py-5 sm:p-6 lg:pr-14">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <Badge variant="outline" className="bg-background/35">
+              {sprite.rarity}
+            </Badge>
+            <Badge
+              variant={sprite.owned ? "default" : "outline"}
+              className={!sprite.owned ? "bg-background/35" : undefined}
             >
-              {verifiedDateFormatter.format(new Date(sprite.sourceVerifiedAt))}
-            </a>
-            .
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          {pending ? (
-            <p role="status" className="text-sm text-muted-foreground">
-              Saving changes…
-            </p>
-          ) : null}
-          <Toggle
-            variant="outline"
-            aria-label={`Captured ${sprite.variant} ${sprite.baseName}`}
-            pressed={sprite.owned}
-            onPressedChange={(checked) => onChange({ field: "owned", checked })}
-            className={collectionToggleClassName}
-          >
-            {sprite.owned ? (
-              <CheckIcon aria-hidden="true" />
-            ) : (
-              <CircleIcon aria-hidden="true" />
-            )}
-            Captured
-          </Toggle>
-          <Toggle
-            variant="outline"
-            aria-label={`Mastered ${sprite.variant} ${sprite.baseName}`}
-            aria-describedby={
-              !sprite.owned ? `dialog-hint-${sprite.id}` : undefined
-            }
-            pressed={sprite.mastered}
-            disabled={!sprite.owned}
-            aria-disabled={!sprite.owned}
-            onPressedChange={(checked) =>
-              onChange({ field: "mastered", checked })
-            }
-            className={collectionToggleClassName}
-          >
+              {sprite.owned ? (
+                <CheckIcon aria-hidden="true" data-icon="inline-start" />
+              ) : (
+                <CircleIcon aria-hidden="true" data-icon="inline-start" />
+              )}
+              {sprite.owned ? "Captured" : "Missing"}
+            </Badge>
             {sprite.mastered ? (
-              <CheckIcon aria-hidden="true" />
-            ) : (
-              <CircleIcon aria-hidden="true" />
-            )}
-            Mastered
-          </Toggle>
-          {!sprite.owned ? (
-            <p
-              id={`dialog-hint-${sprite.id}`}
-              className="text-sm text-muted-foreground"
-            >
-              Capture first to mark mastery.
+              <Badge variant="secondary">
+                <CrownIcon aria-hidden="true" data-icon="inline-start" />
+                Mastered
+              </Badge>
+            ) : null}
+          </div>
+          <div className="flex min-w-0 flex-col gap-1">
+            <h2 className="truncate text-2xl font-semibold tracking-tight sm:text-3xl">
+              {sprite.baseName}
+            </h2>
+            <p className="truncate text-base text-foreground/65">
+              {sprite.variant}
             </p>
-          ) : null}
-          <p className="text-sm text-muted-foreground">
-            {helpEligible
-              ? "Current-season captures appear as potential help to accepted friends."
-              : "Older-season captures remain tracked but are not eligible for friend help."}
-          </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 px-5 py-6 sm:p-6">
+        <dl className="grid grid-cols-2 overflow-hidden rounded-xl bg-muted/40 ring-1 ring-inset ring-white/10 sm:grid-cols-3">
+          <div className="order-1 min-w-0 p-4">
+            <dt className="text-sm font-medium text-muted-foreground sm:text-xs">
+              Sprite Dust
+            </dt>
+            <dd className="mt-1 truncate text-lg font-semibold tabular-nums sm:text-base">
+              {sprite.spriteDustValue === null
+                ? "—"
+                : dustFormatter.format(sprite.spriteDustValue)}
+            </dd>
+          </div>
+          <div className="order-3 col-span-2 min-w-0 border-t border-white/10 p-4 sm:order-2 sm:col-span-1 sm:border-t-0 sm:border-l">
+            <dt className="text-sm font-medium text-muted-foreground sm:text-xs">
+              Drop chance
+            </dt>
+            <dd className="mt-1 text-base font-semibold tabular-nums sm:text-sm">
+              {sprite.dropChances.length > 0
+                ? sprite.dropChances.map(({ source, percent }) => (
+                    <div key={source} className="truncate">
+                      {source} {percent}%
+                    </div>
+                  ))
+                : sprite.dropChancePercent === null
+                  ? "—"
+                  : `${sprite.dropChancePercent}%`}
+            </dd>
+          </div>
+          <div className="order-2 min-w-0 border-l border-white/10 p-4 sm:order-3">
+            <dt className="text-sm font-medium text-muted-foreground sm:text-xs">
+              Friends
+            </dt>
+            <dd className="mt-1 truncate text-lg font-semibold tabular-nums sm:text-base">
+              {!availabilityKnown
+                ? "—"
+                : helpEligible
+                  ? sprite.helpers.length
+                  : "N/A"}
+            </dd>
+          </div>
+        </dl>
+
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_15rem]">
+          <section className="flex flex-col gap-3 rounded-xl bg-muted/25 p-5 ring-1 ring-inset ring-white/10 sm:p-4">
+            <h3 className="font-semibold">About this Sprite</h3>
+            <p className="text-pretty text-foreground/80">
+              {sprite.description ??
+                "No description is available for this Sprite."}
+            </p>
+            {sprite.levelProgression ? (
+              <p className="text-pretty text-muted-foreground">
+                {sprite.levelProgression}
+              </p>
+            ) : null}
+            <Separator />
+            <div className="flex flex-col gap-1 text-base text-muted-foreground sm:text-sm">
+              {sprite.location ? (
+                <p className="text-pretty">Found at {sprite.location}.</p>
+              ) : null}
+              <p>
+                Source checked{" "}
+                <a
+                  href={sprite.sourcePage}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline underline-offset-4 hover:text-foreground"
+                >
+                  {verifiedDateFormatter.format(
+                    new Date(sprite.sourceVerifiedAt),
+                  )}
+                </a>
+                .
+              </p>
+            </div>
+          </section>
+
+          <section className="flex flex-col gap-3 rounded-xl bg-background/35 p-5 ring-1 ring-inset ring-white/10 sm:p-4">
+            <div className="flex flex-col gap-1">
+              <h3 className="font-semibold">Your collection</h3>
+              <p className="text-base text-muted-foreground sm:text-xs">
+                Update this Sprite without leaving the details view.
+              </p>
+            </div>
+            {pending ? (
+              <p
+                role="status"
+                className="text-base text-muted-foreground sm:text-sm"
+              >
+                Saving changes…
+              </p>
+            ) : null}
+            <Toggle
+              variant="outline"
+              aria-label={`Captured ${sprite.variant} ${sprite.baseName}`}
+              pressed={sprite.owned}
+              onPressedChange={(checked) =>
+                onChange({ field: "owned", checked })
+              }
+              className={collectionToggleClassName}
+            >
+              {sprite.owned ? (
+                <CheckIcon aria-hidden="true" />
+              ) : (
+                <CircleIcon aria-hidden="true" />
+              )}
+              Captured
+            </Toggle>
+            <Toggle
+              variant="outline"
+              aria-label={`Mastered ${sprite.variant} ${sprite.baseName}`}
+              aria-describedby={
+                !sprite.owned ? `dialog-hint-${sprite.id}` : undefined
+              }
+              pressed={sprite.mastered}
+              disabled={!sprite.owned}
+              aria-disabled={!sprite.owned}
+              onPressedChange={(checked) =>
+                onChange({ field: "mastered", checked })
+              }
+              className={collectionToggleClassName}
+            >
+              <CrownIcon aria-hidden="true" />
+              Mastered
+            </Toggle>
+            {!sprite.owned ? (
+              <p
+                id={`dialog-hint-${sprite.id}`}
+                className="text-base text-muted-foreground sm:text-xs"
+              >
+                Capture first to mark mastery.
+              </p>
+            ) : null}
+            <p className="text-base text-muted-foreground sm:mt-auto sm:text-xs">
+              {helpEligible
+                ? "Current-season captures can help accepted friends."
+                : "Older-season captures are tracked but cannot help friends."}
+            </p>
+          </section>
         </div>
 
         {availabilityKnown && helpEligible && sprite.helpers.length > 0 ? (
@@ -425,15 +581,7 @@ export function SpriteTile({
             {notice.message}
           </p>
         ) : null}
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="outline">
-              Done
-            </Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </>
   )
 }

@@ -29,10 +29,10 @@ export function LegalPage({
           <Link
             href="/sign-in"
             aria-label="FortSprite sign in"
-            className="flex items-center gap-2 font-mono text-sm font-semibold tracking-wide"
+            className="flex items-center gap-2 text-base font-semibold tracking-tight"
           >
             <FortSpriteIcon size={32} className="shrink-0 text-[#9cfab5]" />
-            FORTSPRITE
+            FortSprite
           </Link>
           <Button variant="ghost" size="sm" asChild>
             <Link href="/sign-in">

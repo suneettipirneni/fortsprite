@@ -51,35 +51,35 @@
 
 :root,
 .dark {
-  --background: oklch(0.25 0.13 256);
+  --background: oklch(0.21 0.085 258);
   --foreground: oklch(0.98 0.01 240);
-  --card: oklch(0.48 0.14 235 / 78%);
+  --card: oklch(0.29 0.08 245 / 82%);
   --card-foreground: oklch(0.98 0.01 240);
-  --popover: oklch(0.27 0.13 252 / 98%);
+  --popover: oklch(0.245 0.075 253 / 98%);
   --popover-foreground: oklch(0.98 0.01 240);
-  --primary: oklch(0.91 0.2 105);
-  --primary-foreground: oklch(0.2 0.08 255);
-  --secondary: oklch(0.75 0.1 232 / 30%);
+  --primary: oklch(0.9 0.17 136);
+  --primary-foreground: oklch(0.2 0.065 257);
+  --secondary: oklch(0.68 0.08 230 / 22%);
   --secondary-foreground: oklch(0.98 0.01 240);
-  --muted: oklch(0.6 0.11 235 / 30%);
-  --muted-foreground: oklch(0.83 0.05 235);
-  --accent: oklch(0.72 0.13 228 / 30%);
+  --muted: oklch(0.57 0.07 236 / 18%);
+  --muted-foreground: oklch(0.81 0.035 237);
+  --accent: oklch(0.64 0.09 228 / 20%);
   --accent-foreground: oklch(0.99 0.005 240);
   --destructive: oklch(0.7 0.19 24);
-  --border: oklch(1 0 0 / 14%);
-  --input: oklch(1 0 0 / 18%);
+  --border: oklch(1 0 0 / 11%);
+  --input: oklch(1 0 0 / 14%);
   --ring: oklch(0.98 0.01 240);
   --chart-1: oklch(0.72 0.18 228);
   --chart-2: oklch(0.84 0.18 91);
   --chart-3: oklch(0.68 0.22 306);
   --chart-4: oklch(0.76 0.16 183);
   --chart-5: oklch(0.7 0.23 27);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.22 0.12 257);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.235 0.075 254);
   --sidebar-foreground: oklch(0.98 0.01 240);
   --sidebar-primary: oklch(0.91 0.2 105);
   --sidebar-primary-foreground: oklch(0.2 0.08 255);
-  --sidebar-accent: oklch(0.64 0.12 234 / 34%);
+  --sidebar-accent: oklch(0.6 0.08 233 / 23%);
   --sidebar-accent-foreground: oklch(0.99 0.005 240);
   --sidebar-border: oklch(1 0 0 / 12%);
   --sidebar-ring: oklch(0.98 0.01 240);
@@ -88,48 +88,60 @@
 @utility locker-stage {
   background-color: var(--background);
   background-image:
-    radial-gradient(
-      circle at 14% 8%,
-      oklch(0.47 0.18 263 / 48%) 0%,
-      transparent 31%
+    linear-gradient(
+      122deg,
+      oklch(0.35 0.13 278 / 58%) 0%,
+      oklch(0.3 0.1 258 / 24%) 23%,
+      transparent 48%
     ),
-    radial-gradient(
-      circle at 78% 24%,
-      oklch(0.7 0.15 220 / 56%) 0%,
-      transparent 37%
+    linear-gradient(
+      34deg,
+      transparent 12%,
+      oklch(0.34 0.1 218 / 34%) 39%,
+      transparent 63%,
+      oklch(0.31 0.11 254 / 38%) 88%
     ),
-    radial-gradient(
-      circle at 91% 78%,
-      oklch(0.55 0.18 238 / 50%) 0%,
-      transparent 34%
+    linear-gradient(
+      154deg,
+      transparent 28%,
+      oklch(0.37 0.085 205 / 28%) 52%,
+      transparent 76%
     ),
-    radial-gradient(
-      circle at 38% 92%,
-      oklch(0.42 0.18 247 / 44%) 0%,
-      transparent 39%
-    ),
-    linear-gradient(118deg, oklch(0.18 0.13 265), oklch(0.35 0.15 237));
+    linear-gradient(
+      132deg,
+      oklch(0.18 0.08 269) 0%,
+      oklch(0.26 0.095 252) 38%,
+      oklch(0.22 0.075 239) 67%,
+      oklch(0.18 0.07 264) 100%
+    );
   background-attachment: fixed;
-  background-blend-mode: screen, screen, screen, screen, normal;
+  background-blend-mode: screen, screen, screen, normal;
+  background-size: 125% 125%, 135% 135%, 120% 120%, 100% 100%;
+}
+
+@utility app-page {
+  @apply mx-auto w-full max-w-[90rem] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10;
+}
+
+@utility auth-safe-area {
+  padding-top: max(1.5rem, env(safe-area-inset-top));
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+@utility offline-safe-area {
+  padding-top: max(3rem, env(safe-area-inset-top));
+  padding-bottom: max(3rem, env(safe-area-inset-bottom));
+}
+
+@utility install-safe-bottom {
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
 
 @utility locker-display {
   font-family: var(--font-sans);
-  font-style: italic;
   font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 0.92;
-  text-transform: uppercase;
-}
-
-@utility locker-subtitle {
-  font-family: var(--font-sans);
-  font-style: italic;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   line-height: 1;
-  text-transform: uppercase;
-  word-spacing: 0.12em;
 }
 
 @layer base {
@@ -146,8 +158,12 @@
   }
 
   button,
+  a,
+  input,
+  select,
   [role="button"] {
     cursor: pointer;
+    touch-action: manipulation;
   }
 
   button:disabled,

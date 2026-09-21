@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Offline" }
 
 export default function OfflinePage() {
   return (
-    <main className="locker-stage isolate flex min-h-dvh items-center justify-center px-6 pt-[max(3rem,env(safe-area-inset-top))] pb-[max(3rem,env(safe-area-inset-bottom))] text-center">
+    <main className="locker-stage offline-safe-area isolate flex min-h-dvh items-center justify-center px-6 text-center">
       <div className="flex max-w-sm flex-col items-center gap-6 rounded-2xl border border-white/15 bg-background/75 p-8 shadow-2xl backdrop-blur-xl">
         <FortSpriteIcon size={72} className="text-[#9cfab5]" />
         <div>

@@ -14,25 +14,26 @@ export const metadata: Metadata = { title: "Account" }
 export default function AccountPage() {
   return (
     <AuthenticatedAppShell>
-      <div className="mx-auto max-w-4xl space-y-8 p-4 sm:p-6 lg:p-8">
-        <div>
+      <div className="app-page">
+        <div className="flex max-w-4xl flex-col gap-8">
+          <div className="border-b border-white/10 pb-6 sm:pb-8">
           <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
             Account
           </p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             Make your profile yours.
           </h1>
-          <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
+          <p className="mt-2 max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
             Choose how friends recognize you and how you securely sign in.
           </p>
-        </div>
-        <Suspense fallback={<ContentLoading />}>
-          <AccountDetails />
-        </Suspense>
-        <nav
-          aria-label="Account policies"
-          className="flex flex-wrap gap-5 border-t border-border pt-5 text-sm"
-        >
+          </div>
+          <Suspense fallback={<ContentLoading />}>
+            <AccountDetails />
+          </Suspense>
+          <nav
+            aria-label="Account policies"
+            className="flex flex-wrap gap-5 border-t border-white/10 pt-5 text-sm"
+          >
           <Link
             href="/privacy"
             className="inline-flex min-h-11 items-center underline underline-offset-4"
@@ -51,7 +52,8 @@ export default function AccountPage() {
           >
             Help
           </Link>
-        </nav>
+          </nav>
+        </div>
       </div>
     </AuthenticatedAppShell>
   )

@@ -105,9 +105,9 @@ export function FriendsManager({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       <form
-        className="flex flex-col gap-3 rounded-xl border border-border p-4 sm:flex-row"
+        className="flex flex-col gap-3 rounded-xl bg-card/60 p-4 ring-1 ring-white/10 sm:flex-row"
         onSubmit={(event) => {
           event.preventDefault()
           requestFriend()
@@ -171,7 +171,7 @@ export function FriendsManager({
         </div>
       ) : (
         <>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-base text-muted-foreground sm:text-sm">
             Refreshed{" "}
             <time dateTime={snapshot.refreshedAt}>
               {new Date(snapshot.refreshedAt).toLocaleString("en-US", {
