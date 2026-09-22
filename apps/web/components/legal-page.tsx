@@ -15,11 +15,13 @@ export function LegalPage({
   eyebrow,
   title,
   introduction,
+  lastUpdated = "September 6, 2026",
   sections,
 }: {
   eyebrow: string
   title: string
   introduction: string
+  lastUpdated?: string
   sections: LegalSection[]
 }) {
   return (
@@ -54,7 +56,7 @@ export function LegalPage({
             {introduction}
           </p>
           <p className="text-sm text-muted-foreground">
-            Last updated September 6, 2026
+            Last updated {lastUpdated}
           </p>
         </div>
         <Separator />

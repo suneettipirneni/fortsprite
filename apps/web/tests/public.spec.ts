@@ -135,6 +135,13 @@ test("protected redirects preserve destination and the account-neutral sign-in p
     ).toHaveAttribute("href", "mailto:support@example.test")
   }
 
+  await page.goto("/privacy")
+  await expect(page.getByText("Last updated September 22, 2026")).toBeVisible()
+  await expect(page.getByText(/launch-draft/i)).toHaveCount(0)
+  await expect(
+    page.getByRole("heading", { name: "Analytics and external resources" }),
+  ).toBeVisible()
+
   await page.context().addCookies([
     fixture.actors.a.cookies[
       testInfo.project.name as "desktop" | "mobile"
