@@ -59,6 +59,13 @@ export default function RootLayout({
       <body>
         <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
           <TooltipProvider>{children}</TooltipProvider>
+          <footer className="border-t border-white/10 bg-background px-4 py-5 text-center text-xs leading-5 text-muted-foreground sm:px-6">
+            <p className="mx-auto max-w-4xl">
+              Portions of the materials used are trademarks and/or copyrighted
+              works of Epic Games, Inc. All rights reserved by Epic. This
+              material is not official and is not endorsed by Epic.
+            </p>
+          </footer>
         </ThemeProvider>
         <PwaInstallPrompt />
         <Analytics />
