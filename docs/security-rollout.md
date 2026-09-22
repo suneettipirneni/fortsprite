@@ -11,6 +11,6 @@ The migration replaces the Epic identity and friend graph with FortSprite-owned,
 
 Application DTOs do not expose internal emails, passkey credential IDs, public keys, or session tokens. Browser requests are constrained by the Hono method-and-path allowlist and same-origin checks.
 
-The shared per-user budgets are 120 collection writes, 30 profile edits, 60 sharing grants, 120 privacy actions, and 10 deletion attempts per minute. Better Auth separately limits passkey registration and authentication starts.
+The shared per-user budgets are 120 collection writes, 30 profile edits, 60 sharing grants, 120 privacy actions, and 10 deletion attempts per minute. Database-heavy reads are limited to 120 collection reads, 120 sharing-list reads, and 60 friend comparisons per minute. Better Auth separately limits passkey registration and authentication starts.
 
 If passkey deployment verification fails, do not re-enable Epic as a fallback. Roll back the application while leaving the additive passkey migrations in place.

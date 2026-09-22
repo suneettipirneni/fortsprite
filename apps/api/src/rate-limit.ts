@@ -19,7 +19,14 @@ export const mutationBudgets = {
   deletion: 10,
 } as const
 
+export const readBudgets = {
+  collection: 120,
+  sharing: 120,
+  comparison: 60,
+} as const
+
 export type MutationBudget = keyof typeof mutationBudgets
+export type ReadBudget = keyof typeof readBudgets
 
 // One atomic upsert across all instances; rejected requests do not extend the window.
 async function consumeLimit(key: string, max: number, database = db) {
@@ -52,7 +59,22 @@ export function userRateLimitKeys(userId: string) {
     ...Object.keys(mutationBudgets).map((budget) =>
       mutationLimitKey(userId, budget as MutationBudget),
     ),
+    ...Object.keys(readBudgets).map((budget) =>
+      readLimitKey(userId, budget as ReadBudget),
+    ),
   ]
+}
+
+export function readLimitKey(userId: string, budget: ReadBudget) {
+  return `read:${budget}:${userId}`
+}
+
+export function consumeReadLimit(
+  userId: string,
+  budget: ReadBudget,
+  database = db,
+) {
+  return consumeLimit(readLimitKey(userId, budget), readBudgets[budget], database)
 }
 
 export function consumeMutationLimit(

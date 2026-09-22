@@ -6,7 +6,9 @@ import { FriendshipError } from "./friends.ts"
 import {
   RateLimitError,
   consumeMutationLimit,
+  consumeReadLimit,
   type MutationBudget,
+  type ReadBudget,
 } from "./rate-limit.ts"
 import { db } from "./db/client.ts"
 
@@ -90,6 +92,13 @@ export const handleApiError: ErrorHandler<ApiEnvironment> = (
 export function limitMutations(budget: MutationBudget, database = db) {
   return createMiddleware<ApiEnvironment>(async (context, next) => {
     await consumeMutationLimit(context.get("userId"), budget, database)
+    await next()
+  })
+}
+
+export function limitReads(budget: ReadBudget, database = db) {
+  return createMiddleware<ApiEnvironment>(async (context, next) => {
+    await consumeReadLimit(context.get("userId"), budget, database)
     await next()
   })
 }

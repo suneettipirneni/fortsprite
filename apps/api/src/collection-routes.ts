@@ -6,6 +6,7 @@ import {
   readSession,
   requireSession,
   limitMutations,
+  limitReads,
   handleApiError,
 } from "./http.ts"
 import { db } from "./db/client.ts"
@@ -31,36 +32,41 @@ export function createCollectionRoutes({
   const authenticated = requireSession(getSession)
   routes.onError(handleApiError)
 
-  routes.get("/collection", authenticated, async (context) => {
-    const query = collectionQuerySchema.safeParse(context.req.query())
-    if (!query.success)
-      return context.json(
-        {
-          error: {
-            code: "INVALID_INPUT",
-            message: "The collection filters are invalid.",
+  routes.get(
+    "/collection",
+    authenticated,
+    limitReads("collection", database),
+    async (context) => {
+      const query = collectionQuerySchema.safeParse(context.req.query())
+      if (!query.success)
+        return context.json(
+          {
+            error: {
+              code: "INVALID_INPUT",
+              message: "The collection filters are invalid.",
+            },
           },
-        },
-        400,
-      )
-    const [collection, availableHelpers] = await Promise.all([
-      getCollection(context.get("userId"), query.data, database),
-      readHelpers(context.get("userId"), database),
-    ])
-    const helpers = new Map<string, SpriteHelper[]>()
-    for (const helper of availableHelpers) {
-      const profiles = helpers.get(helper.spriteId) ?? []
-      profiles.push({ ...helper.profile, mastered: helper.mastered })
-      helpers.set(helper.spriteId, profiles)
-    }
-    return context.json({
-      ...collection,
-      items: collection.items.map((item) => ({
-        ...item,
-        helpers: helpers.get(item.id) ?? [],
-      })),
-    })
-  })
+          400,
+        )
+      const [collection, availableHelpers] = await Promise.all([
+        getCollection(context.get("userId"), query.data, database),
+        readHelpers(context.get("userId"), database),
+      ])
+      const helpers = new Map<string, SpriteHelper[]>()
+      for (const helper of availableHelpers) {
+        const profiles = helpers.get(helper.spriteId) ?? []
+        profiles.push({ ...helper.profile, mastered: helper.mastered })
+        helpers.set(helper.spriteId, profiles)
+      }
+      return context.json({
+        ...collection,
+        items: collection.items.map((item) => ({
+          ...item,
+          helpers: helpers.get(item.id) ?? [],
+        })),
+      })
+    },
+  )
 
   routes.put(
     "/collection/:spriteId",

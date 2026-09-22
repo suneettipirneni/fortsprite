@@ -11,7 +11,9 @@ const { sprites } = await import("../src/db/schema.ts")
 const { createCollectionRoutes } = await import("../src/collection-routes.ts")
 const { createFriendRoutes } = await import("../src/friend-routes.ts")
 const { createProfileRoutes } = await import("../src/profile-routes.ts")
-const { userRateLimitKeys } = await import("../src/rate-limit.ts")
+const { readBudgets, readLimitKey, userRateLimitKeys } = await import(
+  "../src/rate-limit.ts"
+)
 
 const owner = randomUUID()
 const friend = randomUUID()
@@ -56,7 +58,12 @@ after(async () => {
   await db.delete(sprites).where(eq(sprites.id, spriteId))
   await db
     .delete(rateLimit)
-    .where(inArray(rateLimit.key, userRateLimitKeys(owner)))
+    .where(
+      inArray(rateLimit.key, [
+        ...userRateLimitKeys(owner),
+        ...userRateLimitKeys(friend),
+      ]),
+    )
   await pool.end()
 })
 
@@ -114,6 +121,47 @@ test("collection routes call the injected helper reader only after authenticatio
     },
   })
   assert.equal((await anonymous.request("/collection?unknown=true")).status, 401)
+})
+
+test("expensive reads stop before database work at the per-user budget", async () => {
+  const collectionKey = readLimitKey(owner, "collection")
+  const comparisonKey = readLimitKey(owner, "comparison")
+  for (const [key, count] of [
+    [collectionKey, readBudgets.collection],
+    [comparisonKey, readBudgets.comparison],
+  ] as const)
+    await db
+      .insert(rateLimit)
+      .values({ id: randomUUID(), key, count, lastRequest: Date.now() })
+      .onConflictDoUpdate({
+        target: rateLimit.key,
+        set: { count, lastRequest: Date.now() },
+      })
+  let helperCalls = 0
+  const collection = createCollectionRoutes({
+    getSession: readSession,
+    readHelpers: async () => {
+      helperCalls++
+      return []
+    },
+  })
+  const rejectedCollection = await collection.request("/collection")
+  assert.equal(rejectedCollection.status, 429)
+  assert.ok(Number(rejectedCollection.headers.get("retry-after")) > 0)
+  assert.equal(helperCalls, 0)
+
+  const friends = createFriendRoutes({ getSession: readSession })
+  const rejectedComparison = await friends.request(
+    `/friends/${friend}/comparison`,
+  )
+  assert.equal(rejectedComparison.status, 429)
+  assert.ok(Number(rejectedComparison.headers.get("retry-after")) > 0)
+
+  const peerCollection = createCollectionRoutes({
+    getSession: async () => ({ user: { id: friend } }),
+    readHelpers: async () => [],
+  })
+  assert.equal((await peerCollection.request("/collection")).status, 200)
 })
 
 test("query guards stay attached under alternate route prefixes", async () => {

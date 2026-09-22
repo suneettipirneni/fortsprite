@@ -14,6 +14,7 @@ import {
   type ApiEnvironment,
   type SessionReader,
   handleApiError,
+  limitReads,
   readSession,
   rejectQueryParameters,
   requireSession,
@@ -36,6 +37,7 @@ export function createFriendRoutes({
     "/friends",
     authenticated,
     rejectQueryParameters,
+    limitReads("sharing", database),
     async (context) => {
       const userId = context.get("userId")
       const [friends, blocked] = await Promise.all([
@@ -121,6 +123,7 @@ export function createFriendRoutes({
     "/friends/:id/comparison",
     authenticated,
     rejectQueryParameters,
+    limitReads("comparison", database),
     async (context) => {
       const id = z.string().min(1).max(128).safeParse(context.req.param("id"))
       if (!id.success)
