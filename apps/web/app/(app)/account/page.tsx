@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import Link from "next/link"
 
-import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
 import { DeleteAccountDialog } from "@/components/delete-account-dialog"
 import { CredentialManager } from "@/components/credential-manager"
@@ -13,10 +12,9 @@ export const metadata: Metadata = { title: "Account" }
 
 export default function AccountPage() {
   return (
-    <AuthenticatedAppShell>
-      <div className="app-page">
-        <div className="flex max-w-4xl flex-col gap-8">
-          <div className="border-b border-white/10 pb-6 sm:pb-8">
+    <div className="app-page">
+      <div className="flex max-w-4xl flex-col gap-8">
+        <div className="border-b border-white/10 pb-6 sm:pb-8">
           <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
             Account
           </p>
@@ -26,14 +24,14 @@ export default function AccountPage() {
           <p className="mt-2 max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
             Choose how friends recognize you and how you securely sign in.
           </p>
-          </div>
-          <Suspense fallback={<ContentLoading />}>
-            <AccountDetails />
-          </Suspense>
-          <nav
-            aria-label="Account policies"
-            className="flex flex-wrap gap-5 border-t border-white/10 pt-5 text-sm"
-          >
+        </div>
+        <Suspense fallback={<ContentLoading />}>
+          <AccountDetails />
+        </Suspense>
+        <nav
+          aria-label="Account policies"
+          className="flex flex-wrap gap-5 border-t border-white/10 pt-5 text-sm"
+        >
           <Link
             href="/privacy"
             className="inline-flex min-h-11 items-center underline underline-offset-4"
@@ -48,14 +46,14 @@ export default function AccountPage() {
           </Link>
           <Link
             href="/help"
+            transitionTypes={["page-navigation"]}
             className="inline-flex min-h-11 items-center underline underline-offset-4"
           >
             Help
           </Link>
-          </nav>
-        </div>
+        </nav>
       </div>
-    </AuthenticatedAppShell>
+    </div>
   )
 }
 

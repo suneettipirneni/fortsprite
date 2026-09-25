@@ -3,7 +3,6 @@ import { Suspense } from "react"
 import Link from "next/link"
 
 import { Button } from "@workspace/ui/components/button"
-import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
 import { RefreshDataButton } from "@/components/refresh-data-button"
 import { CatalogResults } from "@/components/catalog-results"
@@ -17,17 +16,15 @@ export default function ComparisonPage({
   params: Promise<{ id: string }>
 }) {
   return (
-    <AuthenticatedAppShell>
-      <Suspense
-        fallback={
-          <div className="app-page max-w-6xl">
-            <ContentLoading />
-          </div>
-        }
-      >
-        <ComparisonContent params={params} />
-      </Suspense>
-    </AuthenticatedAppShell>
+    <Suspense
+      fallback={
+        <div className="app-page max-w-6xl">
+          <ContentLoading />
+        </div>
+      }
+    >
+      <ComparisonContent params={params} />
+    </Suspense>
   )
 }
 
@@ -59,7 +56,9 @@ async function ComparisonContent({
         </p>
         <div className="flex flex-wrap gap-3">
           <Button asChild className="min-h-11">
-            <Link href="/friends">Back to friends</Link>
+            <Link href="/friends" transitionTypes={["page-navigation"]}>
+              Back to friends
+            </Link>
           </Button>
           {!denied ? <RefreshDataButton /> : null}
         </div>
@@ -71,7 +70,9 @@ async function ComparisonContent({
     <div className="app-page flex flex-col gap-8">
       <div className="max-w-6xl border-b border-white/10 pb-6 sm:pb-8">
         <Button asChild variant="ghost" className="min-h-11 sm:min-h-9">
-          <Link href="/friends">Back to friends</Link>
+          <Link href="/friends" transitionTypes={["page-navigation"]}>
+            Back to friends
+          </Link>
         </Button>
         <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
           Compare collections

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+
 import { SupportContact } from "@/components/support-contact"
 
 import {
@@ -8,16 +9,13 @@ import {
   AccordionTrigger,
 } from "@workspace/ui/components/accordion"
 
-import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
-
 export const metadata: Metadata = { title: "Help" }
 
 export default function HelpPage() {
   return (
-    <AuthenticatedAppShell>
-      <div className="app-page">
-        <div className="flex max-w-3xl flex-col gap-8">
-          <div className="border-b border-white/10 pb-6 sm:pb-8">
+    <div className="app-page">
+      <div className="flex max-w-3xl flex-col gap-8">
+        <div className="border-b border-white/10 pb-6 sm:pb-8">
           <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
             Help
           </p>
@@ -28,8 +26,8 @@ export default function HelpPage() {
             FortSprite coordinates collectors. It does not connect to or modify
             a Fortnite account.
           </p>
-          </div>
-          <Accordion type="single" collapsible>
+        </div>
+        <Accordion type="single" collapsible>
           <AccordionItem value="availability">
             <AccordionTrigger>
               What does “available to help” mean?
@@ -56,10 +54,9 @@ export default function HelpPage() {
               user-provided. Availability follows ownership and friendship.
             </AccordionContent>
           </AccordionItem>
-          </Accordion>
-          <SupportContact />
-        </div>
+        </Accordion>
+        <SupportContact />
       </div>
-    </AuthenticatedAppShell>
+    </div>
   )
 }

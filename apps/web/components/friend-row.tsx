@@ -83,7 +83,12 @@ export function FriendRow({
         {status === "accepted" ? (
           confirmedSharing && !busy ? (
             <Button asChild className="min-h-11">
-              <Link href={`/friends/${profile.id}`}>Compare</Link>
+              <Link
+                href={`/friends/${profile.id}`}
+                transitionTypes={["page-navigation"]}
+              >
+                Compare
+              </Link>
             </Button>
           ) : (
             <Button disabled className="min-h-11">

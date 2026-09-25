@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 
-import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
 import { SpritePortrait } from "@/components/sprite-portrait"
 import { getCollection, getSharing, getViewer } from "@/lib/api"
@@ -99,7 +98,9 @@ async function DashboardContent() {
           </div>
           <div className="flex flex-col gap-3">
             <Button variant="secondary" asChild className="w-fit">
-              <Link href="/matches">Find friends who can help</Link>
+              <Link href="/matches" transitionTypes={["page-navigation"]}>
+                Find friends who can help
+              </Link>
             </Button>
           </div>
         </div>
@@ -149,7 +150,9 @@ async function DashboardContent() {
               </p>
             </div>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/collection">View all</Link>
+              <Link href="/collection" transitionTypes={["page-navigation"]}>
+                View all
+              </Link>
             </Button>
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -164,6 +167,7 @@ async function DashboardContent() {
               <Link
                 key={sprite.id}
                 href="/collection"
+                transitionTypes={["page-navigation"]}
                 className="group grid min-w-0 grid-cols-[5rem_1fr] gap-4 rounded-xl bg-card/72 p-3 shadow-sm ring-1 ring-white/10 outline-none hover:bg-accent/45 focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <SpritePortrait
@@ -238,39 +242,37 @@ async function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <AuthenticatedAppShell>
-      <div className="app-page flex flex-col gap-8 sm:gap-10">
-        <div className="flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between sm:pb-8">
-          <div>
-            <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
-              Collection command
-            </p>
-            <h1 className="max-w-[22ch] text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-              Good hunting,{" "}
-              <Suspense fallback="hunter">
-                <GreetingName />
-              </Suspense>
-              .
-            </h1>
-            <p className="max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
-              <Suspense fallback="Your collection and friend network.">
-                <FriendStatus />
-              </Suspense>
-            </p>
-          </div>
-          <Button asChild>
-            <Link href="/friends">
-              View friends
-              <ArrowRightIcon data-icon="inline-end" />
-            </Link>
-          </Button>
+    <div className="app-page flex flex-col gap-8 sm:gap-10">
+      <div className="flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between sm:pb-8">
+        <div>
+          <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
+            Collection command
+          </p>
+          <h1 className="max-w-[22ch] text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+            Good hunting,{" "}
+            <Suspense fallback="hunter">
+              <GreetingName />
+            </Suspense>
+            .
+          </h1>
+          <p className="max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
+            <Suspense fallback="Your collection and friend network.">
+              <FriendStatus />
+            </Suspense>
+          </p>
         </div>
-
-        <Suspense fallback={<ContentLoading />}>
-          <DashboardContent />
-        </Suspense>
+        <Button asChild>
+          <Link href="/friends" transitionTypes={["page-navigation"]}>
+            View friends
+            <ArrowRightIcon data-icon="inline-end" />
+          </Link>
+        </Button>
       </div>
-    </AuthenticatedAppShell>
+
+      <Suspense fallback={<ContentLoading />}>
+        <DashboardContent />
+      </Suspense>
+    </div>
   )
 }
 

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useSelectedLayoutSegment } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { MotionConfig, motion, useReducedMotion } from "motion/react"
 
 import { appTabs } from "@/components/app-tabs"
@@ -48,6 +48,7 @@ function MobileTabDock({ segment }: { segment?: string | null }) {
                 <Link
                   key={href}
                   href={href}
+                  transitionTypes={["page-navigation"]}
                   aria-label={mobileLabel}
                   aria-current={active ? "page" : undefined}
                   style={{ gridColumn: index + 1, gridRow: 1 }}
@@ -77,7 +78,7 @@ export function MobileSurfaceFallback() {
 }
 
 export function MobileSurface() {
-  const segment = useSelectedLayoutSegment()
+  const segment = usePathname().split("/")[1] || null
   const showDock =
     segment === "help" || appTabs.some((tab) => tab.segment === segment)
 

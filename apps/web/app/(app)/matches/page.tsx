@@ -3,7 +3,6 @@ import { Suspense } from "react"
 import Link from "next/link"
 
 import { Button } from "@workspace/ui/components/button"
-import { AuthenticatedAppShell } from "@/components/authenticated-app-shell"
 import { ContentLoading } from "@/components/content-loading"
 import { CatalogResults } from "@/components/catalog-results"
 import { getCollection } from "@/lib/api"
@@ -13,30 +12,30 @@ export const metadata: Metadata = { title: "Friends can help" }
 
 export default function MatchesPage() {
   return (
-    <AuthenticatedAppShell>
-      <div className="app-page flex flex-col gap-8">
-        <div className="flex max-w-6xl flex-col justify-between gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:pb-8">
-          <div>
-            <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
-              Friends can help
-            </p>
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Find your next capture.
-            </h1>
-            <p className="mt-2 max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
-              See which missing Sprites your sharing friends have captured. Each
-              Sprite appears once, with all eligible friends underneath.
-            </p>
-          </div>
-          <Button asChild className="min-h-11">
-            <Link href="/friends">Manage friends</Link>
-          </Button>
+    <div className="app-page flex flex-col gap-8">
+      <div className="flex max-w-6xl flex-col justify-between gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:pb-8">
+        <div>
+          <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
+            Friends can help
+          </p>
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Find your next capture.
+          </h1>
+          <p className="mt-2 max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
+            See which missing Sprites your sharing friends have captured. Each
+            Sprite appears once, with all eligible friends underneath.
+          </p>
         </div>
-        <Suspense fallback={<ContentLoading />}>
-          <MatchResults />
-        </Suspense>
+        <Button asChild className="min-h-11">
+          <Link href="/friends" transitionTypes={["page-navigation"]}>
+            Manage friends
+          </Link>
+        </Button>
       </div>
-    </AuthenticatedAppShell>
+      <Suspense fallback={<ContentLoading />}>
+        <MatchResults />
+      </Suspense>
+    </div>
   )
 }
 

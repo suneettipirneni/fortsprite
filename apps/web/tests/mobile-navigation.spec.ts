@@ -172,6 +172,8 @@ test("mobile tabs navigate, select nested routes, and stay off public pages", as
 
   await page.goto("/sign-in")
   await expect(navigation).toHaveCount(0)
+  await page.goto("/privacy")
+  await expect(navigation).toHaveCount(0)
   await page.goto("/account")
   await expect(navigation.locator("[data-tab-indicator]")).toBeVisible()
   const indicatorBounds = await navigation.locator("[data-tab-indicator]").boundingBox()
