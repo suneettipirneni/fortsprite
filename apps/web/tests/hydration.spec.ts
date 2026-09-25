@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs"
 import { test, expect } from "@playwright/test"
 
-test("streamed menus become interactive only after their JavaScript loads", async ({
+test("streamed account menu waits for JavaScript while mobile tabs remain links", async ({
   page,
   isMobile,
 }, testInfo) => {
@@ -29,8 +29,8 @@ test("streamed menus become interactive only after their JavaScript loads", asyn
     name: "Account menu",
     exact: true,
   })
-  const navigation = page.getByRole("button", {
-    name: "Open navigation",
+  const navigation = page.getByRole("navigation", {
+    name: "Mobile primary",
     exact: true,
   })
   try {
@@ -40,7 +40,9 @@ test("streamed menus become interactive only after their JavaScript loads", asyn
     await expect(account).toBeDisabled()
     if (isMobile) {
       await expect(navigation).toBeVisible()
-      await expect(navigation).toBeDisabled()
+      await expect(
+        navigation.getByRole("link", { name: "Collection", exact: true }),
+      ).toHaveAttribute("href", "/collection")
     }
   } finally {
     release()
@@ -52,9 +54,6 @@ test("streamed menus become interactive only after their JavaScript loads", asyn
   ).toBeVisible()
   await page.keyboard.press("Escape")
   if (isMobile) {
-    await navigation.click()
-    await expect(
-      page.getByRole("navigation", { name: "Mobile primary", exact: true }),
-    ).toBeVisible()
+    await expect(navigation).toBeVisible()
   }
 })

@@ -5,6 +5,7 @@ import { DownloadIcon, ShareIcon, XIcon } from "lucide-react"
 import Image from "next/image"
 
 import { Button } from "@workspace/ui/components/button"
+import { cn } from "@workspace/ui/lib/utils"
 
 const DISMISSED_AT_KEY = "fortsprite:pwa-install-dismissed-at"
 const PROMPT_AGAIN_AFTER_MS = 14 * 24 * 60 * 60 * 1000
@@ -38,7 +39,11 @@ function isIosSafari() {
   return iosDevice && safari && !navigatorWithStandalone.standalone
 }
 
-export function PwaInstallPrompt() {
+export function PwaInstallPrompt({
+  raisedAboveDock = false,
+}: {
+  raisedAboveDock?: boolean
+}) {
   const [installEvent, setInstallEvent] =
     useState<BeforeInstallPromptEvent | null>(null)
   const [showIosInstructions, setShowIosInstructions] = useState(false)
@@ -118,7 +123,12 @@ export function PwaInstallPrompt() {
   return (
     <aside
       aria-label="Install FortSprite"
-      className="install-safe-bottom fixed inset-x-3 z-50 mx-auto max-w-md rounded-xl bg-popover/96 p-4 text-popover-foreground shadow-2xl ring-1 ring-white/12 backdrop-blur-xl sm:inset-x-auto sm:right-4 sm:bottom-4"
+      className={cn(
+        "fixed inset-x-3 z-50 mx-auto max-w-md rounded-xl bg-popover/96 p-4 text-popover-foreground shadow-2xl ring-1 ring-white/12 backdrop-blur-xl sm:inset-x-auto sm:right-4",
+        raisedAboveDock
+          ? "bottom-[calc(5.5rem+env(safe-area-inset-bottom))] lg:bottom-4"
+          : "install-safe-bottom sm:bottom-4",
+      )}
     >
       <div className="flex items-start gap-3">
         <Image

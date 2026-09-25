@@ -233,8 +233,6 @@ test("collection soft navigation commits its shell and then streams private data
   isMobile,
 }) => {
   await page.goto("/account")
-  if (isMobile)
-    await page.getByRole("button", { name: "Open navigation" }).click()
   const navigation = page.getByRole("navigation", {
     name: isMobile ? "Mobile primary" : "Primary",
     exact: true,
@@ -245,9 +243,6 @@ test("collection soft navigation commits its shell and then streams private data
     await link.click()
     await expect(page).toHaveURL(/\/collection$/)
     await assertShell(page)
-    if (isMobile) {
-      await page.getByRole("button", { name: "Open navigation" }).click()
-    }
   })
   await expect(page.getByTestId("collection-content")).toBeVisible()
   if (isMobile) {

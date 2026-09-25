@@ -32,6 +32,7 @@ if (
 
 const nextConfig: NextConfig = {
   distDir: process.env.FORTSPRITE_DIST_DIR ?? ".next",
+  devIndicators: false,
   reactCompiler: true,
   cacheComponents: true,
   partialPrefetching: true,

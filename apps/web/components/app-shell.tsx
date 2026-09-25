@@ -6,7 +6,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   ChevronsUpDownIcon,
-  MenuIcon,
   UserRoundIcon,
 } from "lucide-react"
 
@@ -22,17 +21,9 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@workspace/ui/components/sheet"
 import { cn } from "@workspace/ui/lib/utils"
 
+import { appTabs } from "@/components/app-tabs"
 import { SignOutMenuItem } from "@/components/sign-out-menu-item"
 import { FortSpriteIcon } from "@/components/fortsprite-icon"
 import catalogMetadata from "../public/sprites/catalog-meta.json"
@@ -42,16 +33,6 @@ const catalogDateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   timeZone: "UTC",
 })
-
-const navigation = [
-  { label: "Overview", href: "/" },
-  { label: "Collection", href: "/collection" },
-  { label: "Friends can help", href: "/matches" },
-  { label: "Friends", href: "/friends" },
-  { label: "Account", href: "/account" },
-]
-
-const secondaryNavigation = [{ label: "Help", href: "/help" }]
 
 // Streamed menu triggers must not accept pointer events before their handlers exist.
 const subscribeHydration = () => () => {}
@@ -162,58 +143,6 @@ export function ProfileMenu({ viewer }: { viewer: Viewer }) {
   )
 }
 
-function MobileNavigation() {
-  const hydrated = useHydrated()
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label="Open navigation"
-          disabled={!hydrated}
-          className="relative lg:hidden"
-        >
-          <MenuIcon />
-          <span
-            aria-hidden="true"
-            className="pointer-fine:hidden absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2"
-          />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="!w-[min(20rem,calc(100%-3rem))]">
-        <SheetHeader>
-          <SheetTitle className="locker-display flex items-center gap-2 text-xl">
-            <FortSpriteIcon size={32} className="shrink-0 text-[#9cfab5]" />
-            FortSprite
-          </SheetTitle>
-          <SheetDescription>
-            Your Sprite locker and friend network.
-          </SheetDescription>
-        </SheetHeader>
-        <nav aria-label="Mobile primary" className="flex flex-col gap-1 px-3">
-          {navigation.map((item) => (
-            <SheetClose asChild key={item.href}>
-              <NavigationLink {...item} />
-            </SheetClose>
-          ))}
-        </nav>
-        <nav
-          aria-label="Mobile secondary"
-          className="flex flex-col gap-1 border-t border-border px-3 pt-4"
-        >
-          {secondaryNavigation.map((item) => (
-            <SheetClose asChild key={item.href}>
-              <NavigationLink {...item} />
-            </SheetClose>
-          ))}
-        </nav>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
 export function AppShell({
   children,
   profile,
@@ -225,15 +154,18 @@ export function AppShell({
     <div className="locker-stage isolate min-h-dvh">
       <header className="sticky top-0 z-40 border-b border-white/8 bg-background/68 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-[90rem] items-center gap-3 px-4 sm:h-15 sm:px-6 lg:px-8">
-          <MobileNavigation />
           <Brand />
 
           <nav
             aria-label="Primary"
             className="hidden min-w-0 items-center gap-1 overflow-x-auto lg:flex"
           >
-            {navigation.map((item) => (
-              <NavigationLink key={item.href} {...item} />
+            {appTabs.map((item) => (
+              <NavigationLink
+                key={item.href}
+                href={item.href}
+                label={item.desktopLabel}
+              />
             ))}
           </nav>
 

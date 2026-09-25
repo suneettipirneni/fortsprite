@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next"
+import { Suspense } from "react"
 
 import { ThemeProvider } from "@workspace/ui/components/theme-provider"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
@@ -6,7 +7,7 @@ import "@workspace/ui/globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-import { PwaInstallPrompt } from "@/components/pwa-install-prompt"
+import { MobileSurface, MobileSurfaceFallback } from "@/components/mobile-surface"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fortsprite.net"),
@@ -67,7 +68,9 @@ export default function RootLayout({
             </p>
           </footer>
         </ThemeProvider>
-        <PwaInstallPrompt />
+        <Suspense fallback={<MobileSurfaceFallback />}>
+          <MobileSurface />
+        </Suspense>
         <Analytics />
         <SpeedInsights />
       </body>
