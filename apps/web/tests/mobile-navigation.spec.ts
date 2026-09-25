@@ -28,7 +28,11 @@ test("mobile tabs navigate, select nested routes, and stay off public pages", as
     path: testInfo.outputPath("mobile-tabs-account.png"),
     caret: "initial",
   })
-  await page.goto("/collection")
+  await page
+    .getByRole("navigation", { name: "Mobile primary" })
+    .getByRole("link", { name: "Collection", exact: true })
+    .click()
+  await expect(page).toHaveURL(new URL("/collection", baseURL).toString())
 
   const navigation = page.getByRole("navigation", {
     name: "Mobile primary",
@@ -68,12 +72,20 @@ test("mobile tabs navigate, select nested routes, and stay off public pages", as
     const safeAreaInset = Number.parseFloat(getComputedStyle(probe).paddingBottom)
     probe.remove()
     const dock = document.querySelector<HTMLElement>("[data-mobile-tab-dock]")!
+    const indicator = dock.querySelector<HTMLElement>("[data-tab-indicator]")!
     return {
       actual: window.innerHeight - dock.getBoundingClientRect().bottom,
-      expected: Math.max(12, safeAreaInset),
+      expected: Math.max(8, safeAreaInset - 4),
+      dockHeight: dock.getBoundingClientRect().height,
+      indicatorHeight: indicator.getBoundingClientRect().height,
+      indicatorWidth: indicator.getBoundingClientRect().width,
+      linkWidth: dock.querySelector("a")!.getBoundingClientRect().width,
     }
   })
   expect(Math.abs(bottomSpacing.actual - bottomSpacing.expected)).toBeLessThan(1)
+  expect(bottomSpacing.dockHeight).toBe(68)
+  expect(bottomSpacing.indicatorHeight).toBe(50)
+  expect(bottomSpacing.indicatorWidth).toBeLessThanOrEqual(bottomSpacing.linkWidth)
 
   for (const [label, href] of [
     ["Home", "/"],

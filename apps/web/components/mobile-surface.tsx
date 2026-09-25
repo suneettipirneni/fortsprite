@@ -16,16 +16,16 @@ function MobileTabDock({ segment }: { segment?: string | null }) {
     <>
       <div
         aria-hidden="true"
-        className="h-[calc(4.75rem+max(0.75rem,env(safe-area-inset-bottom)))] lg:hidden"
+        className="h-[calc(5.25rem+max(0.5rem,calc(env(safe-area-inset-bottom)-0.25rem)))] lg:hidden"
       />
       <MotionConfig reducedMotion="user">
         <motion.nav
           layoutRoot
           aria-label="Mobile primary"
           data-mobile-tab-dock
-          className="install-safe-bottom fixed inset-x-3 z-40 mx-auto max-w-[22rem] lg:hidden"
+          className="fixed inset-x-2 bottom-[max(0.5rem,calc(env(safe-area-inset-bottom)-0.25rem))] z-40 mx-auto max-w-[23rem] lg:hidden"
         >
-          <div className="grid h-[3.75rem] grid-cols-5 items-stretch gap-1 rounded-full border border-white/8 bg-background/85 p-1.5 shadow-[0_10px_28px_rgba(0,10,28,0.3)] backdrop-blur-2xl">
+          <div className="grid h-[4.25rem] grid-cols-5 items-stretch gap-1 rounded-full border border-white/8 bg-background/85 p-2 shadow-[0_10px_28px_rgba(0,10,28,0.3)] backdrop-blur-2xl">
             {activeIndex >= 0 ? (
               <motion.span
                 layout="position"
@@ -38,7 +38,7 @@ function MobileTabDock({ segment }: { segment?: string | null }) {
                     ? { duration: 0 }
                     : { type: "spring", stiffness: 420, damping: 42 }
                 }
-                className="pointer-events-none z-0 m-auto h-[2.625rem] w-12 rounded-full bg-[#9cfab5]/20"
+                className="pointer-events-none z-0 m-auto h-[3.125rem] w-full max-w-14 rounded-full bg-[#9cfab5]/20"
               />
             ) : null}
             {appTabs.map(({ href, mobileLabel, Icon }, index) => {
@@ -56,7 +56,7 @@ function MobileTabDock({ segment }: { segment?: string | null }) {
                     active ? "text-[#9cfab5]" : "text-[#b4c8dc]",
                   )}
                 >
-                  <Icon aria-hidden="true" className="size-[1.375rem] stroke-[1.8]" />
+                  <Icon aria-hidden="true" className="size-6 stroke-[1.8]" />
                 </Link>
               )
             })}

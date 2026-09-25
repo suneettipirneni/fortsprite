@@ -126,7 +126,7 @@ export function PwaInstallPrompt({
       className={cn(
         "fixed inset-x-3 z-50 mx-auto max-w-md rounded-xl bg-popover/96 p-4 text-popover-foreground shadow-2xl ring-1 ring-white/12 backdrop-blur-xl sm:inset-x-auto sm:right-4",
         raisedAboveDock
-          ? "bottom-[calc(5rem+max(0.75rem,env(safe-area-inset-bottom)))] lg:bottom-4"
+          ? "bottom-[calc(5.5rem+max(0.5rem,calc(env(safe-area-inset-bottom)-0.25rem)))] lg:bottom-4"
           : "install-safe-bottom sm:bottom-4",
       )}
     >
