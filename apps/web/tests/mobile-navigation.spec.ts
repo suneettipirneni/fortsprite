@@ -61,16 +61,19 @@ test("mobile tabs navigate, select nested routes, and stay off public pages", as
     path: testInfo.outputPath("mobile-tabs-320.png"),
     caret: "initial",
   })
-  const safeAreaClearance = await page.evaluate(() => {
+  const bottomSpacing = await page.evaluate(() => {
     const probe = document.createElement("div")
     probe.style.paddingBottom = "env(safe-area-inset-bottom)"
     document.body.append(probe)
     const safeAreaInset = Number.parseFloat(getComputedStyle(probe).paddingBottom)
     probe.remove()
     const dock = document.querySelector<HTMLElement>("[data-mobile-tab-dock]")!
-    return window.innerHeight - dock.getBoundingClientRect().bottom - safeAreaInset
+    return {
+      actual: window.innerHeight - dock.getBoundingClientRect().bottom,
+      expected: Math.max(12, safeAreaInset),
+    }
   })
-  expect(safeAreaClearance).toBeGreaterThanOrEqual(11)
+  expect(Math.abs(bottomSpacing.actual - bottomSpacing.expected)).toBeLessThan(1)
 
   for (const [label, href] of [
     ["Home", "/"],
@@ -81,8 +84,8 @@ test("mobile tabs navigate, select nested routes, and stay off public pages", as
   ] as const) {
     const link = navigation.getByRole("link", { name: label, exact: true })
     const size = await link.boundingBox()
-    expect(size?.width).toBeGreaterThanOrEqual(44)
-    expect(size?.height).toBeGreaterThanOrEqual(44)
+    expect(size?.width).toBeGreaterThanOrEqual(48)
+    expect(size?.height).toBeGreaterThanOrEqual(48)
     const widths = await navigation.getByRole("link").evaluateAll((links) =>
       links.map((item) => item.getBoundingClientRect().width),
     )
@@ -94,31 +97,45 @@ test("mobile tabs navigate, select nested routes, and stay off public pages", as
   }
 
   await page.evaluate(() => {
-    const positions: number[] = []
+    const positions: { left: number; right: number }[] = []
     const startedAt = performance.now()
     const sample = () => {
       const indicator = document.querySelector<HTMLElement>("[data-tab-indicator]")
-      if (indicator) positions.push(indicator.getBoundingClientRect().left)
+      if (indicator) {
+        const { left, right } = indicator.getBoundingClientRect()
+        positions.push({ left, right })
+      }
       if (performance.now() - startedAt < 1_200) requestAnimationFrame(sample)
     }
     Object.assign(window, { tabIndicatorPositions: positions })
     requestAnimationFrame(sample)
   })
-  await navigation.getByRole("link", { name: "Friends", exact: true }).click()
-  await expect(page).toHaveURL(new URL("/friends", baseURL).toString())
+  await navigation.getByRole("link", { name: "Home", exact: true }).click()
+  await expect(page).toHaveURL(new URL("/", baseURL).toString())
   await expect
     .poll(
       () =>
         page.evaluate(
           () =>
             new Set(
-              (window as Window & { tabIndicatorPositions?: number[] })
-                .tabIndicatorPositions?.map(Math.round) ?? [],
+              (window as Window & { tabIndicatorPositions?: { left: number }[] })
+                .tabIndicatorPositions?.map(({ left }) => Math.round(left)) ?? [],
             ).size,
         ),
       { timeout: 1_500 },
     )
     .toBeGreaterThan(2)
+  const dockAtHome = await navigation.boundingBox()
+  const positions = await page.evaluate(
+    () =>
+      (window as Window & {
+        tabIndicatorPositions?: { left: number; right: number }[]
+      }).tabIndicatorPositions ?? [],
+  )
+  for (const { left, right } of positions) {
+    expect(left).toBeGreaterThanOrEqual(dockAtHome!.x - 1)
+    expect(right).toBeLessThanOrEqual(dockAtHome!.x + dockAtHome!.width + 1)
+  }
   await navigation.getByRole("link", { name: "Account", exact: true }).click()
   await expect(page).toHaveURL(new URL("/account", baseURL).toString())
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
@@ -143,4 +160,12 @@ test("mobile tabs navigate, select nested routes, and stay off public pages", as
 
   await page.goto("/sign-in")
   await expect(navigation).toHaveCount(0)
+  await page.goto("/account")
+  await expect(navigation.locator("[data-tab-indicator]")).toBeVisible()
+  const indicatorBounds = await navigation.locator("[data-tab-indicator]").boundingBox()
+  const dockAfterRemount = await navigation.boundingBox()
+  expect(indicatorBounds!.x).toBeGreaterThanOrEqual(dockAfterRemount!.x)
+  expect(indicatorBounds!.x + indicatorBounds!.width).toBeLessThanOrEqual(
+    dockAfterRemount!.x + dockAfterRemount!.width,
+  )
 })
