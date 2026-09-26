@@ -88,7 +88,7 @@ function DashboardContent() {
         </div>
         <div className="lg:col-span-4 lg:justify-self-end">
           <Button variant="secondary" asChild>
-            <Link href="/matches" transitionTypes={["page-navigation"]}>
+            <Link href="/matches">
               Find friends who can help
             </Link>
           </Button>
@@ -105,7 +105,7 @@ function DashboardContent() {
               Next collection gaps
             </h2>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/collection" transitionTypes={["page-navigation"]}>
+              <Link href="/collection">
                 View all
               </Link>
             </Button>
@@ -156,7 +156,7 @@ export default function DashboardPage() {
         }
         action={
           <Button asChild>
-            <Link href="/friends" transitionTypes={["page-navigation"]}>
+            <Link href="/friends">
               View friends
               <ArrowRightIcon data-icon="inline-end" />
             </Link>
@@ -226,7 +226,6 @@ async function GapCards() {
         <Link
           key={sprite.id}
           href="/collection"
-          transitionTypes={["page-navigation"]}
           className="group grid min-w-0 grid-cols-[5rem_1fr] gap-4 rounded-xl bg-card/72 p-3 shadow-sm ring-1 ring-white/10 outline-none hover:bg-accent/45 focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           <SpritePortrait

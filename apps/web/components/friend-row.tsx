@@ -85,7 +85,6 @@ export function FriendRow({
             <Button asChild>
               <Link
                 href={`/friends/${profile.id}`}
-                transitionTypes={["page-navigation"]}
               >
                 Compare
               </Link>

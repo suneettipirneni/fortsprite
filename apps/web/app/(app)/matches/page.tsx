@@ -31,7 +31,7 @@ export default function MatchesPage() {
         description="See which missing Sprites your sharing friends have captured."
         action={
           <Button asChild>
-            <Link href="/friends" transitionTypes={["page-navigation"]}>
+            <Link href="/friends">
               Manage friends
             </Link>
           </Button>

@@ -54,7 +54,6 @@ function MobileTabDock({ segment }: { segment?: string | null }) {
                     key={href}
                     href={href}
                     prefetch={true}
-                    transitionTypes={["page-navigation"]}
                     aria-label={mobileLabel}
                     aria-current={active ? "page" : undefined}
                     style={{ gridColumn: index + 1, gridRow: 1 }}

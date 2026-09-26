@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, ViewTransition, useSyncExternalStore } from "react"
+import { Suspense, useSyncExternalStore } from "react"
 import type { Viewer } from "@workspace/contracts"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -45,7 +45,6 @@ function Brand() {
     <Link
       href="/"
       prefetch={true}
-      transitionTypes={["page-navigation"]}
       aria-label="Homepage"
       className="flex shrink-0 items-center gap-2.5 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >
@@ -71,7 +70,6 @@ function NavigationLinkContent({
     <Link
       href={href}
       prefetch={true}
-      transitionTypes={["page-navigation"]}
       aria-current={active ? "page" : undefined}
       className={cn(
         "flex h-9 items-center rounded-lg px-3 text-sm font-medium text-foreground/65 outline-none hover:bg-white/6 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
@@ -127,7 +125,6 @@ export function ProfileMenu({ viewer }: { viewer: Viewer }) {
           <DropdownMenuItem asChild>
             <Link
               href="/account"
-              transitionTypes={["page-navigation"]}
               aria-current={pathname === "/account" ? "page" : undefined}
             >
               <UserRoundIcon />
@@ -171,12 +168,7 @@ export function AppShell({
           {profile}
         </div>
       </header>
-      <ViewTransition
-        default="none"
-        update={{ "page-navigation": "page-change", default: "none" }}
-      >
-        <main className="min-w-0">{children}</main>
-      </ViewTransition>
+      <main className="min-w-0">{children}</main>
     </div>
   )
 }

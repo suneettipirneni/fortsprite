@@ -52,7 +52,6 @@ export default function AccountPage() {
             </Link>
             <Link
               href="/help"
-              transitionTypes={["page-navigation"]}
               className="inline-flex min-h-11 items-center underline underline-offset-4"
             >
               Help

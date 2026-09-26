@@ -21,7 +21,6 @@ export function FriendHelperList({
           <li key={friend.id}>
             <Link
               href={`/friends/${friend.id}`}
-              transitionTypes={["page-navigation"]}
               className="flex min-h-14 min-w-0 items-center gap-3 rounded-lg border border-border bg-background/45 p-2.5 outline-none transition-colors hover:bg-accent/45 focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               <Avatar className="size-9 shrink-0">

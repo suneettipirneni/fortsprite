@@ -1,12 +1,6 @@
 import { readFileSync } from "node:fs"
 import { expect, test } from "@playwright/test"
 
-type TransitionSnapshot = {
-  mainClass: string
-  running: string[]
-  rootName: string
-}
-
 test.beforeEach(async ({ page, baseURL }, testInfo) => {
   const fixture = JSON.parse(
     readFileSync(process.env.BROWSER_FIXTURE_PATH!, "utf8"),
@@ -27,7 +21,7 @@ test.afterEach(async ({ page }) => {
   await page.unrouteAll({ behavior: "wait" })
 })
 
-test("app navigation animates the page and keeps the shell mounted", async ({
+test("app navigation skips view transitions and keeps the shell mounted", async ({
   page,
   isMobile,
 }) => {
@@ -35,35 +29,16 @@ test("app navigation animates the page and keeps the shell mounted", async ({
     const start = document.startViewTransition?.bind(document)
     if (!start) return
 
-    Object.assign(window, { pageTransitionSnapshots: [] as TransitionSnapshot[] })
+    const state = Object.assign(window, { pageTransitionCalls: 0 })
     document.startViewTransition = ((
       update: Parameters<typeof document.startViewTransition>[0],
     ) => {
-      const transition = start(update)
-      void transition.ready.then(() => {
-        const main = document.querySelector("main")
-        const snapshot: TransitionSnapshot = {
-          mainClass: main
-            ? getComputedStyle(main).getPropertyValue("view-transition-class")
-            : "missing",
-          rootName: getComputedStyle(document.documentElement).viewTransitionName,
-          running: document.documentElement
-            .getAnimations({ subtree: true })
-            .map((item) =>
-              item instanceof CSSAnimation ? item.animationName : "other",
-            ),
-        }
-        ;(window as Window & {
-          pageTransitionSnapshots?: TransitionSnapshot[]
-        }).pageTransitionSnapshots?.push(snapshot)
-      }).catch(() => {
-        // Superseded transitions can be skipped by the browser.
-      })
-      return transition
+      state.pageTransitionCalls += 1
+      return start(update)
     }) as typeof document.startViewTransition
   })
 
-  // Delay streamed responses in a fresh browser context to cover cold routes.
+  // Include cold streamed routes, where tracking can resolve after navigation.
   await page.route("**/*", async (route) => {
     if (route.request().headers()["rsc"]) {
       await new Promise((resolve) => setTimeout(resolve, 300))
@@ -72,75 +47,35 @@ test("app navigation animates the page and keeps the shell mounted", async ({
   })
   await page.goto("/account")
   await expect(page).toHaveTitle("Account · FortSprite")
-  await expect(
-    page.getByRole("textbox", { name: "FortSprite display name", exact: true }),
-  ).toBeVisible()
-  const initialSnapshots = await page.evaluate(
-    () =>
-      (window as Window & { pageTransitionSnapshots?: TransitionSnapshot[] })
-        .pageTransitionSnapshots ?? [],
-  )
-  expect(initialSnapshots.flatMap((snapshot) => snapshot.running)).not.toContain(
-    "app-page-in",
-  )
+  const displayName = page.getByRole("textbox", {
+    name: "FortSprite display name",
+    exact: true,
+  })
+  await expect(displayName).toBeVisible()
+  await displayName.fill("Unsaved navigation draft")
   const header = await page.locator("header").first().elementHandle()
   const main = await page.locator("main").elementHandle()
   const navigation = page.getByRole("navigation", {
     name: isMobile ? "Mobile primary" : "Primary",
     exact: true,
   })
-  await navigation.getByRole("link", { name: "Collection", exact: true }).click()
-  await expect(page).toHaveURL(/\/collection$/)
-  await expect(page.getByTestId("collection-content")).toBeVisible()
-  await expect
-    .poll(() =>
-      page.evaluate(
-        () =>
-          (window as Window & { pageTransitionSnapshots?: TransitionSnapshot[] })
-            .pageTransitionSnapshots?.length ?? 0,
-      ),
-    )
-    .toBeGreaterThan(0)
 
-  const snapshots = await page.evaluate(
-    () =>
-      (window as Window & { pageTransitionSnapshots?: TransitionSnapshot[] })
-        .pageTransitionSnapshots ?? [],
-  )
-  expect(snapshots[0]?.mainClass).toContain("page-change")
-  for (const snapshot of snapshots) {
-    expect(snapshot.rootName).toBe("none")
-    expect(
-      snapshot.running.filter((name) =>
-        name.startsWith("-ua-view-transition-group-anim"),
-      ),
-    ).toEqual([])
+  for (const reducedMotion of ["no-preference", "reduce"] as const) {
+    await page.emulateMedia({ reducedMotion })
+    await navigation.getByRole("link", { name: "Collection", exact: true }).click()
+    await expect(page).toHaveURL(/\/collection$/)
+    await expect(page.getByTestId("collection-content")).toBeVisible()
+    await navigation.getByRole("link", { name: "Account", exact: true }).click()
+    await expect(page).toHaveURL(/\/account$/)
+    await expect(displayName).toHaveValue("Unsaved navigation draft")
+    expect(await header?.evaluate((element) => element.isConnected)).toBe(true)
+    expect(await main?.evaluate((element) => element.isConnected)).toBe(true)
   }
-  expect(snapshots[0]?.running).toContain("app-page-in")
-  expect(snapshots[0]?.running).toContain("app-page-out")
-  expect(await header?.evaluate((element) => element.isConnected)).toBe(true)
-  expect(await main?.evaluate((element) => element.isConnected)).toBe(true)
-  await page.screenshot({ path: test.info().outputPath("collection.png") })
 
-  await page.emulateMedia({ reducedMotion: "reduce" })
-  await navigation.getByRole("link", { name: "Account", exact: true }).click()
-  await expect(page).toHaveURL(/\/account$/)
-  await expect
-    .poll(() =>
-      page.evaluate(
-        () =>
-          (window as Window & { pageTransitionSnapshots?: TransitionSnapshot[] })
-            .pageTransitionSnapshots?.length ?? 0,
-      ),
-    )
-    .toBeGreaterThan(1)
-  const reducedMotionSnapshot = await page.evaluate(
-    () =>
-      (window as Window & { pageTransitionSnapshots?: TransitionSnapshot[] })
-        .pageTransitionSnapshots?.at(-1),
-  )
-  expect(reducedMotionSnapshot?.running).not.toContain("app-page-in")
-  expect(reducedMotionSnapshot?.running).not.toContain("app-page-out")
+  expect(await page.evaluate(() =>
+    (window as Window & { pageTransitionCalls?: number }).pageTransitionCalls,
+  )).toBe(0)
+  await page.screenshot({ path: test.info().outputPath("navigation-no-transition.png") })
 })
 
 test("scroll resets keep the mobile indicator inside the persistent dock", async ({

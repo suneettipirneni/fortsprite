@@ -54,7 +54,7 @@ async function ComparisonContent({
           action={
             <>
               <Button asChild>
-                <Link href="/friends" transitionTypes={["page-navigation"]}>
+                <Link href="/friends">
                   Back to friends
                 </Link>
               </Button>
@@ -74,7 +74,7 @@ async function ComparisonContent({
         description="Current-season captured Sprites can help friends regardless of mastery. Coordinate together in Fortnite."
         action={
           <Button asChild variant="outline">
-            <Link href="/friends" transitionTypes={["page-navigation"]}>
+            <Link href="/friends">
               Back to friends
             </Link>
           </Button>
