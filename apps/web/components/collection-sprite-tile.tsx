@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react"
 import { CheckIcon, CircleIcon, CrownIcon } from "lucide-react"
 
 import { cn } from "@workspace/ui/lib/utils"
@@ -40,6 +40,7 @@ import type { CatalogItem } from "@workspace/contracts"
 import {
   SpriteTracking,
   TrackingSkeleton,
+  useCollectionControls,
 } from "@/components/collection-tracking"
 import { FriendHelperList } from "@/components/friend-helper-list"
 import { SpritePortrait } from "@/components/sprite-portrait"
@@ -64,8 +65,6 @@ export function SpriteTile({
   view = "grid",
   onChange,
   pending,
-  notice,
-  onRemovedFocus,
   availabilityKnown,
   currentSeasonId,
 }: {
@@ -74,26 +73,18 @@ export function SpriteTile({
   pending: boolean
   availabilityKnown: boolean
   currentSeasonId: number | null
-  notice: CollectionNotice | null
-  onRemovedFocus: () => void
   onChange: (change: CollectionChange) => void
 }) {
-  const triggerRef = useRef<HTMLButtonElement>(null)
-  const isMobile = useIsMobile()
+  const details = useContext(SpriteDetailsContext)
+  if (!details) throw new Error("Sprite details require their collection provider")
   const [previewOpen, setPreviewOpen] = useState(false)
-  const [dialogOpen, setDialogOpen] = useState(false)
   const helpEligible =
     currentSeasonId !== null && sprite.sourceSeasonId === currentSeasonId
-  const restoreTriggerFocus = (event: Event) => {
-    event.preventDefault()
-    if (triggerRef.current?.isConnected) triggerRef.current.focus()
-    else onRemovedFocus()
-  }
 
   return (
     <>
       <HoverCard
-        open={!dialogOpen && previewOpen}
+        open={details.activeSpriteId !== sprite.id && previewOpen}
         onOpenChange={setPreviewOpen}
       >
         <article
@@ -106,14 +97,13 @@ export function SpriteTile({
         >
           <HoverCardTrigger asChild>
             <button
-              ref={triggerRef}
               type="button"
               data-sprite-variant={sprite.variant}
               onFocus={() => setPreviewOpen(true)}
               onBlur={() => setPreviewOpen(false)}
-              onClick={() => {
+              onClick={(event) => {
                 setPreviewOpen(false)
-                setDialogOpen(true)
+                details.openDetails(sprite, event.currentTarget)
               }}
               aria-label={`Open ${sprite.variant} ${sprite.baseName} details. ${sprite.rarity} rarity.`}
               className={cn(
@@ -331,7 +321,88 @@ export function SpriteTile({
           </div>
         </article>
       </HoverCard>
+    </>
+  )
+}
 
+type SpriteDetailsSelection = {
+  sprite: CatalogItem
+  trigger: HTMLButtonElement
+  mobile: boolean
+}
+
+const SpriteDetailsContext = createContext<{
+  openDetails: (sprite: CatalogItem, trigger: HTMLButtonElement) => void
+  activeSpriteId: string | null
+} | null>(null)
+
+type SpriteDetailsProviderProps = {
+  children: ReactNode
+  availabilityKnown: boolean
+  currentSeasonId: number | null
+  onRemovedFocus: () => void
+  onChange: (sprite: CatalogItem, change: CollectionChange) => { leavesFilter: boolean }
+}
+
+export function SpriteDetailsProvider({
+  children,
+  ...overlayProps
+}: SpriteDetailsProviderProps) {
+  const isMobile = useIsMobile()
+  const [selection, setSelection] = useState<SpriteDetailsSelection | null>(null)
+  const [open, setOpen] = useState(false)
+  const openDetails = useCallback((sprite: CatalogItem, trigger: HTMLButtonElement) => {
+    setSelection({ sprite, trigger, mobile: isMobile })
+    setOpen(true)
+  }, [isMobile])
+  const activeSpriteId = open ? selection?.sprite.id ?? null : null
+  const context = useMemo(() => ({ openDetails, activeSpriteId }), [openDetails, activeSpriteId])
+
+  return (
+    <SpriteDetailsContext value={context}>
+      {children}
+      {selection ? (
+        <SpriteDetailsOverlay
+          {...overlayProps}
+          selection={selection}
+          dialogOpen={open}
+          setDialogOpen={setOpen}
+        />
+      ) : null}
+    </SpriteDetailsContext>
+  )
+}
+
+function SpriteDetailsOverlay({
+  selection,
+  dialogOpen,
+  setDialogOpen,
+  availabilityKnown,
+  currentSeasonId,
+  onRemovedFocus,
+  onChange: changeSprite,
+}: Omit<SpriteDetailsProviderProps, "children"> & {
+  selection: SpriteDetailsSelection
+  dialogOpen: boolean
+  setDialogOpen: (open: boolean) => void
+}) {
+  const { pendingIds, notice: collectionNotice } = useCollectionControls()
+  const { sprite, mobile: isMobile, trigger } = selection
+  const pending = pendingIds.has(sprite.id)
+  const notice = collectionNotice?.spriteId === sprite.id ? collectionNotice : null
+  const helpEligible = currentSeasonId !== null && sprite.sourceSeasonId === currentSeasonId
+  const onChange = (change: CollectionChange) => {
+    const { leavesFilter } = changeSprite(sprite, change)
+    if (leavesFilter) setDialogOpen(false)
+  }
+  const restoreTriggerFocus = (event: Event) => {
+    event.preventDefault()
+    if (trigger.isConnected) trigger.focus()
+    else onRemovedFocus()
+  }
+
+  return (
+    <>
       {isMobile ? (
         <Drawer open={dialogOpen} onOpenChange={setDialogOpen}>
           <DrawerContent

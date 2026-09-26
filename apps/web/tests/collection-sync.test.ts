@@ -221,6 +221,49 @@ test("idle refresh adopts remote state and registers new catalog entries", async
   await h.succeed(1)
 })
 
+test("unchanged reconciliation preserves snapshots without notifying subscribers", () => {
+  const h = harness({ air: missing, dream: captured })
+  const initial = h.sync.getSnapshot()
+  let notifications = 0
+  h.sync.subscribe(() => notifications++)
+
+  h.sync.reconcile([entry(missing, null), entry(captured, null, "dream")])
+
+  assert.equal(h.sync.getSnapshot(), initial)
+  assert.equal(notifications, 0)
+  assert.deepEqual([...initial.values()], [
+    entry(missing, null),
+    entry(captured, null, "dream"),
+  ])
+
+  h.sync.reconcile([entry(missing, null)])
+  assert.equal(notifications, 1)
+  assert.deepEqual([...h.sync.getSnapshot().values()], [entry(missing, null)])
+  assert.equal(h.sync.getSnapshot().get("air"), initial.get("air"))
+})
+
+test("remote changes notify subscribers and preserve unchanged entry identities", () => {
+  const h = harness({ air: missing, dream: captured })
+  const initial = h.sync.getSnapshot()
+  let notifications = 0
+  h.sync.subscribe(() => notifications++)
+  const remote = entry(mastered, "2026-09-05T12:01:00Z")
+
+  h.sync.reconcile([remote, entry(captured, null, "dream")])
+
+  const changed = h.sync.getSnapshot()
+  assert.notEqual(changed, initial)
+  assert.deepEqual(changed.get("air"), remote)
+  assert.equal(changed.get("dream"), initial.get("dream"))
+  assert.equal(notifications, 1)
+
+  const newer = entry(mastered, "2026-09-05T12:02:00Z")
+  h.sync.reconcile([newer, entry(captured, null, "dream")])
+  assert.deepEqual(h.sync.getSnapshot().get("air"), newer)
+  assert.equal(h.sync.getSnapshot().get("dream"), initial.get("dream"))
+  assert.equal(notifications, 2)
+})
+
 test("refresh removes absent idle lanes but preserves pending writes", async () => {
   const h = harness({ air: missing, dream: missing })
   h.sync.change("air", { field: "owned", checked: true })
@@ -257,8 +300,9 @@ test("queue snapshots contain only collection state and publish through a stable
     [...h.sync.getSnapshot().values()],
     [entry(captured, "2026-09-05T12:00:00Z")],
   )
-  assert.equal(notifications, 2)
+  assert.equal(h.sync.getSnapshot(), snapshot)
+  assert.equal(notifications, 1)
   unsubscribe()
   h.sync.reconcile([])
-  assert.equal(notifications, 2)
+  assert.equal(notifications, 1)
 })

@@ -64,9 +64,13 @@ export const getCredentials = cache(() =>
   getJson<CredentialsResponse>("/api/v1/credentials"),
 )
 
-export const getCollection = cache(async (): Promise<CollectionSnapshot> => {
+export const getCollectionTracking = cache(async (): Promise<CollectionTrackingSnapshot> => {
   await connection()
-  let tracking = await getJson<CollectionTrackingSnapshot>("/api/v1/collection/state")
+  return getJson<CollectionTrackingSnapshot>("/api/v1/collection/state")
+})
+
+export const getCollection = cache(async (): Promise<CollectionSnapshot> => {
+  let tracking = await getCollectionTracking()
   let catalog: CatalogSnapshot
   try {
     catalog = await getCatalog(tracking.catalogRevision)

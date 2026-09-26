@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, startTransition, Suspense, use, useContext, useLayoutEffect, useState, useSyncExternalStore } from "react"
-import type { CatalogItem, CollectionSnapshot } from "@workspace/contracts"
+import type { CatalogItem, CollectionEntry, CollectionSnapshot, CollectionTrackingSnapshot, SpriteHelper } from "@workspace/contracts"
 import { updateCollectionAction } from "@/app/actions/collection"
 import { createCollectionSync } from "@/lib/collection-sync"
 import type { CollectionChange } from "@/lib/collection-state"
@@ -10,7 +10,7 @@ import type { Sprite } from "@/lib/catalog-presentation"
 import { cn } from "@workspace/ui/lib/utils"
 
 type TrackingContextValue = {
-  collection: Promise<CollectionSnapshot>
+  collection: Promise<CollectionTrackingSnapshot>
   catalog: Map<string, CatalogItem>
   sync: ReturnType<typeof createCollectionSync>
   pendingIds: Set<string>
@@ -19,6 +19,29 @@ type TrackingContextValue = {
 }
 
 const TrackingContext = createContext<TrackingContextValue | null>(null)
+
+type TrackingIndex = {
+  entries: Map<string, CollectionEntry>
+  helpers: Map<string, SpriteHelper[]>
+}
+
+const trackingIndexes = new WeakMap<CollectionTrackingSnapshot, TrackingIndex>()
+
+function indexTracking(snapshot: CollectionTrackingSnapshot): TrackingIndex {
+  const existing = trackingIndexes.get(snapshot)
+  if (existing) return existing
+
+  const entries = new Map(snapshot.entries.map((entry) => [entry.spriteId, entry]))
+  const helpers = new Map<string, SpriteHelper[]>()
+  for (const helper of snapshot.helpers) {
+    const profiles = helpers.get(helper.spriteId) ?? []
+    profiles.push({ ...helper.profile, mastered: helper.mastered })
+    helpers.set(helper.spriteId, profiles)
+  }
+  const index = { entries, helpers }
+  trackingIndexes.set(snapshot, index)
+  return index
+}
 
 export function TrackingSkeleton({ className }: { className?: string }) {
   return <span role="status" aria-label="Loading collection tracking" data-testid="tracking-skeleton"
@@ -32,7 +55,7 @@ export function useCollectionControls() {
 }
 
 export function CollectionTrackingProvider({ collection, catalog, children }: {
-  collection: Promise<CollectionSnapshot>
+  collection: Promise<CollectionTrackingSnapshot>
   catalog: Map<string, CatalogItem>
   children: React.ReactNode
 }) {
@@ -74,23 +97,27 @@ export function CollectionTrackingProvider({ collection, catalog, children }: {
 function TrackingReconciler() {
   const { collection, sync } = useCollectionControls()
   const snapshot = use(collection)
-  useLayoutEffect(() => { sync.reconcile(snapshot.items) }, [snapshot, sync])
+  useLayoutEffect(() => { sync.reconcile(snapshot.entries) }, [snapshot, sync])
   return null
 }
 
-export function useTrackedCollection() {
+export function useTrackedCollection(): CollectionSnapshot {
   const { collection, catalog, sync, pendingIds } = useCollectionControls()
   const snapshot = use(collection)
   const queued = useSyncExternalStore(sync.subscribe, sync.getSnapshot, sync.getSnapshot)
-  const items = snapshot.items.filter((item) => catalog.has(item.id)).map((item) => {
-    const entry = queued.get(item.spriteId)
-    return entry && (pendingIds.has(item.id) || (entry.updatedAt ?? "") >= (item.updatedAt ?? ""))
-      ? { ...item, ...catalog.get(item.id), ...entry }
-      : { ...item, ...catalog.get(item.id) }
+  const tracking = indexTracking(snapshot)
+  const items = [...catalog.values()].flatMap((item) => {
+    const serverEntry = tracking.entries.get(item.id)
+    if (!serverEntry) return []
+    const queuedEntry = queued.get(item.id)
+    const entry = queuedEntry && (pendingIds.has(item.id) || (queuedEntry.updatedAt ?? "") >= (serverEntry.updatedAt ?? ""))
+      ? queuedEntry
+      : serverEntry
+    return [{ ...item, ...entry, helpers: tracking.helpers.get(item.id) ?? [] }]
   })
   const updatedAt = items.reduce<string | null>((latest, item) =>
     item.updatedAt && (!latest || item.updatedAt > latest) ? item.updatedAt : latest, null)
-  return { ...snapshot, items, updatedAt, progress: {
+  return { items, updatedAt, progress: {
     total: items.length,
     owned: items.filter((item) => item.owned).length,
     mastered: items.filter((item) => item.mastered).length,
@@ -124,17 +151,20 @@ function SpriteTrackingValue({ spriteId, onChange, children }: {
   onChange?: (change: CollectionChange) => void
   children: (value: { sprite: Sprite; onChange: (change: CollectionChange) => void }) => React.ReactNode
 }) {
-  const { collection, sync, pendingIds } = useCollectionControls()
+  const { collection, catalog, sync, pendingIds } = useCollectionControls()
   const snapshot = use(collection)
   const queued = useSyncExternalStore(sync.subscribe, sync.getSnapshot, sync.getSnapshot)
-  const item = snapshot.items.find((item) => item.id === spriteId)
-  if (!item) return <span className="text-xs text-muted-foreground">Tracking unavailable</span>
-  const entry = queued.get(spriteId)
-  const sprite = entry && (pendingIds.has(spriteId) || (entry.updatedAt ?? "") >= (item.updatedAt ?? ""))
-    ? { ...item, ...entry }
-    : item
+  const tracking = indexTracking(snapshot)
+  const item = catalog.get(spriteId)
+  const serverEntry = tracking.entries.get(spriteId)
+  if (!item || !serverEntry) return <span className="text-xs text-muted-foreground">Tracking unavailable</span>
+  const queuedEntry = queued.get(spriteId)
+  const entry = queuedEntry && (pendingIds.has(spriteId) || (queuedEntry.updatedAt ?? "") >= (serverEntry.updatedAt ?? ""))
+    ? queuedEntry
+    : serverEntry
+  const sprite = { ...item, ...entry, helpers: tracking.helpers.get(spriteId) ?? [] }
   return children({ sprite, onChange: (change) => {
-    sync.reconcile(snapshot.items)
+    sync.reconcile(snapshot.entries)
     if (onChange) onChange(change)
     else sync.change(spriteId, change)
   } })

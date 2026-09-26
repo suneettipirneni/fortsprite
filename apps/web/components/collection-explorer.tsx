@@ -1,6 +1,6 @@
 "use client"
 
-import type { CatalogItem, CollectionSnapshot } from "@workspace/contracts"
+import type { CatalogItem, CollectionTrackingSnapshot } from "@workspace/contracts"
 import {
   useDeferredValue,
   useRef,
@@ -23,6 +23,7 @@ import {
 } from "@workspace/ui/components/tooltip"
 
 import { FilterSelect } from "@/components/filter-select"
+import { SpriteDetailsProvider } from "@/components/collection-sprite-tile"
 import {
   CollectionQueryBar,
   type CollectionQueryToken,
@@ -101,7 +102,7 @@ function formatUtcDateTime(date: Date) {
 
 export function CollectionExplorer({ catalog, collection }: {
   catalog: CatalogItem[]
-  collection: Promise<CollectionSnapshot>
+  collection: Promise<CollectionTrackingSnapshot>
 }) {
   return <CollectionTrackingProvider collection={collection} catalog={new Map(catalog.map((item) => [item.id, item]))}>
     <CollectionExplorerContent catalog={catalog} />
@@ -251,6 +252,7 @@ function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
       }).length === 0
 
     if (leavesFilter) queryInputRef.current?.focus()
+    return { leavesFilter }
   }
 
   const gridProps = {
@@ -259,8 +261,6 @@ function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
     pendingIds,
     availabilityKnown: true,
     currentSeasonId,
-    notice,
-    onRemovedFocus: () => queryInputRef.current?.focus(),
     onChange: updateSprite,
   }
 
@@ -309,7 +309,12 @@ function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
   }
 
   return (
-    <>
+    <SpriteDetailsProvider
+      availabilityKnown
+      currentSeasonId={currentSeasonId}
+      onRemovedFocus={() => queryInputRef.current?.focus()}
+      onChange={updateSprite}
+    >
       <div aria-live="polite" aria-atomic="true" className="grid shrink-0 grid-cols-2 gap-0 tabular-nums">
         {(["owned", "mastered"] as const).map((field) => <div key={field} className={field === "owned" ? "pr-6" : "border-l border-white/10 pl-6 sm:pl-8"}>
           <p className="text-base sm:text-sm"><span className="text-3xl font-semibold tracking-tight text-foreground">
@@ -458,6 +463,6 @@ function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
           </p>
         ) : null}
       </div>
-    </>
+    </SpriteDetailsProvider>
   )
 }

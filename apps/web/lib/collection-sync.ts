@@ -50,16 +50,32 @@ export function createCollectionSync(options: CollectionSyncOptions) {
   let snapshot = new Map<string, CollectionEntry>()
 
   function publish() {
-    snapshot = new Map(
-      [...lanes].map(([id, lane]) => [
-        id,
-        {
-          spriteId: id,
-          updatedAt: lane.confirmed.updatedAt,
-          ...lane.desired,
-        },
-      ]),
-    )
+    let nextSnapshot: Map<string, CollectionEntry> | undefined
+    for (const [id, lane] of lanes) {
+      const current = snapshot.get(id)
+      if (
+        current &&
+        current.owned === lane.desired.owned &&
+        current.mastered === lane.desired.mastered &&
+        current.updatedAt === lane.confirmed.updatedAt
+      )
+        continue
+
+      nextSnapshot ??= new Map(snapshot)
+      nextSnapshot.set(id, {
+        spriteId: id,
+        updatedAt: lane.confirmed.updatedAt,
+        ...lane.desired,
+      })
+    }
+    for (const id of snapshot.keys()) {
+      if (lanes.has(id)) continue
+      nextSnapshot ??= new Map(snapshot)
+      nextSnapshot.delete(id)
+    }
+    if (!nextSnapshot) return
+
+    snapshot = nextSnapshot
     for (const listener of listeners) listener()
   }
   publish()

@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:instant": "playwright test --config playwright.instant.config.ts",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "test:performance": "playwright test --config playwright.performance.config.ts"
   },
   "dependencies": {
     "@better-auth/passkey": "1.7.5",

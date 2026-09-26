@@ -15,10 +15,7 @@ import { Badge } from "@workspace/ui/components/badge"
 import type { CollectionChange } from "@/lib/collection-state"
 import type { CatalogItem } from "@workspace/contracts"
 import { CollectionTracking, TrackingSkeleton } from "@/components/collection-tracking"
-import {
-  SpriteTile,
-  type CollectionNotice,
-} from "@/components/collection-sprite-tile"
+import { SpriteTile } from "@/components/collection-sprite-tile"
 
 export type CollectionGridSize = "small" | "medium" | "large"
 
@@ -28,8 +25,6 @@ type SpriteGridProps = {
   pendingIds: Set<string>
   availabilityKnown: boolean
   currentSeasonId: number | null
-  notice: CollectionNotice | null
-  onRemovedFocus: () => void
   onChange: (sprite: CatalogItem, change: CollectionChange) => void
 }
 
@@ -138,8 +133,6 @@ function SpriteTiles({
   pendingIds,
   availabilityKnown,
   currentSeasonId,
-  notice,
-  onRemovedFocus,
   onChange,
 }: Omit<SpriteGridProps, "gridSize"> & {
   items: CatalogItem[]
@@ -162,8 +155,6 @@ function SpriteTiles({
           pending={pendingIds.has(sprite.id)}
           availabilityKnown={availabilityKnown}
           currentSeasonId={currentSeasonId}
-          onRemovedFocus={onRemovedFocus}
-          notice={notice?.spriteId === sprite.id ? notice : null}
           onChange={(change) => onChange(sprite, change)}
         />
       ))}
@@ -339,7 +330,7 @@ export function VirtualizedSpriteGroups({
     gap: groupGap,
     getItemKey,
     initialRect: { width: 0, height: 900 },
-    overscan: 2,
+    overscan: 1,
     scrollMargin,
   })
   const virtualGroups = virtualizer.getVirtualItems()
