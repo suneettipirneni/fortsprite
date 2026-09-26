@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowUpRightIcon, CrownIcon } from "lucide-react"
+import { CrownIcon } from "lucide-react"
 import type { SpriteHelper } from "@workspace/contracts"
 
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
@@ -15,19 +15,14 @@ export function FriendHelperList({
 }) {
   return (
     <div className={cn("space-y-2", className)}>
-      <div className="flex items-center justify-between gap-3">
-        <p className="font-medium">Friends who can help</p>
-        <Badge variant="outline" className="tabular-nums">
-          {friends.length}
-        </Badge>
-      </div>
+      <p className="font-medium">Friends who can help</p>
       <ul className="grid gap-2">
         {friends.map((friend) => (
           <li key={friend.id}>
             <Link
               href={`/friends/${friend.id}`}
               transitionTypes={["page-navigation"]}
-              className="group flex min-h-14 min-w-0 items-center gap-3 rounded-lg border border-border bg-background/45 p-2.5 outline-none transition-colors hover:bg-accent/45 focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="flex min-h-14 min-w-0 items-center gap-3 rounded-lg border border-border bg-background/45 p-2.5 outline-none transition-colors hover:bg-accent/45 focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               <Avatar className="size-9 shrink-0">
                 <AvatarFallback>{friend.initials}</AvatarFallback>
@@ -45,18 +40,12 @@ export function FriendHelperList({
                   </span>
                 ) : null}
               </span>
-              <span className="flex shrink-0 items-center gap-2">
-                {friend.mastered ? (
-                  <Badge variant="mastered">
-                    <CrownIcon aria-hidden="true" data-icon="inline-start" />
-                    Mastered
-                  </Badge>
-                ) : null}
-                <ArrowUpRightIcon
-                  aria-hidden="true"
-                  className="size-4 text-muted-foreground transition-colors group-hover:text-foreground"
-                />
-              </span>
+              {friend.mastered ? (
+                <Badge variant="mastered">
+                  <CrownIcon aria-hidden="true" data-icon="inline-start" />
+                  Mastered
+                </Badge>
+              ) : null}
             </Link>
           </li>
         ))}

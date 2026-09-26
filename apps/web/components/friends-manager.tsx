@@ -107,7 +107,7 @@ export function FriendsManager({
   return (
     <div className="flex flex-col gap-6">
       <form
-        className="flex flex-col gap-3 rounded-xl bg-card/60 p-4 ring-1 ring-white/10 sm:flex-row"
+        className="grid gap-3 rounded-xl bg-card/60 p-4 ring-1 ring-white/10 sm:grid-cols-[minmax(0,1fr)_auto]"
         onSubmit={(event) => {
           event.preventDefault()
           requestFriend()
@@ -126,19 +126,17 @@ export function FriendsManager({
           {saving === "request" ? "Sending…" : "Send request"}
         </Button>
       </form>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
         <Input
           aria-label="Search friends"
           placeholder="Search friends"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          className="h-11 sm:max-w-sm"
         />
         <Button
           variant="outline"
           disabled={busy}
           onClick={() => startRefresh(() => router.refresh())}
-          className="min-h-11"
         >
           {refreshing ? "Refreshing…" : "Refresh friends"}
         </Button>
@@ -228,7 +226,7 @@ export function FriendsManager({
               </p>
               {search ? (
                 <Button
-                  className="mt-4 min-h-11"
+                  className="mt-4"
                   variant="outline"
                   onClick={() => setQuery("")}
                 >

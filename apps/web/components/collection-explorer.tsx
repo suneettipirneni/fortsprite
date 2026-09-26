@@ -54,6 +54,7 @@ import {
   type Sprite,
 } from "@/lib/catalog-presentation"
 import { latestSeasonId } from "@/lib/catalog-season"
+import { summarizeCollection, summarizeSeasons } from "@/lib/collection-summary"
 import { updateCollectionAction } from "@/app/actions/collection"
 import {
   VirtualizedSpriteGrid,
@@ -93,11 +94,15 @@ function formatUtcDate(date: Date) {
   return `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
 }
 
-function formatUtcDateTime(date: Date) {
+function formatUtcTime(date: Date) {
   const hours = date.getUTCHours()
   const displayHours = hours % 12 || 12
   const minutes = String(date.getUTCMinutes()).padStart(2, "0")
-  return `${formatUtcDate(date)}, ${displayHours}:${minutes} ${hours < 12 ? "AM" : "PM"}`
+  return `${displayHours}:${minutes} ${hours < 12 ? "AM" : "PM"}`
+}
+
+function formatUtcDateTime(date: Date) {
+  return `${formatUtcDate(date)}, ${formatUtcTime(date)} UTC`
 }
 
 export function CollectionExplorer({
@@ -169,12 +174,7 @@ export function CollectionExplorer({
     }
   }
   const currentSeasonId = latestSeasonId(sprites)
-  const seasonOptions = [...new Map<number | null, string>(sprites.map((sprite) => [
-    sprite.sourceSeasonId,
-    sprite.season ?? "Season unavailable",
-  ])).entries()].toSorted(([left], [right]) =>
-    left === null ? 1 : right === null ? -1 : right - left,
-  )
+  const seasonOptions = summarizeSeasons(sprites)
   const view = useSyncExternalStore(
     subscribeToCollectionView,
     getCollectionViewSnapshot,
@@ -184,7 +184,7 @@ export function CollectionExplorer({
   const [query, setQuery] = useState("")
   const [filterTokens, setFilterTokens] = useState<CollectionQueryToken[]>(() => {
     const current = initialCollection.items.find(
-      (item) => item.sourceSeasonId === latestSeasonId(initialCollection.items),
+      (item) => item.sourceSeasonId === currentSeasonId,
     )
     if (!current || current.sourceSeasonId === null) return []
     return [{
@@ -222,8 +222,13 @@ export function CollectionExplorer({
   const seasonSprites = seasons.length === 0
     ? sprites
     : sprites.filter((sprite) => seasons.includes(sprite.sourceSeasonId))
-  const variantOptions = [...new Set(seasonSprites.map((sprite) => sprite.variant))]
-  const rarityOptions = [...new Set(seasonSprites.map((sprite) => sprite.rarity))]
+  const {
+    captured: ownedCount,
+    mastered: masteredCount,
+    variants: variantOptions,
+    rarities: rarityOptions,
+    groups: variantProgress,
+  } = summarizeCollection(seasonSprites)
 
   const filteredSprites = filterCollection(sprites, {
     query: deferredQuery,
@@ -234,22 +239,6 @@ export function CollectionExplorer({
     seasons,
     sort,
   })
-
-  const variantProgress = new Map<
-    string,
-    { captured: number; mastered: number; total: number }
-  >()
-  for (const sprite of seasonSprites) {
-    const progress = variantProgress.get(sprite.baseName) ?? {
-      captured: 0,
-      mastered: 0,
-      total: 0,
-    }
-    progress.total += 1
-    if (sprite.owned) progress.captured += 1
-    if (sprite.mastered) progress.mastered += 1
-    variantProgress.set(sprite.baseName, progress)
-  }
 
   const spriteGroups = new Map<string, Sprite[]>()
   if (view === "grouped") {
@@ -269,16 +258,14 @@ export function CollectionExplorer({
     },
   }))
 
-  const ownedCount = seasonSprites.filter((sprite) => sprite.owned).length
-  const masteredCount = seasonSprites.filter((sprite) => sprite.mastered).length
   const filterOptions: CollectionQueryToken[] = [
-    ...seasonOptions.map(([id, label]) => ({
+    ...seasonOptions.map(([id, { label, count }]) => ({
       id: `season:${id ?? "unknown"}`,
       group: "season" as const,
       groupLabel: "Season",
       label,
       value: id === null ? "unknown" : String(id),
-      count: sprites.filter((sprite) => sprite.sourceSeasonId === id).length,
+      count,
     })),
     {
       id: "capture:captured",
@@ -312,21 +299,21 @@ export function CollectionExplorer({
       value: "not-mastered",
       count: seasonSprites.length - masteredCount,
     },
-    ...variantOptions.map((option) => ({
+    ...[...variantOptions].map(([option, count]) => ({
       id: `variant:${option}`,
       group: "variant" as const,
       groupLabel: "Variant",
       label: option,
       value: option,
-      count: seasonSprites.filter((sprite) => sprite.variant === option).length,
+      count,
     })),
-    ...rarityOptions.map((option) => ({
+    ...[...rarityOptions].map(([option, count]) => ({
       id: `rarity:${option}`,
       group: "rarity" as const,
       groupLabel: "Rarity",
       label: option,
       value: option,
-      count: seasonSprites.filter((sprite) => sprite.rarity === option).length,
+      count,
     })),
   ]
 
@@ -391,10 +378,10 @@ export function CollectionExplorer({
       </div>
       <div
         data-testid="collection-content"
-        className="isolate flex flex-col gap-6 border-t border-white/10 pt-6 antialiased sm:col-span-2 sm:pt-8"
+        className="@container isolate flex min-w-0 flex-col gap-5 border-t border-white/10 pt-5 antialiased sm:col-span-2 sm:gap-6 sm:pt-8"
       >
         <div className="flex flex-col gap-3">
-          <div className="grid min-w-0 gap-2 xl:grid-cols-[minmax(0,1fr)_11rem]">
+          <div className="grid min-w-0 gap-2 @2xl:grid-cols-[minmax(0,1fr)_11rem]">
             <CollectionQueryBar
               query={query}
               onQueryChange={setQuery}
@@ -424,27 +411,7 @@ export function CollectionExplorer({
               </FilterSelect>
             </div>
           </div>
-          <p className="hidden max-w-[72ch] text-pretty text-sm text-muted-foreground sm:block">
-            Add seasons to see more Sprites. Remove all Season tokens to see the full catalog.
-            Combine other filters, such as Captured + Not mastered.
-          </p>
-        </div>
-
-        {notice ? (
-          <p role="alert" className="text-sm text-destructive">
-            {notice.message}
-          </p>
-        ) : null}
-        <p className="text-base text-muted-foreground sm:text-sm">
-          {updatedAt
-            ? `Collection updated ${formatUtcDateTime(new Date(updatedAt))}.`
-            : "No collection changes saved yet."}
-        </p>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p role="status" className="text-base text-muted-foreground sm:text-sm">
-            Showing {filteredSprites.length} of {seasonSprites.length} Sprites
-          </p>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <ToggleGroup
               type="single"
               value={view}
@@ -455,13 +422,13 @@ export function CollectionExplorer({
               variant="outline"
               spacing={0}
             >
-              <ToggleGroupItem value="list" aria-label="List view" className="h-11 px-3 sm:h-9">
+              <ToggleGroupItem value="list" aria-label="List view" className="group-data-[spacing=0]/toggle-group:px-1.5">
                 <ListIcon aria-hidden="true" /> List
               </ToggleGroupItem>
-              <ToggleGroupItem value="grid" aria-label="Grid view" className="h-11 px-3 sm:h-9">
+              <ToggleGroupItem value="grid" aria-label="Grid view" className="group-data-[spacing=0]/toggle-group:px-1.5">
                 <Grid2X2Icon aria-hidden="true" /> Grid
               </ToggleGroupItem>
-              <ToggleGroupItem value="grouped" aria-label="Grouped view" className="h-11 px-3 sm:h-9">
+              <ToggleGroupItem value="grouped" aria-label="Grouped view" className="group-data-[spacing=0]/toggle-group:px-1.5">
                 <Rows3Icon aria-hidden="true" /> Grouped
               </ToggleGroupItem>
             </ToggleGroup>
@@ -484,7 +451,7 @@ export function CollectionExplorer({
                       <ToggleGroupItem
                         value={value}
                         aria-label={label}
-                        className="size-11 aria-checked:bg-muted sm:size-9"
+                        className="w-(--control-height) aria-checked:bg-muted"
                       >
                         <Icon aria-hidden="true" />
                       </ToggleGroupItem>
@@ -494,6 +461,26 @@ export function CollectionExplorer({
                 ))}
               </ToggleGroup>
             ) : null}
+          </div>
+          {notice ? (
+            <p role="alert" className="text-sm text-destructive">
+              {notice.message}
+            </p>
+          ) : null}
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            <p role="status">
+              Showing {filteredSprites.length} of {seasonSprites.length} Sprites
+            </p>
+            <p aria-live="polite" aria-atomic="true">
+              {updatedAt ? (
+                <>
+                  Saved{" "}
+                  <time dateTime={updatedAt} title={formatUtcDateTime(new Date(updatedAt))}>
+                    {formatUtcDate(new Date(updatedAt))}
+                  </time>
+                </>
+              ) : "No changes saved yet."}
+            </p>
           </div>
         </div>
 

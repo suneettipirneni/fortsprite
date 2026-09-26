@@ -61,7 +61,7 @@ export function FriendRow({
     <article
       aria-busy={saving}
       className={cn(
-        "flex min-w-0 flex-col gap-4 border-b border-border py-5 sm:flex-row sm:items-center",
+        "grid min-w-0 gap-4 border-b border-border py-5 md:grid-cols-[minmax(0,1fr)_22rem] md:items-center",
         className,
       )}
     >
@@ -79,10 +79,10 @@ export function FriendRow({
           </Badge>
         </div>
       </div>
-      <div className="flex shrink-0 flex-wrap gap-2">
+      <div className="flex min-w-0 flex-wrap gap-2 md:justify-end">
         {status === "accepted" ? (
           confirmedSharing && !busy ? (
-            <Button asChild className="min-h-11">
+            <Button asChild>
               <Link
                 href={`/friends/${profile.id}`}
                 transitionTypes={["page-navigation"]}
@@ -91,7 +91,7 @@ export function FriendRow({
               </Link>
             </Button>
           ) : (
-            <Button disabled className="min-h-11">
+            <Button disabled>
               Compare
             </Button>
           )
@@ -104,7 +104,6 @@ export function FriendRow({
                 ? "default"
                 : "outline"
             }
-            className="min-h-11"
             disabled={busy}
             aria-label={`${label} with ${profile.displayName}`}
             onClick={() => onChange(profile, action)}

@@ -72,6 +72,15 @@ test.beforeEach(async ({ page, browser }, testInfo) => {
   await sharing(page, fixture.actors.b.userId, "unblock")
   await sharing(teammate, fixture.actors.a.userId, "unblock")
   await sharing(page, fixture.actors.b.userId, "remove")
+  for (const [actor, ownedSprite] of [[page, fixture.sprites[0]!], [teammate, fixture.sprites[1]!]] as const) {
+    for (const sprite of fixture.sprites) {
+      const response = await actor.request.put(`/api/v1/collection/${sprite.id}`, {
+        headers: { origin: fixture.baseURL },
+        data: { owned: sprite.id === ownedSprite.id, mastered: false },
+      })
+      expect(response.status()).toBe(200)
+    }
+  }
 })
 
 test.afterEach(async () => {
@@ -131,6 +140,7 @@ test("exact-username requests unlock mutual collection comparison", async ({
   await expect(
     page.getByRole("heading", { name: `${ours!.variant} ${ours!.baseName}` }),
   ).toBeVisible()
+  await expect(page).toHaveTitle("Compare collections · FortSprite")
   await accessible(page)
 })
 

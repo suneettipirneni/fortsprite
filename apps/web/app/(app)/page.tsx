@@ -1,12 +1,12 @@
 import { Suspense } from "react"
 import Link from "next/link"
-import { ArrowRightIcon, CheckIcon } from "lucide-react"
+import { ArrowRightIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
-import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
 
 import { ContentLoading } from "@/components/content-loading"
+import { PageHeader } from "@/components/page-header"
 import { SpritePortrait } from "@/components/sprite-portrait"
 import { getCollection, getSharing, getViewer } from "@/lib/api"
 import { latestSeasonItems } from "@/lib/catalog-season"
@@ -77,78 +77,37 @@ async function DashboardContent() {
 
       <section
         aria-labelledby="reach-heading"
-        className="grid overflow-hidden rounded-2xl bg-card/80 text-card-foreground shadow-sm ring-1 ring-white/10 backdrop-blur-sm lg:grid-cols-[3fr_2fr]"
+        className="app-columns items-center rounded-2xl bg-card/80 p-5 text-card-foreground shadow-sm ring-1 ring-white/10 backdrop-blur-sm sm:p-8"
       >
-        <div className="flex flex-col justify-between gap-8 p-5 sm:p-8">
-          <div className="flex flex-col gap-4">
-            <Badge variant="secondary" className="w-fit">
-              Best next move
-            </Badge>
-            <div>
-              <h2
-                id="reach-heading"
-                className="max-w-[18ch] text-balance text-3xl font-semibold tracking-tight sm:text-4xl"
-              >
-                {`${availableCount} current-season gaps within reach.`}
-              </h2>
-              <p className="max-w-[54ch] text-pretty text-base text-sidebar-foreground/65 sm:text-sm">
-                {`You are missing ${missingSprites.length} ${currentSeasonName ?? "current-season"} Sprites. Sharing friends have captured ${availableCount} of them. ${missingSprites.length - availableCount} have no current friend coverage.`}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <Button variant="secondary" asChild className="w-fit">
-              <Link href="/matches" transitionTypes={["page-navigation"]}>
-                Find friends who can help
-              </Link>
-            </Button>
-          </div>
+        <div className="min-w-0 space-y-3 lg:col-span-8">
+          <h2
+            id="reach-heading"
+            className="max-w-[30ch] text-balance text-3xl font-semibold tracking-tight sm:text-4xl"
+          >
+            {`${availableCount} current-season ${availableCount === 1 ? "gap" : "gaps"} within reach.`}
+          </h2>
+          <p className="max-w-[60ch] text-pretty text-base text-sidebar-foreground/65 sm:text-sm">
+            {`You are missing ${missingSprites.length} ${currentSeasonName ?? "current-season"} Sprites. ${missingSprites.length - availableCount} have no current friend coverage.`}
+          </p>
         </div>
-        <div className="grid grid-cols-2 gap-px bg-white/8 p-px sm:grid-cols-4 lg:grid-cols-2">
-          {missingSprites.length === 0 ? (
-            <p className="col-span-full flex items-center justify-center p-8 text-center text-sidebar-foreground/65">
-              {currentSeason.length === 0
-                ? "The current-season Sprite catalog is not available yet."
-                : "Every current-season Sprite is in your locker. Keep hunting for mastery."}
-            </p>
-          ) : null}
-          {missingSprites.slice(0, 4).map((sprite) => (
-            <div
-              key={sprite.id}
-              className="flex min-w-0 flex-col gap-3 bg-background/32 p-4"
-            >
-              <SpritePortrait
-                variant={sprite.variant}
-                label={`${sprite.variant} ${sprite.baseName}`}
-                src={sprite.imagePath ?? undefined}
-              />
-              <div className="min-w-0">
-                <p className="truncate text-base font-medium sm:text-sm">
-                  {sprite.variant} {sprite.baseName}
-                </p>
-                <p className="truncate text-base text-sidebar-foreground/55 sm:text-sm">
-                  Missing from your locker
-                </p>
-              </div>
-            </div>
-          ))}
+        <div className="lg:col-span-4 lg:justify-self-end">
+          <Button variant="secondary" asChild>
+            <Link href="/matches" transitionTypes={["page-navigation"]}>
+              Find friends who can help
+            </Link>
+          </Button>
         </div>
       </section>
 
-      <div className="grid gap-8 lg:grid-cols-[3fr_2fr]">
-        <section aria-labelledby="nearby-heading" className="min-w-0">
+      <div className="app-columns">
+        <section aria-labelledby="nearby-heading" className="min-w-0 lg:col-span-8">
           <div className="flex items-end justify-between gap-4">
-            <div>
-              <h2
-                id="nearby-heading"
-                className="text-balance text-2xl font-semibold tracking-tight"
-              >
-                Next collection gaps
-              </h2>
-              <p className="text-pretty text-base text-muted-foreground sm:text-sm">
-                Missing Sprites from your saved collection.
-              </p>
-            </div>
+            <h2
+              id="nearby-heading"
+              className="text-balance text-2xl font-semibold tracking-tight"
+            >
+              Next collection gaps
+            </h2>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/collection" transitionTypes={["page-navigation"]}>
                 View all
@@ -158,9 +117,9 @@ async function DashboardContent() {
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {missingSprites.length === 0 ? (
               <p className="col-span-full rounded-xl border border-dashed border-border p-5 text-sm text-muted-foreground">
-                {collection.progress.total === 0
-                  ? "Released Sprites will appear when the catalog is available."
-                  : "No collection gaps. You have captured every released Sprite."}
+                {currentSeason.length === 0
+                  ? "The current-season Sprite catalog is not available yet."
+                  : "You have captured every current-season Sprite."}
               </p>
             ) : null}
             {missingSprites.slice(0, 4).map((sprite) => (
@@ -183,10 +142,9 @@ async function DashboardContent() {
                   <span className="text-base text-muted-foreground sm:text-sm">
                     {sprite.rarity}
                   </span>
-                  <span className="flex items-center gap-1.5 text-base sm:text-sm">
-                    <CheckIcon className="size-4 shrink-0 stroke-primary" />
+                  <span className="text-base sm:text-sm">
                     {sprite.helpers.length > 0
-                      ? `${sprite.helpers.length} friends can help`
+                      ? `${sprite.helpers.length} ${sprite.helpers.length === 1 ? "friend" : "friends"} can help`
                       : "No sharing friend has it yet"}
                   </span>
                 </span>
@@ -195,7 +153,7 @@ async function DashboardContent() {
           </div>
         </section>
 
-        <section aria-labelledby="squad-heading">
+        <section aria-labelledby="squad-heading" className="min-w-0 lg:col-span-4">
           <div>
             <h2
               id="squad-heading"
@@ -209,22 +167,20 @@ async function DashboardContent() {
           </div>
           <div className="mt-5 flex flex-col">
             {acceptedFriends.slice(0, 4).map((friend) => (
-              <div key={friend.profile.id} className="border-b border-border last:border-b-0">
-                <div className="flex min-w-0 items-center gap-3 py-3">
-                  <Avatar className="size-9 shrink-0">
-                    <AvatarFallback>{friend.profile.initials}</AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-base font-medium sm:text-sm">
-                      {friend.profile.displayName}
-                    </p>
-                    <p className="truncate text-base text-muted-foreground sm:text-sm">
-                      @{friend.profile.handle}
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="tabular-nums">
-                    Sharing
-                  </Badge>
+              <div
+                key={friend.profile.id}
+                className="flex min-w-0 items-center gap-3 border-b border-border py-3 last:border-b-0"
+              >
+                <Avatar className="size-9 shrink-0">
+                  <AvatarFallback>{friend.profile.initials}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-base font-medium sm:text-sm">
+                    {friend.profile.displayName}
+                  </p>
+                  <p className="truncate text-base text-muted-foreground sm:text-sm">
+                    @{friend.profile.handle}
+                  </p>
                 </div>
               </div>
             ))}
@@ -242,32 +198,27 @@ async function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <div className="app-page flex flex-col gap-8 sm:gap-10">
-      <div className="flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between sm:pb-8">
-        <div>
-          <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
-            Collection command
-          </p>
-          <h1 className="max-w-[22ch] text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+    <div className="app-page space-y-8">
+      <PageHeader
+        eyebrow="Collection command"
+        title={
+          <>
             Good hunting,{" "}
             <Suspense fallback="hunter">
               <GreetingName />
             </Suspense>
             .
-          </h1>
-          <p className="max-w-[62ch] text-pretty text-base text-muted-foreground sm:text-sm">
-            <Suspense fallback="Your collection and friend network.">
-              <FriendStatus />
-            </Suspense>
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/friends" transitionTypes={["page-navigation"]}>
-            View friends
-            <ArrowRightIcon data-icon="inline-end" />
-          </Link>
-        </Button>
-      </div>
+          </>
+        }
+        action={
+          <Button asChild>
+            <Link href="/friends" transitionTypes={["page-navigation"]}>
+              View friends
+              <ArrowRightIcon data-icon="inline-end" />
+            </Link>
+          </Button>
+        }
+      />
 
       <Suspense fallback={<ContentLoading />}>
         <DashboardContent />
@@ -279,11 +230,4 @@ export default function DashboardPage() {
 async function GreetingName() {
   const viewer = await getViewer()
   return viewer.displayName.split(/\s+/)[0] ?? viewer.displayName
-}
-
-async function FriendStatus() {
-  const friends = await getSharing().catch(() => null)
-  return friends
-    ? `${friends.friends.filter((friend) => friend.status === "accepted").length} friend connections are sharing collections with you.`
-    : "Your collection and friend network."
 }

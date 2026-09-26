@@ -19,7 +19,7 @@ export default function CollectionPage() {
           Sprite locker
         </h1>
         <p className="mt-2 max-w-[56ch] text-pretty text-base text-foreground/65 sm:text-sm">
-          Track captures and mastery. Open a Sprite for details.
+          Track captures and mastery.
         </p>
       </div>
       <Suspense

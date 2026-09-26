@@ -91,6 +91,9 @@
   --chart-4: oklch(0.76 0.16 183);
   --chart-5: oklch(0.7 0.23 27);
   --radius: 0.625rem;
+  --control-height: 2.75rem;
+  --control-height-sm: 2.25rem;
+  --control-height-lg: 3rem;
   --sidebar: oklch(0.235 0.075 254);
   --sidebar-foreground: oklch(0.98 0.01 240);
   --sidebar-primary: oklch(0.91 0.2 105);
@@ -135,8 +138,25 @@
   background-size: 125% 125%, 135% 135%, 120% 120%, 100% 100%;
 }
 
+@media (width >= 40rem) {
+  :root,
+  .dark {
+    --control-height: 2.25rem;
+    --control-height-sm: 2rem;
+    --control-height-lg: 2.5rem;
+  }
+}
+
+@utility app-container {
+  @apply mx-auto w-full max-w-[90rem] px-4 sm:px-6 lg:px-8;
+}
+
 @utility app-page {
-  @apply mx-auto w-full max-w-[90rem] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10;
+  @apply app-container py-6 sm:py-8 lg:py-10;
+}
+
+@utility app-columns {
+  @apply grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8;
 }
 
 @utility auth-safe-area {

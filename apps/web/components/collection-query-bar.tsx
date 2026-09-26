@@ -94,61 +94,70 @@ export function CollectionQueryBar({
       value={tokens}
       onValueChange={normalizeTokens}
       inputValue={query}
-      onInputValueChange={onQueryChange}
+      onInputValueChange={(value, details) => {
+        if (details.reason === "input-clear") {
+          details.cancel()
+          return
+        }
+        onQueryChange(value)
+        if (details.reason === "input-change") setOpen(false)
+      }}
       itemToStringLabel={(token) => token.label}
       itemToStringValue={(token) => token.id}
       isItemEqualToValue={(option, value) => option.id === value.id}
     >
       <ComboboxChips
         ref={anchor}
-        className="min-h-12 gap-1.5 border-white/12 bg-background/28 px-2 py-1.5 shadow-sm sm:min-h-10"
+        className="grid min-h-(--control-height) grid-cols-[auto_minmax(0,1fr)_auto] gap-1 border-white/12 bg-background/28 px-1 py-0 shadow-sm"
       >
         <SearchIcon
           aria-hidden="true"
           className="mx-1 size-4 shrink-0 text-muted-foreground"
         />
-        {tokens.map((token) => (
-          <ComboboxChip
-            key={token.id}
-            aria-label={`${token.groupLabel}: ${token.label}`}
-            className="h-7 gap-1.5 rounded-md border border-white/8 bg-white/8 px-2 text-sm"
-          >
-            <span className="text-muted-foreground">{token.groupLabel}</span>
-            <span>{token.label}</span>
-          </ComboboxChip>
-        ))}
-        <ComboboxChipsInput
-          ref={inputRef}
-          name="sprite-search"
-          aria-label="Search collection"
-          placeholder={tokens.length === 0 ? "Search or add filters…" : "Search Sprites…"}
-          className="h-8 min-w-40 text-base sm:text-sm"
-        />
-        {query || tokens.length > 0 ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Clear collection query"
-            onClick={() => {
-              onQueryChange("")
-              onTokensChange([])
-            }}
-            className="ml-auto shrink-0"
-          >
-            <XIcon />
-          </Button>
-        ) : null}
-        <ComboboxTrigger
-          aria-label="Add collection filter"
-          className="relative flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-white/8 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-        >
-          <FilterIcon aria-hidden="true" />
-          <span
-            aria-hidden="true"
-            className="pointer-fine:hidden absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2"
+        <div className="flex min-w-0 flex-wrap items-center gap-1 py-0.5">
+          {tokens.map((token) => (
+            <ComboboxChip
+              key={token.id}
+              aria-label={`${token.groupLabel}: ${token.label}`}
+              className="h-7 max-w-full gap-1.5 rounded-md border border-white/8 bg-white/8 px-2 text-sm"
+            >
+              <span className="hidden text-muted-foreground sm:inline">{token.groupLabel}</span>
+              <span className="truncate">{token.label}</span>
+            </ComboboxChip>
+          ))}
+          <ComboboxChipsInput
+            ref={inputRef}
+            name="sprite-search"
+            aria-label="Search collection"
+            placeholder={tokens.length === 0 ? "Search or add filters…" : "Search Sprites…"}
+            className="h-7 min-w-0 basis-20 text-base sm:text-sm"
           />
-        </ComboboxTrigger>
+        </div>
+        <div className="flex shrink-0 self-start">
+          {query || tokens.length > 0 ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Clear collection query"
+              onClick={() => {
+                onQueryChange("")
+                onTokensChange([])
+              }}
+              className="relative h-[calc(var(--control-height)-2px)] rounded-md"
+            >
+              <XIcon />
+              <span aria-hidden="true" className="pointer-fine:hidden absolute -inset-y-px inset-x-0" />
+            </Button>
+          ) : null}
+          <ComboboxTrigger
+            aria-label="Add collection filter"
+            className="relative flex h-[calc(var(--control-height)-2px)] w-(--control-height) shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-white/8 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            <FilterIcon aria-hidden="true" />
+            <span aria-hidden="true" className="pointer-fine:hidden absolute -inset-y-px inset-x-0" />
+          </ComboboxTrigger>
+        </div>
       </ComboboxChips>
       <ComboboxContent anchor={anchor} align="start" className="w-(--anchor-width)">
         <ComboboxEmpty>

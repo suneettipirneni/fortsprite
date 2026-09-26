@@ -42,10 +42,10 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
   }, null)
 
   return (
-    <form action={formAction} className="flex max-w-xl flex-col gap-6">
-      <fieldset disabled={pending}>
+    <form action={formAction} className="flex flex-col gap-6">
+      <fieldset disabled={pending} className="min-w-0">
         <legend className="sr-only">Edit your FortSprite profile</legend>
-        <FieldGroup>
+        <FieldGroup className="grid sm:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="display-name">
               FortSprite display name
@@ -61,7 +61,6 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
               required
               maxLength={60}
               aria-describedby="display-name-help"
-              className="h-11"
             />
             <FieldDescription id="display-name-help">
               The name your sharing friends see. Up to 60 characters.
@@ -84,14 +83,13 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
               maxLength={24}
               pattern="[a-zA-Z0-9_\-]+"
               aria-describedby="handle-help"
-              className="h-11"
             />
             <FieldDescription id="handle-help">
               3–24 letters, numbers, underscores or hyphens. Usernames are unique
               regardless of capitalization.
             </FieldDescription>
           </Field>
-          <Field>
+          <Field className="sm:col-span-2">
             <FieldLabel htmlFor="fortnite-name">
               Fortnite display name (optional)
             </FieldLabel>
@@ -104,7 +102,6 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
               }
               maxLength={60}
               aria-describedby="fortnite-name-help"
-              className="h-11"
             />
             <FieldDescription id="fortnite-name-help">
               Shared with accepted friends so you can coordinate in Fortnite.
@@ -113,7 +110,7 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
           </Field>
         </FieldGroup>
       </fieldset>
-      <Button type="submit" size="lg" disabled={pending}>
+      <Button type="submit" size="lg" disabled={pending} className="sm:self-start">
         {pending ? "Saving…" : "Save profile"}
       </Button>
       {result && !pending ? (

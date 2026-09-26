@@ -44,7 +44,7 @@ export function CatalogResults({
   })
 
   return (
-    <section aria-labelledby={titleId} className="flex min-w-0 flex-col gap-5">
+    <section aria-labelledby={titleId} className="@container flex min-w-0 flex-col gap-5">
       <div>
         <h2 id={titleId} className="text-2xl font-semibold tracking-tight">
           {title}
@@ -55,7 +55,6 @@ export function CatalogResults({
       </div>
       <div className="space-y-2">
         <Input
-          className="h-11"
           aria-label={`Search ${title}`}
           placeholder="Search name or variant"
           value={filters.query}
@@ -63,7 +62,7 @@ export function CatalogResults({
             setFilters({ ...filters, query: event.target.value })
           }
         />
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 @min-[28rem]:grid-cols-2">
           <FilterSelect
             value={filters.rarity}
             onValueChange={(rarity) => setFilters({ ...filters, rarity })}
@@ -119,7 +118,7 @@ export function CatalogResults({
           </p>
           {items.length > 0 ? (
             <Button
-              className="mt-4 min-h-11"
+              className="mt-4"
               variant="outline"
               onClick={() => setFilters(emptyFilters)}
             >
@@ -128,7 +127,7 @@ export function CatalogResults({
           ) : null}
         </div>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 @min-[38rem]:grid-cols-2 @min-[58rem]:grid-cols-3">
           {filtered.map((item) => (
             <CatalogResultCard
               key={item.id}

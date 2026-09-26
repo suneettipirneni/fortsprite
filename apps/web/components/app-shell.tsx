@@ -26,13 +26,6 @@ import { cn } from "@workspace/ui/lib/utils"
 import { appTabs } from "@/components/app-tabs"
 import { SignOutMenuItem } from "@/components/sign-out-menu-item"
 import { FortSpriteIcon } from "@/components/fortsprite-icon"
-import catalogMetadata from "../public/sprites/catalog-meta.json"
-
-const catalogDateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-})
 
 // Streamed menu triggers must not accept pointer events before their handlers exist.
 const subscribeHydration = () => () => {}
@@ -156,7 +149,7 @@ export function AppShell({
   return (
     <div className="locker-stage isolate min-h-dvh">
       <header className="sticky top-0 z-40 border-b border-white/8 bg-background/68 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
-        <div className="mx-auto flex h-16 w-full max-w-[90rem] items-center gap-3 px-4 sm:h-15 sm:px-6 lg:px-8">
+        <div className="app-container flex h-16 items-center gap-3 sm:h-15">
           <Brand />
 
           <nav
@@ -173,13 +166,6 @@ export function AppShell({
           </nav>
 
           <div className="min-w-0 flex-1" />
-          <p className="hidden text-sm text-foreground/55 2xl:block">
-            Catalog checked{" "}
-            {catalogDateFormatter.format(
-              new Date(`${catalogMetadata.sourceVerifiedAt}T00:00:00Z`),
-            )}
-            .
-          </p>
           {profile}
         </div>
       </header>

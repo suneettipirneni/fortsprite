@@ -70,7 +70,7 @@ export function CredentialManager({
     <section aria-labelledby="sign-in-methods" className="space-y-5 border-t border-border pt-6">
       <div>
         <h2 id="sign-in-methods" className="text-xl font-semibold">
-          Sign-in methods
+          Passkeys
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
           FortSprite uses passkeys only. Add a second passkey on another device
@@ -78,7 +78,6 @@ export function CredentialManager({
         </p>
       </div>
       <div className="space-y-3">
-        <h3 className="font-medium">Passkeys</h3>
         {passkeys.length ? (
           <div className="divide-y divide-border rounded-xl border border-border">
             {passkeys.map((credential) => (

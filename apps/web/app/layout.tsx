@@ -5,7 +5,7 @@ import { ThemeProvider } from "@workspace/ui/components/theme-provider"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import "@workspace/ui/globals.css"
 import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import { MobileSurface, MobileSurfaceFallback } from "@/components/mobile-surface"
 
@@ -71,8 +71,12 @@ export default function RootLayout({
         <Suspense fallback={<MobileSurfaceFallback />}>
           <MobileSurface />
         </Suspense>
-        <Analytics />
-        <SpeedInsights />
+        {process.env.NODE_ENV === "production" ? (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        ) : null}
       </body>
     </html>
   )

@@ -43,8 +43,9 @@ async function addFilterToken(page: Page, label: string) {
   const option = page.getByRole("option", {
     name: new RegExp(`^${label}\\b`),
   })
-  if (!(await option.isVisible()))
-    await page.getByRole("button", { name: "Add collection filter" }).click()
+  const trigger = page.getByRole("button", { name: "Add collection filter", includeHidden: true })
+  if ((await trigger.getAttribute("aria-expanded")) !== "true")
+    await trigger.click()
   await option.click()
 }
 
@@ -321,6 +322,8 @@ test("rarity and search filters narrow results and empty-state reset restores th
   await page
     .getByRole("combobox", { name: "Search collection" })
     .fill("zzzz-no-such-sprite")
+  await expect(page.locator('[data-slot="combobox-content"]')).toHaveCount(0)
+  await expect(page.getByRole("combobox", { name: "Search collection" })).toHaveValue("zzzz-no-such-sprite")
   await expect(page.getByText("No Sprites match these filters")).toBeVisible()
   await page.getByRole("button", { name: "Clear filters" }).click()
   await expect(
@@ -394,18 +397,19 @@ test("details support keyboard focus and modal removal restores the active filte
     ).toBeVisible()
   }
   await page.keyboard.press("Enter")
-  await expect(page.getByRole("dialog")).toBeVisible()
+  const dialog = page.getByRole("dialog")
+  await expect(dialog).toBeVisible()
+  const dropChance = dialog.locator("dl > div").filter({
+    has: page.getByText("Drop chance", { exact: true }),
+  }).getByRole("definition")
   for (const { source, percent } of first.dropChances)
     await expect(
-      page
-        .getByRole("dialog")
-        .getByText(`${source}: ${percent}%`, { exact: true }),
+      dropChance.getByText(`${source} ${percent}%`, { exact: true }),
     ).toBeVisible()
-  await expect(
-    page
-      .getByRole("dialog")
-      .getByText("Friends with this Sprite", { exact: true }),
-  ).toBeVisible()
+  const friends = dialog.locator("dl > div").filter({
+    has: page.getByText("Friends", { exact: true }),
+  }).getByRole("definition")
+  await expect(friends).toHaveText(String(first.helpers.length))
   const results = await new AxeBuilder({ page }).analyze()
   expect(
     results.violations.filter(
@@ -419,6 +423,7 @@ test("details support keyboard focus and modal removal restores the active filte
     .click()
   await expect(details(page)).toBeFocused()
   await addFilterToken(page, "Missing")
+  await page.keyboard.press("Escape")
   await details(page).click()
   await page
     .getByRole("dialog")
