@@ -9,6 +9,7 @@ export type CollectionFilters = {
   mastery: MasteryFilter | null
   variants: string[]
   rarities: string[]
+  seasons: (number | null)[]
   sort: CatalogSort
 }
 
@@ -16,7 +17,7 @@ export function filterCollection<T extends CollectionItem>(
   sprites: T[],
   filters: CollectionFilters,
 ): T[] {
-  const { query, capture, mastery, variants, rarities, sort } = filters
+  const { query, capture, mastery, variants, rarities, seasons, sort } = filters
   const normalizedQuery = query.trim().toLowerCase()
 
   const matchingSprites = sprites.filter((sprite) => {
@@ -37,13 +38,16 @@ export function filterCollection<T extends CollectionItem>(
       variants.length === 0 || variants.includes(sprite.variant)
     const matchesRarity =
       rarities.length === 0 || rarities.includes(sprite.rarity)
+    const matchesSeason =
+      seasons.length === 0 || seasons.includes(sprite.sourceSeasonId)
 
     return (
       matchesQuery &&
       matchesCapture &&
       matchesMastery &&
       matchesVariant &&
-      matchesRarity
+      matchesRarity &&
+      matchesSeason
     )
   })
 

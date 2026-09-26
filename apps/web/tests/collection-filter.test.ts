@@ -12,6 +12,7 @@ const defaults: CollectionFilters = {
   mastery: null,
   variants: [],
   rarities: [],
+  seasons: [],
   sort: "catalog",
 }
 function item(
@@ -154,6 +155,18 @@ test("multiple values are ORed within a token category", () => {
     ),
     ["gold-rare", "base-epic"],
   )
+})
+
+test("selected seasons combine with other filters and include unknown season", () => {
+  const items = [
+    item("current", { sourceSeasonId: 74, owned: true }),
+    item("older", { sourceSeasonId: 73, owned: true }),
+    item("unknown", { sourceSeasonId: null, season: null }),
+  ]
+  assert.deepEqual(ids(filterCollection(items, { ...defaults, seasons: [74] })), ["current"])
+  assert.deepEqual(ids(filterCollection(items, { ...defaults, seasons: [74, 73], capture: "captured" })), ["current", "older"])
+  assert.deepEqual(ids(filterCollection(items, { ...defaults, seasons: [null] })), ["unknown"])
+  assert.deepEqual(ids(filterCollection(items, defaults)), ["current", "older", "unknown"])
 })
 
 test("season sorting keeps unknown seasons last and uses catalog order within a season", () => {

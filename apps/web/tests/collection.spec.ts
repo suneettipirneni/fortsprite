@@ -89,6 +89,12 @@ test.beforeEach(async ({ page }, testInfo) => {
   page.on("console", (message) => {
     if (message.type() !== "error") return
     if (
+      (message.text().includes("/_vercel/") ||
+        message.location().url.includes("/_vercel/")) &&
+      (message.text().includes("404 (Not Found)") ||
+        message.text().includes("MIME type ('text/plain')"))
+    ) return
+    if (
       message.text().includes("va.vercel-scripts.com") &&
       message.text().includes("Content Security Policy")
     )
@@ -118,11 +124,45 @@ test.beforeEach(async ({ page }, testInfo) => {
     "data-hydrated",
     "true",
   )
+  await page.getByRole("button", { name: "Clear collection query" }).click()
 })
 
 test.afterEach(async () => {
   expect(errors).toEqual([])
   expect(serverErrors).toHaveLength(expectedServerErrors)
+})
+
+test("current season is selected by default and multiple seasons can be shown", async ({ page }, testInfo) => {
+  const collection = await snapshot(page)
+  const currentSeasonId = Math.max(...collection.items.flatMap((item) =>
+    item.sourceSeasonId === null ? [] : [item.sourceSeasonId],
+  ))
+  const current = collection.items.find((item) => item.sourceSeasonId === currentSeasonId)!
+  const previous = collection.items.find((item) =>
+    item.sourceSeasonId !== null && item.sourceSeasonId !== currentSeasonId,
+  )!
+  await page.reload()
+  const grid = page.getByTestId("virtualized-sprite-grid")
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
+  await expect(queryChip(page, "Season", current.season!)).toBeVisible()
+  await expect(grid).toHaveAttribute(
+    "data-total-items",
+    String(collection.items.filter((item) => item.sourceSeasonId === currentSeasonId).length),
+  )
+  await page.screenshot({ path: `/tmp/fortsprite-seasons-${testInfo.project.name}-current.png` })
+  await addFilterToken(page, previous.season!)
+  await expect(queryChip(page, "Season", previous.season!)).toBeVisible()
+  await expect(grid).toHaveAttribute(
+    "data-total-items",
+    String(collection.items.filter((item) =>
+      item.sourceSeasonId === currentSeasonId || item.sourceSeasonId === previous.sourceSeasonId,
+    ).length),
+  )
+  await page.screenshot({ path: `/tmp/fortsprite-seasons-${testInfo.project.name}-multiple.png` })
+  await page.keyboard.press("Escape")
+  await page.getByRole("button", { name: "Clear collection query" }).click()
+  await expect(grid).toHaveAttribute("data-total-items", String(collection.items.length))
+  await assertFits(page)
 })
 
 test("meaningful collection renders without overflow or serious accessibility failures", async ({

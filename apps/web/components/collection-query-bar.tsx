@@ -24,6 +24,7 @@ import {
 } from "@workspace/ui/components/combobox"
 
 export type CollectionQueryTokenGroup =
+  | "season"
   | "capture"
   | "mastery"
   | "variant"
@@ -39,6 +40,7 @@ export type CollectionQueryToken = {
 }
 
 const groupOrder: CollectionQueryTokenGroup[] = [
+  "season",
   "capture",
   "mastery",
   "variant",

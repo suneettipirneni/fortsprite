@@ -168,8 +168,13 @@ export function CollectionExplorer({
       updatedAt = entry.updatedAt
     }
   }
-  const variantOptions = [...new Set(sprites.map((sprite) => sprite.variant))]
-  const rarityOptions = [...new Set(sprites.map((sprite) => sprite.rarity))]
+  const currentSeasonId = latestSeasonId(sprites)
+  const seasonOptions = [...new Map<number | null, string>(sprites.map((sprite) => [
+    sprite.sourceSeasonId,
+    sprite.season ?? "Season unavailable",
+  ])).entries()].toSorted(([left], [right]) =>
+    left === null ? 1 : right === null ? -1 : right - left,
+  )
   const view = useSyncExternalStore(
     subscribeToCollectionView,
     getCollectionViewSnapshot,
@@ -177,7 +182,22 @@ export function CollectionExplorer({
   )
   const [gridSize, setGridSize] = useState<CollectionGridSize>("medium")
   const [query, setQuery] = useState("")
-  const [filterTokens, setFilterTokens] = useState<CollectionQueryToken[]>([])
+  const [filterTokens, setFilterTokens] = useState<CollectionQueryToken[]>(() => {
+    const current = initialCollection.items.find(
+      (item) => item.sourceSeasonId === latestSeasonId(initialCollection.items),
+    )
+    if (!current || current.sourceSeasonId === null) return []
+    return [{
+      id: `season:${current.sourceSeasonId}`,
+      group: "season",
+      groupLabel: "Season",
+      label: current.season ?? `Season ${current.sourceSeasonId}`,
+      value: String(current.sourceSeasonId),
+      count: initialCollection.items.filter(
+        (item) => item.sourceSeasonId === current.sourceSeasonId,
+      ).length,
+    }]
+  })
   const [sort, setSort] = useState<CatalogSort>("catalog")
   const deferredQuery = useDeferredValue(query)
   const queryInputRef = useRef<HTMLInputElement>(null)
@@ -196,6 +216,14 @@ export function CollectionExplorer({
   const rarities = filterTokens
     .filter((token) => token.group === "rarity")
     .map((token) => token.value)
+  const seasons = filterTokens
+    .filter((token) => token.group === "season")
+    .map((token) => token.value === "unknown" ? null : Number(token.value))
+  const seasonSprites = seasons.length === 0
+    ? sprites
+    : sprites.filter((sprite) => seasons.includes(sprite.sourceSeasonId))
+  const variantOptions = [...new Set(seasonSprites.map((sprite) => sprite.variant))]
+  const rarityOptions = [...new Set(seasonSprites.map((sprite) => sprite.rarity))]
 
   const filteredSprites = filterCollection(sprites, {
     query: deferredQuery,
@@ -203,15 +231,15 @@ export function CollectionExplorer({
     mastery,
     variants,
     rarities,
+    seasons,
     sort,
   })
-  const currentSeasonId = latestSeasonId(sprites)
 
   const variantProgress = new Map<
     string,
     { captured: number; mastered: number; total: number }
   >()
-  for (const sprite of sprites) {
+  for (const sprite of seasonSprites) {
     const progress = variantProgress.get(sprite.baseName) ?? {
       captured: 0,
       mastered: 0,
@@ -241,9 +269,17 @@ export function CollectionExplorer({
     },
   }))
 
-  const ownedCount = sprites.filter((sprite) => sprite.owned).length
-  const masteredCount = sprites.filter((sprite) => sprite.mastered).length
+  const ownedCount = seasonSprites.filter((sprite) => sprite.owned).length
+  const masteredCount = seasonSprites.filter((sprite) => sprite.mastered).length
   const filterOptions: CollectionQueryToken[] = [
+    ...seasonOptions.map(([id, label]) => ({
+      id: `season:${id ?? "unknown"}`,
+      group: "season" as const,
+      groupLabel: "Season",
+      label,
+      value: id === null ? "unknown" : String(id),
+      count: sprites.filter((sprite) => sprite.sourceSeasonId === id).length,
+    })),
     {
       id: "capture:captured",
       group: "capture",
@@ -258,7 +294,7 @@ export function CollectionExplorer({
       groupLabel: "Capture",
       label: "Missing",
       value: "missing",
-      count: sprites.length - ownedCount,
+      count: seasonSprites.length - ownedCount,
     },
     {
       id: "mastery:mastered",
@@ -274,7 +310,7 @@ export function CollectionExplorer({
       groupLabel: "Mastery",
       label: "Not mastered",
       value: "not-mastered",
-      count: sprites.length - masteredCount,
+      count: seasonSprites.length - masteredCount,
     },
     ...variantOptions.map((option) => ({
       id: `variant:${option}`,
@@ -282,7 +318,7 @@ export function CollectionExplorer({
       groupLabel: "Variant",
       label: option,
       value: option,
-      count: sprites.filter((sprite) => sprite.variant === option).length,
+      count: seasonSprites.filter((sprite) => sprite.variant === option).length,
     })),
     ...rarityOptions.map((option) => ({
       id: `rarity:${option}`,
@@ -290,7 +326,7 @@ export function CollectionExplorer({
       groupLabel: "Rarity",
       label: option,
       value: option,
-      count: sprites.filter((sprite) => sprite.rarity === option).length,
+      count: seasonSprites.filter((sprite) => sprite.rarity === option).length,
     })),
   ]
 
@@ -304,6 +340,7 @@ export function CollectionExplorer({
         mastery,
         variants,
         rarities,
+        seasons,
         sort,
       }).length === 0
 
@@ -336,7 +373,7 @@ export function CollectionExplorer({
             captured
           </p>
           <p className="mt-1 text-base text-muted-foreground sm:text-sm">
-            {completionPercent(ownedCount, sprites.length)}% of {sprites.length}
+            {completionPercent(ownedCount, seasonSprites.length)}% of {seasonSprites.length}
           </p>
         </div>
         <div className="border-l border-white/10 pl-6 sm:pl-8">
@@ -347,8 +384,8 @@ export function CollectionExplorer({
             mastered
           </p>
           <p className="mt-1 text-base text-muted-foreground sm:text-sm">
-            {completionPercent(masteredCount, sprites.length)}% of{" "}
-            {sprites.length}
+            {completionPercent(masteredCount, seasonSprites.length)}% of{" "}
+            {seasonSprites.length}
           </p>
         </div>
       </div>
@@ -388,8 +425,8 @@ export function CollectionExplorer({
             </div>
           </div>
           <p className="hidden max-w-[72ch] text-pretty text-sm text-muted-foreground sm:block">
-            Combine tokens to narrow the catalog, such as Captured + Not
-            mastered. Multiple variants or rarities match any selected value.
+            Add seasons to see more Sprites. Remove all Season tokens to see the full catalog.
+            Combine other filters, such as Captured + Not mastered.
           </p>
         </div>
 
@@ -405,7 +442,7 @@ export function CollectionExplorer({
         </p>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p role="status" className="text-base text-muted-foreground sm:text-sm">
-            Showing {filteredSprites.length} of {sprites.length} Sprites
+            Showing {filteredSprites.length} of {seasonSprites.length} Sprites
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <ToggleGroup
