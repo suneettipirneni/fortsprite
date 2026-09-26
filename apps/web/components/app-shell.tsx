@@ -149,7 +149,7 @@ export function AppShell({
   return (
     <div className="locker-stage isolate min-h-dvh">
       <header className="sticky top-0 z-40 border-b border-white/8 bg-background/68 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
-        <div className="app-container flex h-16 items-center gap-3 sm:h-15">
+        <div className="app-container flex h-[var(--app-header-content-height)] items-center gap-3">
           <Brand />
 
           <nav

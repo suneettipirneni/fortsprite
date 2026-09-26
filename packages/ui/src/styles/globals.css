@@ -194,6 +194,42 @@
   color: var(--foreground);
 }
 
+/* Keep persistent chrome live while only the page participates in snapshots. */
+:root {
+  view-transition-name: none;
+  --app-header-content-height: 4rem;
+  --mobile-tab-height: 4.25rem;
+  --mobile-tab-offset: max(0.5rem, calc(env(safe-area-inset-bottom) - 0.25rem));
+  --mobile-tab-clearance: calc(var(--mobile-tab-height) + var(--mobile-tab-offset));
+}
+
+@media (width >= 40rem) {
+  :root {
+    --app-header-content-height: 3.75rem;
+  }
+}
+
+@media (width >= 64rem) {
+  :root {
+    --mobile-tab-clearance: 0px;
+  }
+}
+
+::view-transition {
+  pointer-events: none;
+  /* Page snapshots render above live content, including fixed chrome. Keep
+     their paint inside the content viewport using the shell's own dimensions. */
+  clip-path: inset(
+    calc(var(--app-header-content-height) + env(safe-area-inset-top))
+    0 var(--mobile-tab-clearance)
+  );
+}
+
+/* Routes and streamed fallbacks have unrelated sizes and scroll positions. */
+::view-transition-group(.page-change) {
+  animation: none;
+}
+
 @keyframes app-page-out {
   to {
     opacity: 0;
@@ -222,6 +258,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(.page-change),
   ::view-transition-old(.page-change),
   ::view-transition-new(.page-change) {
     animation: none;
