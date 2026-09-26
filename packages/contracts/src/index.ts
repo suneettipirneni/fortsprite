@@ -69,6 +69,11 @@ export interface CatalogItem {
   sourceVerifiedAt: string
 }
 
+export interface CatalogSnapshot {
+  revision: string
+  items: CatalogItem[]
+}
+
 export type CollectionEntry = CollectionState & {
   spriteId: string
   updatedAt: string | null
@@ -90,6 +95,25 @@ export interface CollectionSnapshot {
   progress: CollectionProgress
   updatedAt: string | null
 }
+
+export interface CollectionQuery {
+  search?: string
+  variant?: string
+  rarity?: string
+  ownership?: "all" | "owned" | "missing"
+}
+
+export interface CollectionTrackingSnapshot {
+  catalogRevision: string
+  entries: CollectionEntry[]
+  helpers: {
+    spriteId: string
+    profile: PublicProfile
+    mastered: boolean
+  }[]
+}
+
+export { assembleCollection, CatalogRevisionMismatchError } from "./collection.ts"
 
 export interface CollectionMutationResponse {
   entry: CollectionEntry

@@ -133,6 +133,7 @@ async function DashboardContent() {
                   variant={sprite.variant}
                   label={`${sprite.variant} ${sprite.baseName}`}
                   src={sprite.imagePath ?? undefined}
+                  sizes="80px"
                   className="aspect-square"
                 />
                 <span className="flex min-w-0 flex-col justify-center gap-1">

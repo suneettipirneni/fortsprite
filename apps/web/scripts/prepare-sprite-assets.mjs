@@ -7,6 +7,7 @@ import {
   rename,
   rm,
   stat,
+  writeFile,
 } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
@@ -37,7 +38,20 @@ for (const item of catalog) {
   byPath.set(item.localPath, item)
 }
 
-const imagePaths = [...byPath.keys()]
+const imagePaths = [...byPath.keys()].sort()
+const registryPath = path.join(appDirectory, "lib/generated/sprite-artwork.ts")
+const registry = [
+  'import type { StaticImageData } from "next/image"',
+  "",
+  ...imagePaths.map((imagePath, index) =>
+    `import artwork${index} from "../../assets${imagePath}"`,
+  ),
+  "",
+  "export const spriteArtwork: Record<string, StaticImageData> = {",
+  ...imagePaths.map((imagePath, index) => `  "${imagePath}": artwork${index},`),
+  "}",
+  "",
+].join("\n")
 const temporary = await mkdtemp(path.join(appDirectory, ".sprite-assets-"))
 const staged = path.join(temporary, "staged")
 const previous = path.join(temporary, "previous")
@@ -66,6 +80,14 @@ try {
     await rename(previous, publicDirectory)
     previousNeedsRecovery = false
     throw error
+  }
+  const existingRegistry = await readFile(registryPath, "utf8").catch((error) => {
+    if (error.code === "ENOENT") return undefined
+    throw error
+  })
+  if (existingRegistry !== registry) {
+    await mkdir(path.dirname(registryPath), { recursive: true })
+    await writeFile(registryPath, registry)
   }
 } finally {
   if (!previousNeedsRecovery)

@@ -37,6 +37,7 @@
     "typescript": "^5.9.3"
   },
   "exports": {
-    "./app": "./src/app.ts"
+    "./app": "./src/app.ts",
+    "./catalog": "./src/catalog.ts"
   }
 }

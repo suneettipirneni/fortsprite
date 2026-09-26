@@ -12,7 +12,9 @@ export default defineConfig({
   outputDir: "/tmp/fortsprite-instant-results",
   reporter: "list",
   use: {
-    baseURL: "http://localhost:3002",
+    baseURL: "https://localhost:3002",
+    ignoreHTTPSErrors: true,
+    serviceWorkers: "block",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
@@ -32,7 +34,8 @@ export default defineConfig({
   webServer: {
     stdout: "pipe",
     command: "node ../api/node_modules/tsx/dist/cli.mjs tests/instant/start.ts",
-    url: "http://localhost:3002/sign-in",
+    url: "https://localhost:3002/sign-in",
+    ignoreHTTPSErrors: true,
     timeout: 240_000,
     reuseExistingServer: false,
   },

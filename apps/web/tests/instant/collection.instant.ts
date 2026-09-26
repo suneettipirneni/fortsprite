@@ -43,11 +43,11 @@ test.beforeEach(async ({ page, baseURL }, testInfo) => {
 })
 
 async function assertShell(page: Page) {
-  await expect(page.getByTestId("collection-shell")).toBeVisible()
+  await expect(page.getByRole("main").getByTestId("collection-shell")).toBeVisible()
   await expect(
     page.getByRole("link", { name: "Homepage", exact: true }).first(),
   ).toBeVisible()
-  await expect(page.getByTestId("collection-content")).toHaveCount(0)
+  await expect(page.getByRole("main").getByTestId("collection-content")).toHaveCount(0)
   await page.screenshot({ path: test.info().outputPath("shell.png") })
 }
 
@@ -66,7 +66,7 @@ test("collection hard navigation serves its shell while private data is gated", 
     { baseURL },
   )
   await page.reload()
-  await expect(page.getByTestId("collection-content")).toBeVisible()
+  await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
 
   const collectionResponse = await page.request.get("/api/v1/collection")
   expect(collectionResponse.status()).toBe(200)
@@ -176,7 +176,7 @@ test("mobile grid density changes and list rows stay compact", async ({
   await page.goto("/collection")
   await expect(page).toHaveURL(/\/collection$/)
   await expect(page).toHaveTitle(/FortSprite/)
-  await expect(page.getByTestId("collection-content")).toBeVisible()
+  await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
   await expect(page.locator("nextjs-portal")).toHaveCount(0)
   const firstTile = page.locator("article[data-sprite-id]").first()
   const tileWidth = () =>
@@ -228,10 +228,18 @@ test("mobile grid density changes and list rows stay compact", async ({
   await teammateContext.close()
 })
 
-test("collection soft navigation commits its shell and then streams private data", async ({
+test("collection soft navigation shows its prefetched shell before fresh tracking", async ({
   page,
   isMobile,
 }) => {
+  const prefetch = page.waitForResponse((response) => {
+    const headers = response.request().headers()
+    return new URL(response.url()).pathname === "/collection" &&
+      headers.rsc === "1" &&
+      !headers["next-router-segment-prefetch"] &&
+      headers["next-router-prefetch"] !== "1" &&
+      headers["next-router-prefetch"] !== "3"
+  })
   await page.goto("/account")
   const navigation = page.getByRole("navigation", {
     name: isMobile ? "Mobile primary" : "Primary",
@@ -239,12 +247,14 @@ test("collection soft navigation commits its shell and then streams private data
   })
   const link = navigation.getByRole("link", { name: "Collection", exact: true })
   await expect(link).toBeVisible()
+  const response = await prefetch
+  expect(response.status()).toBe(200)
   await instant(page, async () => {
     await link.click()
     await expect(page).toHaveURL(/\/collection$/)
     await assertShell(page)
   })
-  await expect(page.getByTestId("collection-content")).toBeVisible()
+  await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
   if (isMobile) {
     await expect(
       page.getByRole("navigation", { name: "Mobile primary" }),

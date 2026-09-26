@@ -1,7 +1,8 @@
 import { isDeepStrictEqual } from "node:util"
-import { eq, sql } from "drizzle-orm"
+import { createHash } from "node:crypto"
+import { asc, eq, sql } from "drizzle-orm"
 import { z } from "zod"
-import type { CatalogItem } from "@workspace/contracts"
+import type { CatalogItem, CatalogSnapshot } from "@workspace/contracts"
 
 import { db } from "./db/client.ts"
 import { sprites } from "./db/schema.ts"
@@ -97,6 +98,29 @@ export function catalogItem(row: typeof sprites.$inferSelect): CatalogItem {
     dropChances: row.dropChances,
     sourcePage: row.sourceUrl,
     sourceVerifiedAt: row.sourceVerifiedAt.toISOString(),
+  }
+}
+
+export function catalogRevision(rows: readonly { id: string; updatedAt: string }[]) {
+  return createHash("sha256")
+    .update(JSON.stringify([...rows].sort((a, b) => a.id.localeCompare(b.id))
+      .map((row) => [row.id, row.updatedAt])))
+    .digest("hex")
+}
+
+export async function getCatalog(database = db): Promise<CatalogSnapshot> {
+  const rows = await database.select({
+    sprite: sprites,
+    updatedAt: sql<string>`extract(epoch from ${sprites.updatedAt})::text`,
+  }).from(sprites)
+    .where(eq(sprites.releaseStatus, "released"))
+    .orderBy(asc(sprites.displayOrder), asc(sprites.slug))
+  return {
+    revision: catalogRevision(rows.map((row) => ({
+      id: row.sprite.id,
+      updatedAt: row.updatedAt,
+    }))),
+    items: rows.map((row) => catalogItem(row.sprite)),
   }
 }
 

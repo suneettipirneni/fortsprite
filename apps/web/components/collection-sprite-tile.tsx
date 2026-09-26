@@ -143,7 +143,7 @@ export function SpriteTile({
                       ? "aspect-square w-full rounded-none"
                       : "aspect-[4/3] w-full rounded-none"
                   }
-                  sizes={view === "list" ? "80px" : undefined}
+                  sizes={view === "list" ? "(min-width: 640px) 80px, 64px" : undefined}
                 />
                 {sprite.mastered ? (
                   <span

@@ -15,6 +15,7 @@ import {
   collectionQuerySchema,
   collectionStateSchema,
   getCollection,
+  getCollectionTracking,
   setCollectionEntry,
   spriteIdSchema,
 } from "./collection.ts"
@@ -31,6 +32,24 @@ export function createCollectionRoutes({
   const routes = new Hono<ApiEnvironment>()
   const authenticated = requireSession(getSession)
   routes.onError(handleApiError)
+
+  routes.get(
+    "/collection/state",
+    authenticated,
+    limitReads("collection", database),
+    async (context) => {
+      if (Object.keys(context.req.query()).length > 0)
+        return context.json(
+          { error: { code: "INVALID_INPUT", message: "Collection state does not accept filters." } },
+          400,
+        )
+      const [tracking, helpers] = await Promise.all([
+        getCollectionTracking(context.get("userId"), database),
+        readHelpers(context.get("userId"), database),
+      ])
+      return context.json({ ...tracking, helpers })
+    },
+  )
 
   routes.get(
     "/collection",

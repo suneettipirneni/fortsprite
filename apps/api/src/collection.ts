@@ -3,13 +3,16 @@ import { z } from "zod"
 import type {
   CollectionEntry,
   CollectionMutationResponse,
+  CollectionQuery,
   CollectionSnapshot,
   CollectionState,
+  CollectionTrackingSnapshot,
 } from "@workspace/contracts"
+import { assembleCollection } from "@workspace/contracts"
 
 import { db } from "./db/client.ts"
 import { collectionEntries, sprites } from "./db/schema.ts"
-import { catalogItem } from "./catalog.ts"
+import { catalogRevision, getCatalog } from "./catalog.ts"
 
 export const collectionStateSchema = z.discriminatedUnion("owned", [
   z
@@ -36,7 +39,6 @@ export const collectionQuerySchema = z
   })
   .strict()
 
-type CollectionQuery = z.infer<typeof collectionQuerySchema>
 type Database = typeof db
 
 function collectionEntry(
@@ -52,13 +54,18 @@ function collectionEntry(
   }
 }
 
-export async function getCollection(
+export async function getCollectionTracking(
   userId: string,
-  query: CollectionQuery = {},
   database: Database = db,
-): Promise<CollectionSnapshot> {
+): Promise<CollectionTrackingSnapshot> {
   const rows = await database
-    .select({ sprite: sprites, entry: collectionEntries })
+    .select({
+      spriteId: sprites.id,
+      catalogUpdatedAt: sql<string>`extract(epoch from ${sprites.updatedAt})::text`,
+      owned: collectionEntries.owned,
+      mastered: collectionEntries.mastered,
+      updatedAt: collectionEntries.updatedAt,
+    })
     .from(sprites)
     .leftJoin(
       collectionEntries,
@@ -68,47 +75,39 @@ export async function getCollection(
       ),
     )
     .where(eq(sprites.releaseStatus, "released"))
-    .orderBy(asc(sprites.displayOrder), asc(sprites.slug))
+    .orderBy(asc(sprites.id))
 
-  const allItems = rows.map(({ sprite, entry }) => ({
-    ...catalogItem(sprite),
-    ...(entry
-      ? collectionEntry(entry)
-      : {
-          spriteId: sprite.id,
-          owned: false as const,
-          mastered: false as const,
-          updatedAt: null,
-        }),
-    helpers: [],
-  }))
-  const search = query.search?.toLocaleLowerCase()
-  const items = allItems.filter(
-    (item) =>
-      (!search ||
-        `${item.baseName} ${item.variant}`
-          .toLocaleLowerCase()
-          .includes(search)) &&
-      (!query.variant || item.variant === query.variant) &&
-      (!query.rarity || item.rarity === query.rarity) &&
-      (!query.ownership ||
-        query.ownership === "all" ||
-        (query.ownership === "owned" ? item.owned : !item.owned)),
-  )
-  const dates = allItems.flatMap((item) =>
-    item.updatedAt ? [item.updatedAt] : [],
-  )
   return {
-    items,
-    progress: {
-      total: allItems.length,
-      owned: allItems.filter((item) => item.owned).length,
-      mastered: allItems.filter((item) => item.mastered).length,
-    },
-    updatedAt: dates.length
-      ? dates.reduce((latest, date) => (date > latest ? date : latest))
-      : null,
+    catalogRevision: catalogRevision(rows.map((row) => ({
+      id: row.spriteId,
+      updatedAt: row.catalogUpdatedAt,
+    }))),
+    entries: rows.map((row) => ({
+      spriteId: row.spriteId,
+      ...(row.owned
+        ? { owned: true as const, mastered: row.mastered ?? false }
+        : { owned: false as const, mastered: false as const }),
+      updatedAt: row.updatedAt?.toISOString() ?? null,
+    })),
+    helpers: [],
   }
+}
+
+export async function getCollection(
+  userId: string,
+  query: CollectionQuery = {},
+  database: Database = db,
+): Promise<CollectionSnapshot> {
+  let [catalog, tracking] = await Promise.all([
+    getCatalog(database),
+    getCollectionTracking(userId, database),
+  ])
+  if (catalog.revision !== tracking.catalogRevision)
+    [catalog, tracking] = await Promise.all([
+      getCatalog(database),
+      getCollectionTracking(userId, database),
+    ])
+  return assembleCollection(catalog, tracking, query)
 }
 
 export async function setCollectionEntry(

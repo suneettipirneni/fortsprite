@@ -5,7 +5,7 @@ import type {
   CollectionState,
 } from "@workspace/contracts"
 import { mutateApi } from "@/lib/server-mutation"
-import { revalidatePath } from "next/cache"
+import { refresh } from "next/cache"
 import type { ActionResult } from "@/lib/action-result"
 
 export async function updateCollectionAction(
@@ -19,9 +19,6 @@ export async function updateCollectionAction(
     "PUT",
     state,
   )
-  if (result.ok) {
-    revalidatePath("/")
-    revalidatePath("/matches")
-  }
+  if (result.ok) refresh()
   return result
 }

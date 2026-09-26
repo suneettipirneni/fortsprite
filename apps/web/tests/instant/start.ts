@@ -1,5 +1,10 @@
 import "../../../api/tests/env.js"
 import { execFileSync, spawn } from "node:child_process"
+import { mkdtempSync, readFileSync, rmSync } from "node:fs"
+import { request } from "node:http"
+import { createServer } from "node:https"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const webRoot = fileURLToPath(new URL("../../", import.meta.url))
@@ -57,18 +62,56 @@ try {
   throw error
 }
 
+const certificateDirectory = mkdtempSync(join(tmpdir(), "fortsprite-instant-tls-"))
+const keyPath = join(certificateDirectory, "localhost.key")
+const certificatePath = join(certificateDirectory, "localhost.crt")
+try {
+  execFileSync("openssl", [
+    "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1",
+    "-subj", "/CN=localhost", "-keyout", keyPath, "-out", certificatePath,
+  ], { stdio: "pipe" })
+} catch (error) {
+  rmSync(certificateDirectory, { recursive: true, force: true })
+  seedFixtures(true)
+  throw error
+}
+
+const server = createServer({
+  key: readFileSync(keyPath),
+  cert: readFileSync(certificatePath),
+}, (incoming, outgoing) => {
+  const upstream = request({
+    hostname: "localhost",
+    port: 3003,
+    path: incoming.url,
+    method: incoming.method,
+    headers: { ...incoming.headers, "x-forwarded-proto": "https" },
+  }, (response) => {
+    outgoing.writeHead(response.statusCode ?? 502, response.headers)
+    response.pipe(outgoing)
+  })
+  upstream.on("error", () => {
+    outgoing.writeHead(502)
+    outgoing.end()
+  })
+  incoming.pipe(upstream)
+})
+
 const child = spawn(
   process.execPath,
-  [next, "start", "--hostname", "localhost", "--port", "3002"],
+  [next, "start", "--hostname", "localhost", "--port", "3003"],
   {
     cwd: webRoot,
     env: environment,
     stdio: "inherit",
   },
 )
+server.listen(3002, "localhost")
 for (const signal of ["SIGINT", "SIGTERM"] as const)
   process.on(signal, () => child.kill(signal))
 child.on("exit", (code) => {
+  server.close()
+  rmSync(certificateDirectory, { recursive: true, force: true })
   seedFixtures(true)
   process.exit(code ?? 1)
 })
