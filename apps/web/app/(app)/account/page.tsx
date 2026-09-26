@@ -2,7 +2,11 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import Link from "next/link"
 
-import { ContentLoading } from "@/components/content-loading"
+import {
+  AccountDeletionSkeleton,
+  CredentialsSkeleton,
+  ProfileSkeleton,
+} from "@/components/page-data-skeletons"
 import { DeleteAccountDialog } from "@/components/delete-account-dialog"
 import { CredentialManager } from "@/components/credential-manager"
 import { ProfileEditor } from "@/components/profile-editor"
@@ -21,8 +25,14 @@ export default function AccountPage() {
       />
       <div className="app-columns">
         <div className="flex min-w-0 flex-col gap-8 lg:col-span-8">
-          <Suspense fallback={<ContentLoading />}>
-            <AccountDetails />
+          <Suspense fallback={<ProfileSkeleton />}>
+            <AccountProfile />
+          </Suspense>
+          <Suspense fallback={<CredentialsSkeleton />}>
+            <AccountCredentials />
+          </Suspense>
+          <Suspense fallback={<AccountDeletionSkeleton />}>
+            <AccountDeletion />
           </Suspense>
           <nav
             aria-label="Account policies"
@@ -54,16 +64,17 @@ export default function AccountPage() {
   )
 }
 
-async function AccountDetails() {
-  const [viewer, credentialResponse] = await Promise.all([
-    getViewer(),
-    getCredentials(),
-  ])
-  return (
-    <>
-      <ProfileEditor viewer={viewer} />
-      <CredentialManager credentials={credentialResponse.credentials} />
-      <DeleteAccountDialog handle={viewer.handle} />
-    </>
-  )
+async function AccountProfile() {
+  const viewer = await getViewer()
+  return <ProfileEditor viewer={viewer} />
+}
+
+async function AccountCredentials() {
+  const { credentials } = await getCredentials()
+  return <CredentialManager credentials={credentials} />
+}
+
+async function AccountDeletion() {
+  const viewer = await getViewer()
+  return <DeleteAccountDialog handle={viewer.handle} />
 }

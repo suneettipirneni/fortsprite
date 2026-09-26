@@ -47,11 +47,12 @@ async function assertShell(page: Page) {
   await expect(
     page.getByRole("link", { name: "Homepage", exact: true }).first(),
   ).toBeVisible()
-  await expect(page.getByRole("main").getByTestId("collection-content")).toHaveCount(0)
+  await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
+  await expect(page.getByRole("main").locator("article[data-sprite-id] img").first()).toBeVisible()
   await page.screenshot({ path: test.info().outputPath("shell.png") })
 }
 
-test("collection hard navigation serves its shell while private data is gated", async ({
+test("collection hard navigation serves cached artwork while tracking is gated", async ({
   page,
   baseURL,
   isMobile,
@@ -228,7 +229,7 @@ test("mobile grid density changes and list rows stay compact", async ({
   await teammateContext.close()
 })
 
-test("collection soft navigation shows its prefetched shell before fresh tracking", async ({
+test("collection soft navigation shows prefetched artwork before fresh tracking", async ({
   page,
   isMobile,
 }) => {

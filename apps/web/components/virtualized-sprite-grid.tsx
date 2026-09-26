@@ -13,7 +13,8 @@ import { useWindowVirtualizer } from "@tanstack/react-virtual"
 import { Badge } from "@workspace/ui/components/badge"
 
 import type { CollectionChange } from "@/lib/collection-state"
-import type { Sprite } from "@/lib/catalog-presentation"
+import type { CatalogItem } from "@workspace/contracts"
+import { CollectionTracking, TrackingSkeleton } from "@/components/collection-tracking"
 import {
   SpriteTile,
   type CollectionNotice,
@@ -29,18 +30,17 @@ type SpriteGridProps = {
   currentSeasonId: number | null
   notice: CollectionNotice | null
   onRemovedFocus: () => void
-  onChange: (sprite: Sprite, change: CollectionChange) => void
+  onChange: (sprite: CatalogItem, change: CollectionChange) => void
 }
 
 type VirtualizedSpriteGridProps = SpriteGridProps & {
-  items: Sprite[]
+  items: CatalogItem[]
 }
 
 type VirtualizedSpriteGroupsProps = SpriteGridProps & {
   groups: Array<{
     baseName: string
-    items: Sprite[]
-    progress: { captured: number; mastered: number; total: number }
+    items: CatalogItem[]
   }>
 }
 
@@ -142,7 +142,7 @@ function SpriteTiles({
   onRemovedFocus,
   onChange,
 }: Omit<SpriteGridProps, "gridSize"> & {
-  items: Sprite[]
+  items: CatalogItem[]
   columns: number
   gap: number
 }) {
@@ -173,38 +173,29 @@ function SpriteTiles({
 
 function SpriteGroupHeading({
   baseName,
-  captured,
-  mastered,
-  total,
+  items,
 }: {
   baseName: string
-  captured: number
-  mastered: number
-  total: number
+  items: CatalogItem[]
 }) {
+  const ids = new Set(items.map((item) => item.id))
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-2 border-b border-white/10 pb-3">
       <h2 className="truncate text-lg font-semibold">{baseName}</h2>
-      <Badge
-        variant="captured"
-        aria-label={`${captured} of ${total} variants captured`}
-        className="shrink-0 font-normal tabular-nums"
-      >
-        <span className="font-semibold">{captured}</span>
-        <span aria-hidden="true">/</span>
-        <span>{total}</span>
-        <span>captured</span>
-      </Badge>
-      <Badge
-        variant="mastered"
-        aria-label={`${mastered} of ${total} variants mastered`}
-        className="shrink-0 font-normal tabular-nums"
-      >
-        <span className="font-semibold">{mastered}</span>
-        <span aria-hidden="true">/</span>
-        <span>{total}</span>
-        <span>mastered</span>
-      </Badge>
+      <CollectionTracking fallback={<TrackingSkeleton className="h-6 w-40" />}>{(snapshot) => {
+        const items = snapshot.items.filter((item) => ids.has(item.id))
+        const total = items.length
+        const captured = items.filter((item) => item.owned).length
+        const mastered = items.filter((item) => item.mastered).length
+        return <>
+          <Badge variant="captured" aria-label={`${captured} of ${total} variants captured`} className="shrink-0 font-normal tabular-nums">
+            <span className="font-semibold">{captured}</span><span aria-hidden="true">/</span><span>{total}</span><span>captured</span>
+          </Badge>
+          <Badge variant="mastered" aria-label={`${mastered} of ${total} variants mastered`} className="shrink-0 font-normal tabular-nums">
+            <span className="font-semibold">{mastered}</span><span aria-hidden="true">/</span><span>{total}</span><span>mastered</span>
+          </Badge>
+        </>
+      }}</CollectionTracking>
     </div>
   )
 }
@@ -223,7 +214,7 @@ export function VirtualizedSpriteGrid({
   const columns = columnsForWidth(width, view, gridSize)
   const gap = width >= 640 ? GRID_GAP : MOBILE_GRID_GAP
   const rows = useMemo(() => {
-    const nextRows: Sprite[][] = []
+    const nextRows: CatalogItem[][] = []
     for (let index = 0; index < items.length; index += columns) {
       nextRows.push(items.slice(index, index + columns))
     }
@@ -354,10 +345,9 @@ export function VirtualizedSpriteGroups({
   const virtualGroups = virtualizer.getVirtualItems()
 
   if (!hydrated) {
-    const { baseName, items, progress } = groups[0] ?? {
+    const { baseName, items } = groups[0] ?? {
       baseName: "",
       items: [],
-      progress: { captured: 0, mastered: 0, total: 0 },
     }
     return (
       <div
@@ -368,7 +358,7 @@ export function VirtualizedSpriteGroups({
         data-rendered-groups={groups.length > 0 ? 1 : 0}
       >
         <section aria-label={baseName} className="space-y-3 sm:space-y-4">
-          <SpriteGroupHeading baseName={baseName} {...progress} />
+          <SpriteGroupHeading baseName={baseName} items={items} />
           <SpriteTiles
             items={items}
             columns={columns}
@@ -395,10 +385,9 @@ export function VirtualizedSpriteGroups({
       }}
     >
       {virtualGroups.map((virtualGroup) => {
-        const { baseName, items, progress } = groups[virtualGroup.index] ?? {
+        const { baseName, items } = groups[virtualGroup.index] ?? {
           baseName: "",
           items: [],
-          progress: { captured: 0, mastered: 0, total: 0 },
         }
         return (
           <div
@@ -414,7 +403,7 @@ export function VirtualizedSpriteGroups({
             }}
           >
             <section aria-label={baseName} className="space-y-3 sm:space-y-4">
-              <SpriteGroupHeading baseName={baseName} {...progress} />
+              <SpriteGroupHeading baseName={baseName} items={items} />
               <SpriteTiles
                 items={items}
                 columns={columns}

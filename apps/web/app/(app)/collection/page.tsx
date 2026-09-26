@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 
 import { CollectionExplorer } from "@/components/collection-explorer"
 import { getCollection } from "@/lib/api"
+import { getCachedCatalog } from "@/lib/catalog"
 
 export const metadata: Metadata = { title: "My collection" }
 
@@ -36,6 +37,6 @@ export default function CollectionPage() {
 }
 
 async function CollectionContent() {
-  const collection = await getCollection()
-  return <CollectionExplorer initialCollection={collection} />
+  const catalog = await getCachedCatalog()
+  return <CollectionExplorer catalog={catalog.items} collection={getCollection()} />
 }

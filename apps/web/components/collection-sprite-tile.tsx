@@ -36,7 +36,11 @@ import {
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 
 import type { CollectionChange } from "@/lib/collection-state"
-import type { Sprite } from "@/lib/catalog-presentation"
+import type { CatalogItem } from "@workspace/contracts"
+import {
+  SpriteTracking,
+  TrackingSkeleton,
+} from "@/components/collection-tracking"
 import { FriendHelperList } from "@/components/friend-helper-list"
 import { SpritePortrait } from "@/components/sprite-portrait"
 import { SpriteRarityBadge } from "@/components/sprite-rarity-badge"
@@ -65,7 +69,7 @@ export function SpriteTile({
   availabilityKnown,
   currentSeasonId,
 }: {
-  sprite: Sprite
+  sprite: CatalogItem
   view?: "list" | "grid"
   pending: boolean
   availabilityKnown: boolean
@@ -80,16 +84,6 @@ export function SpriteTile({
   const [dialogOpen, setDialogOpen] = useState(false)
   const helpEligible =
     currentSeasonId !== null && sprite.sourceSeasonId === currentSeasonId
-  const masteredHelperCount = sprite.helpers.filter(
-    (friend) => friend.mastered,
-  ).length
-  const helperLabel = !availabilityKnown
-    ? "Friend availability unavailable"
-    : !helpEligible
-      ? "Not eligible for friend help outside the current season"
-      : sprite.helpers.length === 1
-        ? "1 friend with this Sprite"
-        : `${sprite.helpers.length} friends with this Sprite${masteredHelperCount > 0 ? `, ${masteredHelperCount} mastered` : ""}`
   const restoreTriggerFocus = (event: Event) => {
     event.preventDefault()
     if (triggerRef.current?.isConnected) triggerRef.current.focus()
@@ -108,7 +102,6 @@ export function SpriteTile({
             view === "list" ? "flex-row items-center" : "flex-col",
           )}
           data-sprite-id={sprite.id}
-          data-mastered={sprite.mastered || undefined}
           aria-busy={pending}
         >
           <HoverCardTrigger asChild>
@@ -122,7 +115,7 @@ export function SpriteTile({
                 setPreviewOpen(false)
                 setDialogOpen(true)
               }}
-              aria-label={`Open ${sprite.variant} ${sprite.baseName} details. ${sprite.rarity} rarity, ${sprite.owned ? "captured" : "missing"}, ${sprite.mastered ? "mastered" : "not mastered"}, ${helperLabel}.`}
+              aria-label={`Open ${sprite.variant} ${sprite.baseName} details. ${sprite.rarity} rarity.`}
               className={cn(
                 "group w-full min-w-0 overflow-hidden text-left outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring",
                 view === "list" ? "flex flex-1 items-center" : "block",
@@ -145,14 +138,20 @@ export function SpriteTile({
                   }
                   sizes={view === "list" ? "(min-width: 640px) 80px, 64px" : undefined}
                 />
-                {sprite.mastered ? (
-                  <span
-                    data-testid="mastered-crown"
-                    className="pointer-events-none absolute top-1.5 left-1.5 flex size-5 items-center justify-center rounded-full bg-mastered text-mastered-foreground shadow-sm ring-1 ring-mastered"
-                  >
-                    <CrownIcon aria-hidden="true" className="size-3" />
-                  </span>
-                ) : null}
+                <SpriteTracking spriteId={sprite.id} fallback={null}>
+                  {({ sprite }) => (
+                    <>
+                      {sprite.mastered ? (
+                        <span
+                          data-testid="mastered-crown"
+                          className="pointer-events-none absolute top-1.5 left-1.5 flex size-5 items-center justify-center rounded-full bg-mastered text-mastered-foreground shadow-sm ring-1 ring-mastered"
+                        >
+                          <CrownIcon aria-hidden="true" className="size-3" />
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </SpriteTracking>
               </div>
               <div
                 className={cn(
@@ -185,17 +184,23 @@ export function SpriteTile({
                 >
                   {sprite.variant}
                 </p>
-                {view !== "list" &&
-                availabilityKnown &&
-                helpEligible &&
-                sprite.helpers.length > 0 &&
-                !sprite.owned ? (
-                  <p className="mt-1 truncate text-base text-muted-foreground sm:text-sm">
-                    {sprite.helpers.length} can help
-                    {masteredHelperCount > 0
-                      ? ` · ${masteredHelperCount} mastered`
-                      : ""}
-                  </p>
+                {view !== "list" && availabilityKnown && helpEligible ? (
+                  <SpriteTracking spriteId={sprite.id} fallback={<TrackingSkeleton className="mt-1 h-4 w-20" />}>
+                    {({ sprite }) => (
+                      <>
+                        {
+                        sprite.helpers.length > 0 &&
+                        !sprite.owned ? (
+                          <p className="mt-1 truncate text-base text-muted-foreground sm:text-sm">
+                            {sprite.helpers.length} can help
+                            {sprite.helpers.filter((friend) => friend.mastered).length > 0
+                              ? ` · ${sprite.helpers.filter((friend) => friend.mastered).length} mastered`
+                              : ""}
+                          </p>
+                        ) : null}
+                      </>
+                    )}
+                  </SpriteTracking>
                 ) : null}
               </div>
             </button>
@@ -218,20 +223,32 @@ export function SpriteTile({
                 </p>
                 <p>
                   {sprite.rarity} ·{" "}
-                  {sprite.mastered
-                    ? "Mastered"
-                    : sprite.owned
-                      ? "Captured"
-                      : "Missing"}
+                  <SpriteTracking spriteId={sprite.id}>
+                    {({ sprite }) => (
+                      <>
+                        {sprite.mastered
+                          ? "Mastered"
+                          : sprite.owned
+                            ? "Captured"
+                            : "Missing"}
+                      </>
+                    )}
+                  </SpriteTracking>
                 </p>
                 <p className="text-muted-foreground">
-                  {!availabilityKnown
-                    ? "Friend availability unavailable"
-                    : !helpEligible
-                      ? "Only current-season Sprites are eligible for friend help"
-                      : sprite.helpers.length > 0
-                        ? `Help from ${sprite.helpers.map((friend) => `${friend.displayName}${friend.mastered ? " (mastered)" : ""}`).join(", ")}`
-                        : "No accepted friends have captured this Sprite yet"}
+                  <SpriteTracking spriteId={sprite.id} fallback={<TrackingSkeleton className="h-4 w-40" />}>
+                    {({ sprite }) => (
+                      <>
+                        {!availabilityKnown
+                          ? "Friend availability unavailable"
+                          : !helpEligible
+                            ? "Only current-season Sprites are eligible for friend help"
+                            : sprite.helpers.length > 0
+                              ? `Help from ${sprite.helpers.map((friend) => `${friend.displayName}${friend.mastered ? " (mastered)" : ""}`).join(", ")}`
+                              : "No accepted friends have captured this Sprite yet"}
+                      </>
+                    )}
+                  </SpriteTracking>
                 </p>
               </div>
             </div>
@@ -248,65 +265,69 @@ export function SpriteTile({
                 Saving changes…
               </p>
             ) : null}
-            <div
-              className="grid [--capture-size:2.75rem] transition-[grid-template-columns,gap] duration-[240ms] ease-out motion-reduce:transition-none sm:[--capture-size:2.25rem]"
-              style={{
-                gridTemplateColumns: sprite.owned
-                  ? "minmax(0, var(--capture-size)) minmax(0, 1fr)"
-                  : "minmax(0, 100%) minmax(0, 0fr)",
-                gap: sprite.owned ? "0.5rem" : "0rem",
-              }}
-            >
-              <div className="min-w-0">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Toggle
-                      variant="captured"
-                      aria-label={`Captured ${sprite.variant} ${sprite.baseName}`}
-                      pressed={sprite.owned}
-                      onPressedChange={(checked) =>
-                        onChange({ field: "owned", checked })
-                      }
-                      className={quickToggleClassName}
-                    >
-                      <CheckIcon aria-hidden="true" className="size-4" />
-                    </Toggle>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" sideOffset={6}>
-                    {sprite.owned ? "Remove capture" : "Mark as captured"}
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <div
-                className="min-w-0 overflow-hidden transition-opacity duration-[240ms] ease-out motion-reduce:transition-none"
-                style={{ opacity: sprite.owned ? 1 : 0 }}
-                aria-hidden={!sprite.owned}
-                inert={!sprite.owned}
-              >
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Toggle
-                      variant="mastered"
-                      aria-label={`Mastered ${sprite.variant} ${sprite.baseName}`}
-                      pressed={sprite.mastered}
-                      disabled={!sprite.owned}
-                      aria-disabled={!sprite.owned}
-                      onPressedChange={(checked) =>
-                        onChange({ field: "mastered", checked })
-                      }
-                      className={quickToggleClassName}
-                    >
-                      <CrownIcon aria-hidden="true" className="size-4" />
-                    </Toggle>
-                  </TooltipTrigger>
-                  {sprite.owned ? (
-                    <TooltipContent side="bottom" sideOffset={6}>
-                      {sprite.mastered ? "Remove mastery" : "Mark as mastered"}
-                    </TooltipContent>
-                  ) : null}
-                </Tooltip>
-              </div>
-            </div>
+            <SpriteTracking spriteId={sprite.id} onChange={onChange} fallback={<TrackingSkeleton className="h-11 w-full rounded-lg sm:h-9" />}>
+              {({ sprite, onChange }) => (
+                <div
+                  className="grid [--capture-size:2.75rem] transition-[grid-template-columns,gap] duration-[240ms] ease-out motion-reduce:transition-none sm:[--capture-size:2.25rem]"
+                  style={{
+                    gridTemplateColumns: sprite.owned
+                      ? "minmax(0, var(--capture-size)) minmax(0, 1fr)"
+                      : "minmax(0, 100%) minmax(0, 0fr)",
+                    gap: sprite.owned ? "0.5rem" : "0rem",
+                  }}
+                >
+                  <div className="min-w-0">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Toggle
+                          variant="captured"
+                          aria-label={`Captured ${sprite.variant} ${sprite.baseName}`}
+                          pressed={sprite.owned}
+                          onPressedChange={(checked) =>
+                            onChange({ field: "owned", checked })
+                          }
+                          className={quickToggleClassName}
+                        >
+                          <CheckIcon aria-hidden="true" className="size-4" />
+                        </Toggle>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" sideOffset={6}>
+                        {sprite.owned ? "Remove capture" : "Mark as captured"}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <div
+                    className="min-w-0 overflow-hidden transition-opacity duration-[240ms] ease-out motion-reduce:transition-none"
+                    style={{ opacity: sprite.owned ? 1 : 0 }}
+                    aria-hidden={!sprite.owned}
+                    inert={!sprite.owned}
+                  >
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Toggle
+                          variant="mastered"
+                          aria-label={`Mastered ${sprite.variant} ${sprite.baseName}`}
+                          pressed={sprite.mastered}
+                          disabled={!sprite.owned}
+                          aria-disabled={!sprite.owned}
+                          onPressedChange={(checked) =>
+                            onChange({ field: "mastered", checked })
+                          }
+                          className={quickToggleClassName}
+                        >
+                          <CrownIcon aria-hidden="true" className="size-4" />
+                        </Toggle>
+                      </TooltipTrigger>
+                      {sprite.owned ? (
+                        <TooltipContent side="bottom" sideOffset={6}>
+                          {sprite.mastered ? "Remove mastery" : "Mark as mastered"}
+                        </TooltipContent>
+                      ) : null}
+                    </Tooltip>
+                  </div>
+                </div>
+              )}
+            </SpriteTracking>
           </div>
         </article>
       </HoverCard>
@@ -392,7 +413,7 @@ function SpriteDetails({
   notice,
   onChange,
 }: {
-  sprite: Sprite
+  sprite: CatalogItem
   pending: boolean
   availabilityKnown: boolean
   helpEligible: boolean
@@ -410,32 +431,44 @@ function SpriteDetails({
             sizes="(min-width: 640px) 160px, 104px"
             className="aspect-square w-full rounded-none"
           />
-          {sprite.mastered ? (
-            <span className="pointer-events-none absolute top-1.5 left-1.5 flex size-5 items-center justify-center rounded-full bg-mastered text-mastered-foreground shadow-sm ring-1 ring-mastered">
-              <CrownIcon aria-hidden="true" className="size-3" />
-            </span>
-          ) : null}
+          <SpriteTracking spriteId={sprite.id} fallback={null}>
+                  {({ sprite }) => (
+                    <>
+                      {sprite.mastered ? (
+                        <span className="pointer-events-none absolute top-1.5 left-1.5 flex size-5 items-center justify-center rounded-full bg-mastered text-mastered-foreground shadow-sm ring-1 ring-mastered">
+                          <CrownIcon aria-hidden="true" className="size-3" />
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </SpriteTracking>
         </div>
         <div className="flex min-w-0 flex-col justify-center gap-2.5 py-1 sm:py-2 lg:pr-10">
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <SpriteRarityBadge rarity={sprite.rarity} />
-            <Badge
-              variant={sprite.owned ? "captured" : "outline"}
-              className={!sprite.owned ? "bg-background/35" : undefined}
-            >
-              {sprite.owned ? (
-                <CheckIcon aria-hidden="true" data-icon="inline-start" />
-              ) : (
-                <CircleIcon aria-hidden="true" data-icon="inline-start" />
+            <SpriteTracking spriteId={sprite.id} fallback={<TrackingSkeleton className="h-6 w-24" />}>
+              {({ sprite }) => (
+                <>
+                  <Badge
+                    variant={sprite.owned ? "captured" : "outline"}
+                    className={!sprite.owned ? "bg-background/35" : undefined}
+                  >
+                    {sprite.owned ? (
+                      <CheckIcon aria-hidden="true" data-icon="inline-start" />
+                    ) : (
+                      <CircleIcon aria-hidden="true" data-icon="inline-start" />
+                    )}
+                    {sprite.owned ? "Captured" : "Missing"}
+                  </Badge>
+                  {sprite.mastered ? (
+                    <Badge variant="mastered">
+                      <CrownIcon aria-hidden="true" data-icon="inline-start" />
+                      Mastered
+                    </Badge>
+                  ) : null}
+                </>
               )}
-              {sprite.owned ? "Captured" : "Missing"}
-            </Badge>
-            {sprite.mastered ? (
-              <Badge variant="mastered">
-                <CrownIcon aria-hidden="true" data-icon="inline-start" />
-                Mastered
-              </Badge>
-            ) : null}
+            </SpriteTracking>
           </div>
           <div className="flex min-w-0 flex-col gap-1">
             <h2 className="truncate text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -481,11 +514,17 @@ function SpriteDetails({
               Friends
             </dt>
             <dd className="mt-1 truncate text-lg font-semibold tabular-nums sm:text-base">
-              {!availabilityKnown
-                ? "—"
-                : helpEligible
-                  ? sprite.helpers.length
-                  : "N/A"}
+              <SpriteTracking spriteId={sprite.id}>
+                {({ sprite }) => (
+                  <>
+                    {!availabilityKnown
+                      ? "—"
+                      : helpEligible
+                        ? sprite.helpers.length
+                        : "N/A"}
+                  </>
+                )}
+              </SpriteTracking>
             </dd>
           </div>
         </dl>
@@ -539,47 +578,56 @@ function SpriteDetails({
                 Saving changes…
               </p>
             ) : null}
-            <Toggle
-              variant="captured"
-              aria-label={`Captured ${sprite.variant} ${sprite.baseName}`}
-              pressed={sprite.owned}
-              onPressedChange={(checked) =>
-                onChange({ field: "owned", checked })
-              }
-              className={collectionToggleClassName}
-            >
-              {sprite.owned ? (
-                <CheckIcon aria-hidden="true" />
-              ) : (
-                <CircleIcon aria-hidden="true" />
+            <SpriteTracking spriteId={sprite.id} onChange={onChange} fallback={<>
+              <TrackingSkeleton className="h-12 w-full rounded-lg sm:h-10" />
+              <TrackingSkeleton className="h-12 w-full rounded-lg sm:h-10" />
+            </>}>
+              {({ sprite, onChange }) => (
+                <>
+                  <Toggle
+                    variant="captured"
+                    aria-label={`Captured ${sprite.variant} ${sprite.baseName}`}
+                    pressed={sprite.owned}
+                    onPressedChange={(checked) =>
+                      onChange({ field: "owned", checked })
+                    }
+                    className={collectionToggleClassName}
+                  >
+                    {sprite.owned ? (
+                      <CheckIcon aria-hidden="true" />
+                    ) : (
+                      <CircleIcon aria-hidden="true" />
+                    )}
+                    Captured
+                  </Toggle>
+                  <Toggle
+                    variant="mastered"
+                    aria-label={`Mastered ${sprite.variant} ${sprite.baseName}`}
+                    aria-describedby={
+                      !sprite.owned ? `dialog-hint-${sprite.id}` : undefined
+                    }
+                    pressed={sprite.mastered}
+                    disabled={!sprite.owned}
+                    aria-disabled={!sprite.owned}
+                    onPressedChange={(checked) =>
+                      onChange({ field: "mastered", checked })
+                    }
+                    className={collectionToggleClassName}
+                  >
+                    <CrownIcon aria-hidden="true" />
+                    Mastered
+                  </Toggle>
+                  {!sprite.owned ? (
+                    <p
+                      id={`dialog-hint-${sprite.id}`}
+                      className="text-base text-muted-foreground sm:text-xs"
+                    >
+                      Capture first to mark mastery.
+                    </p>
+                  ) : null}
+                </>
               )}
-              Captured
-            </Toggle>
-            <Toggle
-              variant="mastered"
-              aria-label={`Mastered ${sprite.variant} ${sprite.baseName}`}
-              aria-describedby={
-                !sprite.owned ? `dialog-hint-${sprite.id}` : undefined
-              }
-              pressed={sprite.mastered}
-              disabled={!sprite.owned}
-              aria-disabled={!sprite.owned}
-              onPressedChange={(checked) =>
-                onChange({ field: "mastered", checked })
-              }
-              className={collectionToggleClassName}
-            >
-              <CrownIcon aria-hidden="true" />
-              Mastered
-            </Toggle>
-            {!sprite.owned ? (
-              <p
-                id={`dialog-hint-${sprite.id}`}
-                className="text-base text-muted-foreground sm:text-xs"
-              >
-                Capture first to mark mastery.
-              </p>
-            ) : null}
+            </SpriteTracking>
             <p className="text-base text-muted-foreground sm:mt-auto sm:text-xs">
               {helpEligible
                 ? "Current-season captures can help accepted friends."
@@ -588,8 +636,16 @@ function SpriteDetails({
           </section>
         </div>
 
-        {availabilityKnown && helpEligible && sprite.helpers.length > 0 ? (
-          <FriendHelperList friends={sprite.helpers} />
+        {availabilityKnown && helpEligible ? (
+          <SpriteTracking spriteId={sprite.id} fallback={<TrackingSkeleton className="h-5 w-44" />}>
+            {({ sprite }) => (
+              <>
+                {availabilityKnown && helpEligible && sprite.helpers.length > 0 ? (
+                  <FriendHelperList friends={sprite.helpers} />
+                ) : null}
+              </>
+            )}
+          </SpriteTracking>
         ) : null}
 
         {notice ? (

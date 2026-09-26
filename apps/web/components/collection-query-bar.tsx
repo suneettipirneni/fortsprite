@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type Ref } from "react"
+import { useState, type ReactNode, type Ref } from "react"
 import {
   FilterIcon,
   SearchIcon,
@@ -36,7 +36,7 @@ export type CollectionQueryToken = {
   groupLabel: string
   label: string
   value: string
-  count: number
+  count: number | null
 }
 
 const groupOrder: CollectionQueryTokenGroup[] = [
@@ -54,6 +54,7 @@ export function CollectionQueryBar({
   options,
   onTokensChange,
   inputRef,
+  renderCount,
 }: {
   query: string
   onQueryChange: (query: string) => void
@@ -61,6 +62,7 @@ export function CollectionQueryBar({
   options: CollectionQueryToken[]
   onTokensChange: (tokens: CollectionQueryToken[]) => void
   inputRef?: Ref<HTMLInputElement>
+  renderCount?: (option: CollectionQueryToken) => ReactNode
 }) {
   const anchor = useComboboxAnchor()
   const [open, setOpen] = useState(false)
@@ -175,7 +177,7 @@ export function CollectionQueryBar({
                   <ComboboxItem key={option.id} value={option}>
                     <span>{option.label}</span>
                     <span className="ml-auto pr-6 text-sm tabular-nums text-muted-foreground">
-                      {option.count}
+                      {renderCount ? renderCount(option) : option.count}
                     </span>
                   </ComboboxItem>
                 ))}

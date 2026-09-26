@@ -1,10 +1,8 @@
 "use client"
 
-import type { CollectionSnapshot } from "@workspace/contracts"
+import type { CatalogItem, CollectionSnapshot } from "@workspace/contracts"
 import {
-  startTransition,
   useDeferredValue,
-  useEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -40,8 +38,6 @@ import {
 import { SelectGroup, SelectItem } from "@workspace/ui/components/select"
 
 import type { CollectionChange } from "@/lib/collection-state"
-import { createCollectionSync } from "@/lib/collection-sync"
-import type { CollectionNotice } from "@/components/collection-sprite-tile"
 import {
   filterCollection,
   type CatalogSort,
@@ -50,12 +46,10 @@ import {
 } from "@/lib/collection-filter"
 import {
   completionPercent,
-  presentSprite,
-  type Sprite,
 } from "@/lib/catalog-presentation"
+import { CollectionTracking, CollectionTrackingProvider, TrackingSkeleton, useCollectionControls } from "@/components/collection-tracking"
 import { latestSeasonId } from "@/lib/catalog-season"
-import { summarizeCollection, summarizeSeasons } from "@/lib/collection-summary"
-import { updateCollectionAction } from "@/app/actions/collection"
+import { summarizeSeasons } from "@/lib/collection-summary"
 import {
   VirtualizedSpriteGrid,
   VirtualizedSpriteGroups,
@@ -105,74 +99,18 @@ function formatUtcDateTime(date: Date) {
   return `${formatUtcDate(date)}, ${formatUtcTime(date)} UTC`
 }
 
-export function CollectionExplorer({
-  initialCollection,
-}: {
-  initialCollection: CollectionSnapshot
+export function CollectionExplorer({ catalog, collection }: {
+  catalog: CatalogItem[]
+  collection: Promise<CollectionSnapshot>
 }) {
-  const [pendingIds, setPendingIds] = useState<Set<string>>(() => new Set())
-  const [notice, setNotice] = useState<CollectionNotice | null>(null)
-  const [sync] = useState(() =>
-    createCollectionSync({
-      entries: initialCollection.items,
-      save: (id, state) =>
-        new Promise((resolve, reject) => {
-          startTransition(async () => {
-            try {
-              const result = await updateCollectionAction(id, state)
-              if (result.ok) resolve(result.data)
-              else reject(new Error(result.error))
-            } catch {
-              reject(
-                new Error(
-                  "The connection was interrupted. Check your connection and try again.",
-                ),
-              )
-            }
-          })
-        }),
-      onPending: (id, pending) => {
-        setPendingIds((current) => {
-          const next = new Set(current)
-          if (pending) next.add(id)
-          else next.delete(id)
-          return next
-        })
-      },
-      onSaved: (entry) => {
-        setNotice((current) =>
-          current?.spriteId === entry.spriteId ? null : current,
-        )
-      },
-      onError: (id, error) => {
-        setNotice({
-          spriteId: id,
-          message:
-            error instanceof Error
-              ? error.message
-              : "Your collection could not be saved. Please try again.",
-        })
-      },
-    }),
-  )
-  useEffect(() => {
-    // Feed refreshed server entries into the queue while preserving pending intent.
-    sync.reconcile(initialCollection.items)
-  }, [initialCollection, sync])
-  const entries = useSyncExternalStore(
-    sync.subscribe,
-    sync.getSnapshot,
-    sync.getSnapshot,
-  )
-  const sprites = initialCollection.items.map((item) =>
-    presentSprite({ ...item, ...entries.get(item.spriteId) }),
-  )
-  let updatedAt = initialCollection.updatedAt
-  for (const entry of entries.values()) {
-    if (entry.updatedAt && (!updatedAt || entry.updatedAt > updatedAt)) {
-      updatedAt = entry.updatedAt
-    }
-  }
+  return <CollectionTrackingProvider collection={collection} catalog={new Map(catalog.map((item) => [item.id, item]))}>
+    <CollectionExplorerContent catalog={catalog} />
+  </CollectionTrackingProvider>
+}
+
+function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
+  const { sync, pendingIds, notice, clearNotice } = useCollectionControls()
+  const sprites = catalog
   const currentSeasonId = latestSeasonId(sprites)
   const seasonOptions = summarizeSeasons(sprites)
   const view = useSyncExternalStore(
@@ -183,7 +121,7 @@ export function CollectionExplorer({
   const [gridSize, setGridSize] = useState<CollectionGridSize>("medium")
   const [query, setQuery] = useState("")
   const [filterTokens, setFilterTokens] = useState<CollectionQueryToken[]>(() => {
-    const current = initialCollection.items.find(
+    const current = catalog.find(
       (item) => item.sourceSeasonId === currentSeasonId,
     )
     if (!current || current.sourceSeasonId === null) return []
@@ -193,7 +131,7 @@ export function CollectionExplorer({
       groupLabel: "Season",
       label: current.season ?? `Season ${current.sourceSeasonId}`,
       value: String(current.sourceSeasonId),
-      count: initialCollection.items.filter(
+      count: catalog.filter(
         (item) => item.sourceSeasonId === current.sourceSeasonId,
       ).length,
     }]
@@ -222,41 +160,22 @@ export function CollectionExplorer({
   const seasonSprites = seasons.length === 0
     ? sprites
     : sprites.filter((sprite) => seasons.includes(sprite.sourceSeasonId))
-  const {
-    captured: ownedCount,
-    mastered: masteredCount,
-    variants: variantOptions,
-    rarities: rarityOptions,
-    groups: variantProgress,
-  } = summarizeCollection(seasonSprites)
+  const variantOptions = new Map<string, number>()
+  const rarityOptions = new Map<string, number>()
+  for (const sprite of seasonSprites) {
+    variantOptions.set(sprite.variant, (variantOptions.get(sprite.variant) ?? 0) + 1)
+    rarityOptions.set(sprite.rarity, (rarityOptions.get(sprite.rarity) ?? 0) + 1)
+  }
 
   const filteredSprites = filterCollection(sprites, {
     query: deferredQuery,
-    capture,
-    mastery,
+    capture: null,
+    mastery: null,
     variants,
     rarities,
     seasons,
     sort,
   })
-
-  const spriteGroups = new Map<string, Sprite[]>()
-  if (view === "grouped") {
-    for (const sprite of filteredSprites) {
-      const group = spriteGroups.get(sprite.baseName)
-      if (group) group.push(sprite)
-      else spriteGroups.set(sprite.baseName, [sprite])
-    }
-  }
-  const groupedSprites = [...spriteGroups].map(([baseName, items]) => ({
-    baseName,
-    items,
-    progress: variantProgress.get(baseName) ?? {
-      captured: 0,
-      mastered: 0,
-      total: items.length,
-    },
-  }))
 
   const filterOptions: CollectionQueryToken[] = [
     ...seasonOptions.map(([id, { label, count }]) => ({
@@ -273,7 +192,7 @@ export function CollectionExplorer({
       groupLabel: "Capture",
       label: "Captured",
       value: "captured",
-      count: ownedCount,
+      count: null,
     },
     {
       id: "capture:missing",
@@ -281,7 +200,7 @@ export function CollectionExplorer({
       groupLabel: "Capture",
       label: "Missing",
       value: "missing",
-      count: seasonSprites.length - ownedCount,
+      count: null,
     },
     {
       id: "mastery:mastered",
@@ -289,7 +208,7 @@ export function CollectionExplorer({
       groupLabel: "Mastery",
       label: "Mastered",
       value: "mastered",
-      count: masteredCount,
+      count: null,
     },
     {
       id: "mastery:not-mastered",
@@ -297,7 +216,7 @@ export function CollectionExplorer({
       groupLabel: "Mastery",
       label: "Not mastered",
       value: "not-mastered",
-      count: seasonSprites.length - masteredCount,
+      count: null,
     },
     ...[...variantOptions].map(([option, count]) => ({
       id: `variant:${option}`,
@@ -317,11 +236,11 @@ export function CollectionExplorer({
     })),
   ]
 
-  function updateSprite(sprite: Sprite, change: CollectionChange) {
-    setNotice((current) => (current?.spriteId === sprite.id ? null : current))
+  function updateSprite(sprite: CatalogItem, change: CollectionChange) {
+    clearNotice(sprite.id)
     const updated = sync.change(sprite.id, change)
     const leavesFilter =
-      filterCollection([{ ...sprite, ...updated }], {
+      filterCollection([{ ...sprite, ...sync.getSnapshot().get(sprite.id)!, ...updated, helpers: [] }], {
         query: deferredQuery,
         capture,
         mastery,
@@ -345,36 +264,63 @@ export function CollectionExplorer({
     onChange: updateSprite,
   }
 
+  function renderResults(results: CatalogItem[]) {
+    const groups = new Map<string, CatalogItem[]>()
+    for (const item of results) {
+      const group = groups.get(item.baseName) ?? []
+      group.push(item)
+      groups.set(item.baseName, group)
+    }
+    const groupedResults = [...groups].map(([baseName, items]) => ({ baseName, items }))
+    return (results.length > 0 ? (
+          <div className="@container">
+            {view === "grouped" ? (
+              <VirtualizedSpriteGroups groups={groupedResults} {...gridProps} />
+            ) : <VirtualizedSpriteGrid items={results} {...gridProps} />}
+          </div>
+        ) : (
+          <Empty className="min-h-64 border border-white/14 bg-card">
+            <EmptyHeader>
+              <EmptyTitle>
+                {sprites.length === 0
+                  ? "Your catalog is not ready yet"
+                  : "No Sprites match these filters"}
+              </EmptyTitle>
+              <EmptyDescription>
+                {sprites.length === 0
+                  ? "Released Sprites will appear here when the catalog is available."
+                  : "Clear the search or choose a broader filter."}
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setQuery("")
+                  setFilterTokens([])
+                }}
+              >
+                Clear filters
+              </Button>
+            </EmptyContent>
+          </Empty>
+        ))
+  }
+
   return (
     <>
-      <div
-        aria-live="polite"
-        aria-atomic="true"
-        className="grid shrink-0 grid-cols-2 gap-0 tabular-nums"
-      >
-        <div className="pr-6">
-          <p className="text-base sm:text-sm">
-            <span className="text-3xl font-semibold tracking-tight text-foreground">
-              {ownedCount}
-            </span>{" "}
-            captured
-          </p>
+      <div aria-live="polite" aria-atomic="true" className="grid shrink-0 grid-cols-2 gap-0 tabular-nums">
+        {(["owned", "mastered"] as const).map((field) => <div key={field} className={field === "owned" ? "pr-6" : "border-l border-white/10 pl-6 sm:pl-8"}>
+          <p className="text-base sm:text-sm"><span className="text-3xl font-semibold tracking-tight text-foreground">
+            <CollectionTracking fallback={<TrackingSkeleton className="h-8 w-10" />}>{(snapshot) => snapshot.items.filter((item) =>
+              (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length}</CollectionTracking>
+          </span>{" "}{field === "owned" ? "captured" : "mastered"}</p>
           <p className="mt-1 text-base text-muted-foreground sm:text-sm">
-            {completionPercent(ownedCount, seasonSprites.length)}% of {seasonSprites.length}
+            <CollectionTracking>{(snapshot) => completionPercent(snapshot.items.filter((item) =>
+              (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length, seasonSprites.length)}</CollectionTracking>% of {seasonSprites.length}
           </p>
-        </div>
-        <div className="border-l border-white/10 pl-6 sm:pl-8">
-          <p className="text-base sm:text-sm">
-            <span className="text-3xl font-semibold tracking-tight text-foreground">
-              {masteredCount}
-            </span>{" "}
-            mastered
-          </p>
-          <p className="mt-1 text-base text-muted-foreground sm:text-sm">
-            {completionPercent(masteredCount, seasonSprites.length)}% of{" "}
-            {seasonSprites.length}
-          </p>
-        </div>
+        </div>)}
       </div>
       <div
         data-testid="collection-content"
@@ -389,6 +335,14 @@ export function CollectionExplorer({
               options={filterOptions}
               onTokensChange={setFilterTokens}
               inputRef={queryInputRef}
+              renderCount={(option) => option.group === "capture" || option.group === "mastery"
+                ? <CollectionTracking fallback={<TrackingSkeleton className="h-4 w-6" />}>{(snapshot) => {
+                  const items = snapshot.items.filter((item) => seasons.length === 0 || seasons.includes(item.sourceSeasonId))
+                  return items.filter((item) => option.group === "capture"
+                    ? option.value === "captured" ? item.owned : !item.owned
+                    : option.value === "mastered" ? item.mastered : !item.mastered).length
+                }}</CollectionTracking>
+                : option.count}
             />
             <div className="min-w-0">
               <FilterSelect
@@ -469,55 +423,23 @@ export function CollectionExplorer({
           ) : null}
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <p role="status">
-              Showing {filteredSprites.length} of {seasonSprites.length} Sprites
+              Showing {capture || mastery ? <CollectionTracking>{(snapshot) => filterCollection(snapshot.items, {
+                query: deferredQuery, capture, mastery, variants, rarities, seasons, sort,
+              }).length}</CollectionTracking> : filteredSprites.length} of {seasonSprites.length} Sprites
             </p>
             <p aria-live="polite" aria-atomic="true">
-              {updatedAt ? (
-                <>
-                  Saved{" "}
-                  <time dateTime={updatedAt} title={formatUtcDateTime(new Date(updatedAt))}>
-                    {formatUtcDate(new Date(updatedAt))}
-                  </time>
-                </>
-              ) : "No changes saved yet."}
+              <CollectionTracking>{({ updatedAt }) => updatedAt ? <>
+                Saved <time dateTime={updatedAt} title={formatUtcDateTime(new Date(updatedAt))}>{formatUtcDate(new Date(updatedAt))}</time>
+              </> : "No changes saved yet."}</CollectionTracking>
             </p>
           </div>
         </div>
 
-        {filteredSprites.length > 0 ? (
-          <div className="@container">
-            {view === "grouped" ? (
-              <VirtualizedSpriteGroups groups={groupedSprites} {...gridProps} />
-            ) : <VirtualizedSpriteGrid items={filteredSprites} {...gridProps} />}
-          </div>
-        ) : (
-          <Empty className="min-h-64 border border-white/14 bg-card">
-            <EmptyHeader>
-              <EmptyTitle>
-                {sprites.length === 0
-                  ? "Your catalog is not ready yet"
-                  : "No Sprites match these filters"}
-              </EmptyTitle>
-              <EmptyDescription>
-                {sprites.length === 0
-                  ? "Released Sprites will appear here when the catalog is available."
-                  : "Clear the search or choose a broader filter."}
-              </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setQuery("")
-                  setFilterTokens([])
-                }}
-              >
-                Clear filters
-              </Button>
-            </EmptyContent>
-          </Empty>
-        )}
+        {capture || mastery ? <CollectionTracking fallback={<div role="status" className="min-h-32 rounded-xl border border-white/10 p-5"><TrackingSkeleton className="mr-3 h-5 w-20" />Checking collection filters…</div>}>
+          {(snapshot) => renderResults(filterCollection(snapshot.items, {
+            query: deferredQuery, capture, mastery, variants, rarities, seasons, sort,
+          }))}
+        </CollectionTracking> : renderResults(filteredSprites)}
         {sprites.length > 0 ? (
           <p className="border-t border-white/10 pt-5 text-base text-muted-foreground sm:text-sm">
             Catalog source checked{" "}

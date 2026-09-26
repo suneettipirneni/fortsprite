@@ -1,4 +1,4 @@
-import type { CollectionItem } from "@workspace/contracts"
+import type { CatalogItem, CollectionItem } from "@workspace/contracts"
 
 export type CaptureFilter = "captured" | "missing"
 export type MasteryFilter = "mastered" | "not-mastered"
@@ -13,7 +13,9 @@ export type CollectionFilters = {
   sort: CatalogSort
 }
 
-export function filterCollection<T extends CollectionItem>(
+export function filterCollection<T extends CollectionItem>(sprites: T[], filters: CollectionFilters): T[]
+export function filterCollection<T extends CatalogItem>(sprites: T[], filters: Omit<CollectionFilters, "capture" | "mastery"> & { capture: null; mastery: null }): T[]
+export function filterCollection<T extends CatalogItem & Partial<Pick<CollectionItem, "owned" | "mastered">>>(
   sprites: T[],
   filters: CollectionFilters,
 ): T[] {

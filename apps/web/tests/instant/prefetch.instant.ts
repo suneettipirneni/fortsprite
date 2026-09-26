@@ -68,7 +68,7 @@ test.beforeEach(async ({ page, baseURL }, testInfo) => {
   )
 })
 
-test("primary routes prefetch structure while tracking waits for navigation", async ({
+test("primary routes prefetch useful content with local tracking placeholders", async ({
   page,
   isMobile,
 }) => {
@@ -89,20 +89,22 @@ test("primary routes prefetch structure while tracking waits for navigation", as
       await expect(page).toHaveURL(new RegExp(`${href}$`))
       if (href === "/") {
         await expect(page.getByRole("heading", { level: 1 })).toContainText("Good hunting,")
-        await expect(collectedCount(page)).toHaveCount(0)
+        await expect(collectedCount(page)).toBeVisible()
+        await expect(collectedCount(page)).not.toHaveText(/^\d+$/)
       } else if (href === "/collection") {
         await expect(page.getByRole("main").getByTestId("collection-shell")).toBeVisible()
-        await expect(page.getByRole("main").getByTestId("collection-content")).toHaveCount(0)
+        await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
+        await expect(page.getByRole("main").locator("article[data-sprite-id] img").first()).toBeVisible()
       } else if (href === "/matches") {
         await expect(page.getByRole("heading", { level: 1 }))
           .toHaveText("Find your next capture.")
         await expect(page.getByRole("term").filter({ hasText: /^Missing$/ }))
-          .toHaveCount(0)
+          .toBeVisible()
       } else {
         await expect(page.getByRole("heading", { level: 1 }))
           .toHaveText("Collect with your squad.")
         await expect(page.getByRole("textbox", { name: "Search friends" }))
-          .toHaveCount(0)
+          .toBeVisible()
       }
     })
     if (href === "/") await expect(collectedCount(page)).toHaveText(/^\d+$/)

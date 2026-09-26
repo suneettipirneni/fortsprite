@@ -3,7 +3,7 @@ import { Suspense } from "react"
 import Link from "next/link"
 
 import { Button } from "@workspace/ui/components/button"
-import { ContentLoading } from "@/components/content-loading"
+import { ComparisonPageSkeleton } from "@/components/page-data-skeletons"
 import { RefreshDataButton } from "@/components/refresh-data-button"
 import { CatalogResults } from "@/components/catalog-results"
 import { PageHeader } from "@/components/page-header"
@@ -17,13 +17,7 @@ export default function ComparisonPage({
   params: Promise<{ id: string }>
 }) {
   return (
-    <Suspense
-      fallback={
-        <div className="app-page">
-          <ContentLoading />
-        </div>
-      }
-    >
+    <Suspense fallback={<ComparisonPageSkeleton />}>
       <ComparisonContent params={params} />
     </Suspense>
   )

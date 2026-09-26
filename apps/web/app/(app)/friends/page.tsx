@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
-import { ContentLoading } from "@/components/content-loading"
+import { FriendsPageSkeleton } from "@/components/page-data-skeletons"
 import { FriendsManager } from "@/components/friends-manager"
 import { PageHeader } from "@/components/page-header"
 import { getSharing } from "@/lib/api"
@@ -18,7 +18,7 @@ export default function FriendsPage() {
       />
       <div className="app-columns">
         <div className="min-w-0 lg:col-span-9">
-          <Suspense fallback={<ContentLoading />}>
+          <Suspense fallback={<FriendsPageSkeleton />}>
             <FriendsContent />
           </Suspense>
         </div>

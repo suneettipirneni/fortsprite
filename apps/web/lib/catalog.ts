@@ -12,3 +12,10 @@ export async function getCatalog(revision: string) {
   if (catalog.revision !== revision) throw new CatalogRevisionMismatchError()
   return catalog
 }
+
+export async function getCachedCatalog() {
+  "use cache"
+  cacheLife("days")
+  cacheTag("sprite-catalog")
+  return readCatalog()
+}
