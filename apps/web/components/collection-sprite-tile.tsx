@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react"
-import { CheckIcon, CircleIcon, CrownIcon } from "lucide-react"
+import { CheckIcon, CircleIcon, CrownIcon, FlaskRoundIcon } from "lucide-react"
 
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -210,6 +210,13 @@ export function SpriteTile({
               <div className="flex flex-col gap-1 text-sm">
                 <p className="font-semibold">
                   {sprite.variant} {sprite.baseName}
+                </p>
+                <p className="flex items-center gap-1 text-muted-foreground tabular-nums">
+                  <FlaskRoundIcon aria-hidden="true" className="size-3.5 shrink-0" />
+                  {sprite.spriteDustValue === null
+                    ? "—"
+                    : dustFormatter.format(sprite.spriteDustValue)}{" "}
+                  Sprite Dust
                 </p>
                 <p>
                   {sprite.rarity} ·{" "}
@@ -555,7 +562,8 @@ function SpriteDetails({
       <div className="grid gap-6 px-5 py-6 sm:p-6">
         <dl className="grid grid-cols-2 overflow-hidden rounded-xl bg-muted/40 ring-1 ring-inset ring-white/10 sm:grid-cols-3">
           <div className="order-1 min-w-0 p-4">
-            <dt className="text-sm font-medium text-muted-foreground sm:text-xs">
+            <dt className="flex items-center gap-1 text-sm font-medium text-muted-foreground sm:text-xs">
+              <FlaskRoundIcon aria-hidden="true" className="size-3.5 shrink-0" />
               Sprite Dust
             </dt>
             <dd className="mt-1 truncate text-lg font-semibold tabular-nums sm:text-base">
