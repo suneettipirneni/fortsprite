@@ -4,6 +4,7 @@ import { ArrowRightIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
+import { Progress } from "@workspace/ui/components/progress"
 
 import {
   DashboardCardsSkeleton,
@@ -180,9 +181,13 @@ async function CollectionMetric({
   metric: "owned" | "mastered" | "completion"
 }) {
   const { progress } = await getCollection()
-  return metric === "completion"
-    ? `${completionPercent(progress.owned, progress.total)}%`
-    : progress[metric]
+  if (metric !== "completion") return progress[metric]
+
+  const percent = completionPercent(progress.owned, progress.total)
+  return <>
+    {percent}%
+    <Progress value={percent} aria-label="Collection completion" className="mt-3 h-1.5" />
+  </>
 }
 
 async function SharingCount() {

@@ -29,6 +29,7 @@ import {
   type CollectionQueryToken,
 } from "@/components/collection-query-bar"
 import { Button } from "@workspace/ui/components/button"
+import { Progress } from "@workspace/ui/components/progress"
 import {
   Empty,
   EmptyContent,
@@ -321,10 +322,14 @@ function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
             <CollectionTracking fallback={<TrackingSkeleton className="h-8 w-10" />}>{(snapshot) => snapshot.items.filter((item) =>
               (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length}</CollectionTracking>
           </span>{" "}{field === "owned" ? "captured" : "mastered"}</p>
-          <p className="mt-1 text-base text-muted-foreground sm:text-sm">
-            <CollectionTracking>{(snapshot) => completionPercent(snapshot.items.filter((item) =>
-              (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length, seasonSprites.length)}</CollectionTracking>% of {seasonSprites.length}
-          </p>
+          <CollectionTracking>{(snapshot) => {
+            const percent = completionPercent(snapshot.items.filter((item) =>
+              (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length, seasonSprites.length)
+            return <>
+              <p className="mt-1 text-base text-muted-foreground sm:text-sm">{percent}% of {seasonSprites.length}</p>
+              <Progress value={percent} aria-label={`${field === "owned" ? "Captured" : "Mastered"} progress`} className="mt-3 h-1.5" />
+            </>
+          }}</CollectionTracking>
         </div>)}
       </div>
       <div
