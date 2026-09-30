@@ -57,15 +57,23 @@ test("collection hard navigation serves cached artwork while tracking is gated",
   baseURL,
   isMobile,
 }) => {
+  let loadingStatsHeight = 0
   await instant(
     page,
     async () => {
       await page.goto("/collection")
       await expect(page).toHaveURL(/\/collection$/)
       await assertShell(page)
+      await expect(page.getByRole("status", { name: "Loading captured progress" })).toBeVisible()
+      loadingStatsHeight = await page.getByTestId("collection-progress-stats")
+        .evaluate((element) => element.getBoundingClientRect().height)
     },
     { baseURL },
   )
+  await expect(page.getByRole("progressbar", { name: "Captured progress" })).toBeVisible()
+  const loadedStatsHeight = await page.getByTestId("collection-progress-stats")
+    .evaluate((element) => element.getBoundingClientRect().height)
+  expect(Math.abs(loadedStatsHeight - loadingStatsHeight)).toBeLessThanOrEqual(1)
   await page.reload()
   await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
 

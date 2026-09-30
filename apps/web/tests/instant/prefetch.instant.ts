@@ -68,7 +68,7 @@ test.beforeEach(async ({ page, baseURL }, testInfo) => {
   )
 })
 
-test("primary routes prefetch useful content with local tracking placeholders", async ({
+test("primary routes prefetch collection progress before navigation", async ({
   page,
   isMobile,
 }) => {
@@ -77,6 +77,7 @@ test("primary routes prefetch useful content with local tracking placeholders", 
       waitForPrefetch(page, path),
     ),
   )
+  const accountPrefetch = waitForPrefetch(page, "/account")
   await page.goto("/account")
   await expect(page.getByLabel("FortSprite display name", { exact: true }))
     .toBeVisible()
@@ -90,21 +91,25 @@ test("primary routes prefetch useful content with local tracking placeholders", 
       if (href === "/") {
         await expect(page.getByRole("heading", { level: 1 })).toContainText("Good hunting,")
         await expect(collectedCount(page)).toBeVisible()
-        await expect(collectedCount(page)).not.toHaveText(/^\d+$/)
+        await expect(collectedCount(page)).toHaveText(/^\d+$/)
+        await expect(page.getByRole("progressbar", { name: "Collection completion" })).toBeVisible()
+        await expect(page.getByRole("status", { name: "Loading completion" })).toHaveCount(0)
       } else if (href === "/collection") {
         await expect(page.getByRole("main").getByTestId("collection-shell")).toBeVisible()
         await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
         await expect(page.getByRole("main").locator("article[data-sprite-id] img").first()).toBeVisible()
+        await expect(page.getByRole("progressbar", { name: "Captured progress" })).toBeVisible()
+        await expect(page.getByRole("progressbar", { name: "Mastered progress" })).toBeVisible()
       } else if (href === "/matches") {
         await expect(page.getByRole("heading", { level: 1 }))
           .toHaveText("Find your next capture.")
-        await expect(page.getByRole("term").filter({ hasText: /^Missing$/ }))
-          .toBeVisible()
+        await expect(page.getByRole("textbox", { name: /Search .* missing Sprites/ })).toBeEnabled()
+        await expect(page.getByRole("status", { name: "Loading missing count" })).toHaveCount(0)
       } else {
         await expect(page.getByRole("heading", { level: 1 }))
           .toHaveText("Collect with your squad.")
         await expect(page.getByRole("textbox", { name: "Search friends" }))
-          .toBeVisible()
+          .toBeEnabled()
       }
     })
     if (href === "/") await expect(collectedCount(page)).toHaveText(/^\d+$/)
@@ -114,6 +119,12 @@ test("primary routes prefetch useful content with local tracking placeholders", 
       await expect(page.getByRole("term").filter({ hasText: /^Missing$/ })).toBeVisible()
     else await expect(page.getByRole("textbox", { name: "Search friends" })).toBeVisible()
   }
+  await accountPrefetch
+  await instant(page, async () => {
+    await nav.locator('a[href="/account"]').click()
+    await expect(page.getByRole("textbox", { name: "FortSprite display name" })).toBeEnabled()
+    await expect(page.getByRole("textbox", { name: "Passkey name" })).toBeEnabled()
+  })
 })
 
 test("a collection action invalidates a prefetched overview", async ({
@@ -262,7 +273,7 @@ test("private prefetch keeps two signed-in users separate", async ({
   }
 })
 
-test("tracking changed in another tab is fresh after prefetch and on return navigation", async ({
+test("tracking changed in another tab refreshes a prefetched collection", async ({
   page,
   baseURL,
   isMobile,
@@ -286,20 +297,26 @@ test("tracking changed in another tab is fresh after prefetch and on return navi
     const prefetched = waitForPrefetch(page, "/collection")
     await page.goto("/account")
     await prefetched
-    await update(true, true)
+    await secondTab.goto("/collection")
+    const secondTile = secondTab.locator(`article[data-sprite-id="${sprite.id}"]`)
+    await expect(secondTile.getByRole("button", { name: /^Captured / }))
+      .toHaveAttribute("aria-pressed", "false")
+    const refreshed = page.waitForEvent("load")
+    await secondTile.getByRole("button", { name: /^Captured / }).click()
+    await refreshed
     const nav = navigation(page, isMobile)
     await nav.locator('a[href="/collection"]').click()
     const tile = page.locator(`article[data-sprite-id="${sprite.id}"]`)
     await expect(tile.getByRole("button", { name: /^Captured / }))
       .toHaveAttribute("aria-pressed", "true")
-    await expect(tile.getByTestId("mastered-crown")).toBeVisible()
     await nav.locator('a[href="/account"]').click()
     await expect(page.getByLabel("FortSprite display name", { exact: true })).toBeVisible()
-    await update(false, false)
+    const refreshedAgain = page.waitForEvent("load")
+    await secondTile.getByRole("button", { name: /^Captured / }).click()
+    await refreshedAgain
     await nav.locator('a[href="/collection"]').click()
     await expect(tile.getByRole("button", { name: /^Captured / }))
       .toHaveAttribute("aria-pressed", "false")
-    await expect(tile.getByTestId("mastered-crown")).toHaveCount(0)
   } finally {
     await update(sprite.owned, sprite.mastered)
     await secondTab.close()

@@ -58,7 +58,7 @@ test("rapid capture and mastery failures restore confirmed tracking", async ({ p
   }
 })
 
-test("collection artwork and filters render before fresh tracking on first and return navigation", async ({
+test("collection artwork, tracking, and filters render on first and return navigation", async ({
   page,
   isMobile,
 }) => {
@@ -81,11 +81,14 @@ test("collection artwork and filters render before fresh tracking on first and r
         .toHaveValue(visit === 0 ? "" : "Jonesy")
       await expect(main.getByText("Loading collection…", { exact: true })).toHaveCount(0)
       await expect(main.locator("article[data-sprite-id]").first()
-        .getByRole("button", { name: /^Captured / })).toHaveCount(0)
+        .getByRole("button", { name: /^Captured / })).toBeVisible()
+      await expect(main.getByRole("progressbar", { name: "Captured progress" })).toBeVisible()
+      await expect(main.getByRole("progressbar", { name: "Mastered progress" })).toBeVisible()
+      await expect(main.getByRole("status", { name: /Loading (captured|mastered) progress/ })).toHaveCount(0)
       const dismissInstall = page.getByRole("button", { name: "Dismiss install suggestion" })
       if (await dismissInstall.isVisible()) await dismissInstall.click()
       if (isMobile) await main.locator("article[data-sprite-id]").first().scrollIntoViewIfNeeded()
-      await page.screenshot({ path: test.info().outputPath(`tracking-pending-${visit}.png`) })
+      await page.screenshot({ path: test.info().outputPath(`tracking-ready-${visit}.png`) })
       const query = main.getByRole("combobox", { name: "Search collection", exact: true })
       search = await query.elementHandle()
       await query.fill("Jonesy")

@@ -26,6 +26,7 @@ import { cn } from "@workspace/ui/lib/utils"
 import { appTabs } from "@/components/app-tabs"
 import { SignOutMenuItem } from "@/components/sign-out-menu-item"
 import { FortSpriteIcon } from "@/components/fortsprite-icon"
+import { CrossTabRefresh } from "@/components/cross-tab-refresh"
 
 // Streamed menu triggers must not accept pointer events before their handlers exist.
 const subscribeHydration = () => () => {}
@@ -147,6 +148,7 @@ export function AppShell({
 }) {
   return (
     <div className="locker-stage isolate min-h-dvh">
+      <CrossTabRefresh />
       <header className="sticky top-0 z-40 border-b border-white/8 bg-background/68 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className="app-container flex h-[var(--app-header-content-height)] items-center gap-3">
           <Brand />

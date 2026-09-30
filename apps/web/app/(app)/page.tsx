@@ -9,6 +9,7 @@ import { Progress } from "@workspace/ui/components/progress"
 import {
   DashboardCardsSkeleton,
   PageValueSkeleton,
+  ProgressBarSkeleton,
   SquadRowsSkeleton,
 } from "@/components/page-data-skeletons"
 import { PageHeader } from "@/components/page-header"
@@ -40,7 +41,7 @@ function DashboardContent() {
               Completion
             </dt>
             <dd className="tabular-nums text-3xl font-semibold tracking-tight">
-              <Suspense fallback={<PageValueSkeleton label="Loading completion" />}>
+              <Suspense fallback={<><PageValueSkeleton label="Loading completion" /><ProgressBarSkeleton /></>}>
                 <CollectionMetric metric="completion" />
               </Suspense>
             </dd>

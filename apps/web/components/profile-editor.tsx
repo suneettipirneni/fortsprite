@@ -13,6 +13,7 @@ import {
 import { Input } from "@workspace/ui/components/input"
 import { saveProfile } from "@/app/actions/profile"
 import type { ActionResult } from "@/lib/action-result"
+import { notifyOtherTabs } from "@/lib/cross-tab-refresh"
 
 export function ProfileEditor({ viewer }: { viewer: Viewer }) {
   const [draft, setDraft] = useState({
@@ -31,7 +32,9 @@ export function ProfileEditor({ viewer }: { viewer: Viewer }) {
         String(data.get("fortniteDisplayName") ?? "").trim() || null,
     }
     try {
-      return await saveProfile(profile)
+      const result = await saveProfile(profile)
+      if (result.ok) notifyOtherTabs()
+      return result
     } catch {
       return {
         ok: false,

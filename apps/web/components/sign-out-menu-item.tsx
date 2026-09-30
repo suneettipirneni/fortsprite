@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
 } from "@workspace/ui/components/dropdown-menu"
 import { authClient } from "@/lib/auth-client"
+import { notifyOtherTabs } from "@/lib/cross-tab-refresh"
 
 export function SignOutMenuItem() {
   const [pending, setPending] = useState(false)
@@ -21,6 +22,7 @@ export function SignOutMenuItem() {
       const result = await authClient.signOut()
       if (result.error) throw new Error("Sign-out failed")
       // Discard cached private pages after the session ends.
+      notifyOtherTabs()
       window.location.assign(new URL("/sign-in", window.location.origin).href)
     } catch {
       setError("Sign out could not be completed. Please try again.")

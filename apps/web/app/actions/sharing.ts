@@ -1,7 +1,7 @@
 "use server"
 
 import type { SharingAction } from "@workspace/contracts"
-import { refresh } from "next/cache"
+import { refresh, updateTag } from "next/cache"
 import { mutateApi } from "@/lib/server-mutation"
 
 export async function updateSharing(id: string, action: SharingAction) {
@@ -12,7 +12,11 @@ export async function updateSharing(id: string, action: SharingAction) {
     "POST",
     { action },
   )
-  if (result.ok) refresh()
+  if (result.ok) {
+    updateTag("sharing")
+    updateTag("collection-tracking")
+    refresh()
+  }
   return result
 }
 
@@ -24,6 +28,10 @@ export async function requestSharing(handle: string) {
     "POST",
     { handle },
   )
-  if (result.ok) refresh()
+  if (result.ok) {
+    updateTag("sharing")
+    updateTag("collection-tracking")
+    refresh()
+  }
   return result
 }

@@ -7,6 +7,7 @@ import { useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { authClient } from "@/lib/auth-client"
+import { notifyOtherTabs } from "@/lib/cross-tab-refresh"
 
 export function CredentialManager({
   credentials,
@@ -26,6 +27,7 @@ export function CredentialManager({
     setNotice({ message, error: false })
     setPending(null)
     router.refresh()
+    notifyOtherTabs()
   }
 
   function fail(message: string) {

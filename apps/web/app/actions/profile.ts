@@ -1,7 +1,7 @@
 "use server"
 
 import type { ProfileUpdate } from "@workspace/contracts"
-import { refresh } from "next/cache"
+import { refresh, updateTag } from "next/cache"
 
 import { mutateApi } from "@/lib/server-mutation"
 
@@ -11,6 +11,9 @@ export async function saveProfile(profile: ProfileUpdate) {
     "PUT",
     profile,
   )
-  if (result.ok) refresh()
+  if (result.ok) {
+    updateTag("viewer")
+    refresh()
+  }
   return result
 }

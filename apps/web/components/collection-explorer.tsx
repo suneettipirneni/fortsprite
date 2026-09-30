@@ -50,6 +50,7 @@ import {
   completionPercent,
 } from "@/lib/catalog-presentation"
 import { CollectionTracking, CollectionTrackingProvider, TrackingSkeleton, useCollectionControls } from "@/components/collection-tracking"
+import { ProgressBarSkeleton } from "@/components/page-data-skeletons"
 import { latestSeasonId } from "@/lib/catalog-season"
 import { summarizeSeasons } from "@/lib/collection-summary"
 import {
@@ -85,6 +86,15 @@ const monthNames = [
   "Nov",
   "Dec",
 ] as const
+
+function CollectionStatSkeleton({ field, total }: { field: "owned" | "mastered"; total: number }) {
+  const label = field === "owned" ? "captured" : "mastered"
+  return <div role="status" aria-label={`Loading ${label} progress`}>
+    <p className="text-base sm:text-sm"><span aria-hidden="true" className="inline-block h-[1.875rem] w-14 animate-pulse rounded-md bg-muted motion-reduce:animate-none sm:h-8" /> {label}</p>
+    <p className="mt-1 text-base text-muted-foreground sm:text-sm"><span aria-hidden="true" className="inline-block h-4 w-8 animate-pulse rounded bg-muted motion-reduce:animate-none sm:align-middle" />% of {total}</p>
+    <ProgressBarSkeleton />
+  </div>
+}
 
 function formatUtcDate(date: Date) {
   return `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
@@ -316,16 +326,14 @@ function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
       onRemovedFocus={() => queryInputRef.current?.focus()}
       onChange={updateSprite}
     >
-      <div aria-live="polite" aria-atomic="true" className="grid shrink-0 grid-cols-2 gap-0 tabular-nums">
+      <div aria-live="polite" aria-atomic="true" data-testid="collection-progress-stats" className="grid shrink-0 grid-cols-2 gap-0 tabular-nums">
         {(["owned", "mastered"] as const).map((field) => <div key={field} className={field === "owned" ? "pr-6" : "border-l border-white/10 pl-6 sm:pl-8"}>
-          <p className="text-base sm:text-sm"><span className="text-3xl font-semibold tracking-tight text-foreground">
-            <CollectionTracking fallback={<TrackingSkeleton className="h-8 w-10" />}>{(snapshot) => snapshot.items.filter((item) =>
-              (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length}</CollectionTracking>
-          </span>{" "}{field === "owned" ? "captured" : "mastered"}</p>
-          <CollectionTracking>{(snapshot) => {
-            const percent = completionPercent(snapshot.items.filter((item) =>
-              (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length, seasonSprites.length)
+          <CollectionTracking fallback={<CollectionStatSkeleton field={field} total={seasonSprites.length} />}>{(snapshot) => {
+            const count = snapshot.items.filter((item) =>
+              (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length
+            const percent = completionPercent(count, seasonSprites.length)
             return <>
+              <p className="text-base sm:text-sm"><span className="text-3xl font-semibold tracking-tight text-foreground">{count}</span>{" "}{field === "owned" ? "captured" : "mastered"}</p>
               <p className="mt-1 text-base text-muted-foreground sm:text-sm">{percent}% of {seasonSprites.length}</p>
               <Progress value={percent} aria-label={`${field === "owned" ? "Captured" : "Mastered"} progress`} className="mt-3 h-1.5" />
             </>

@@ -12,7 +12,7 @@ import type {
 } from "@workspace/contracts"
 import { assembleCollection } from "@workspace/contracts"
 import { cache } from "react"
-import { cacheLife } from "next/cache"
+import { cacheLife, cacheTag } from "next/cache"
 import { cookies } from "next/headers"
 import { connection } from "next/server"
 
@@ -55,19 +55,24 @@ async function getJson<T>(path: string): Promise<T> {
 
 export async function getViewer(): Promise<ViewerResponse["viewer"]> {
   "use cache: private"
-  cacheLife({ stale: 30 })
+  cacheLife({ stale: 600 })
+  cacheTag("viewer")
   const response = await getJson<ViewerResponse>("/api/v1/me")
   return response.viewer
 }
 
-export const getCredentials = cache(() =>
-  getJson<CredentialsResponse>("/api/v1/credentials"),
-)
+export async function getCredentials(): Promise<CredentialsResponse> {
+  "use cache: private"
+  cacheLife({ stale: 600 })
+  return getJson<CredentialsResponse>("/api/v1/credentials")
+}
 
-export const getCollectionTracking = cache(async (): Promise<CollectionTrackingSnapshot> => {
-  await connection()
+export async function getCollectionTracking(): Promise<CollectionTrackingSnapshot> {
+  "use cache: private"
+  cacheLife({ stale: 600 })
+  cacheTag("collection-tracking")
   return getJson<CollectionTrackingSnapshot>("/api/v1/collection/state")
-})
+}
 
 export const getCollection = cache(async (): Promise<CollectionSnapshot> => {
   let tracking = await getCollectionTracking()
@@ -81,10 +86,12 @@ export const getCollection = cache(async (): Promise<CollectionSnapshot> => {
   return assembleCollection(catalog, tracking)
 })
 
-export const getSharing = cache(async (): Promise<SharingSnapshot> => {
-  await connection()
+export async function getSharing(): Promise<SharingSnapshot> {
+  "use cache: private"
+  cacheLife({ stale: 600 })
+  cacheTag("sharing")
   return getJson<SharingSnapshot>("/api/v1/friends")
-})
+}
 
 export const getComparison = cache(async (userId: string): Promise<FriendComparison> => {
   await connection()

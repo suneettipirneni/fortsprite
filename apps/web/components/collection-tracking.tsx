@@ -8,6 +8,7 @@ import type { CollectionChange } from "@/lib/collection-state"
 import type { CollectionNotice } from "@/components/collection-sprite-tile"
 import type { Sprite } from "@/lib/catalog-presentation"
 import { cn } from "@workspace/ui/lib/utils"
+import { notifyOtherTabs } from "@/lib/cross-tab-refresh"
 
 type TrackingContextValue = {
   collection: Promise<CollectionTrackingSnapshot>
@@ -67,7 +68,10 @@ export function CollectionTrackingProvider({ collection, catalog, children }: {
       startTransition(async () => {
         try {
           const result = await updateCollectionAction(id, state)
-          if (result.ok) resolve(result.data)
+          if (result.ok) {
+            notifyOtherTabs()
+            resolve(result.data)
+          }
           else reject(new Error(result.error))
         } catch {
           reject(new Error("The connection was interrupted. Check your connection and try again."))

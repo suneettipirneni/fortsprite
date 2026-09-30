@@ -13,6 +13,7 @@ import { Input } from "@workspace/ui/components/input"
 import { requestSharing, updateSharing } from "@/app/actions/sharing"
 import { FriendRow } from "@/components/friend-row"
 import { projectSharing } from "@/lib/sharing-state"
+import { notifyOtherTabs } from "@/lib/cross-tab-refresh"
 
 const actionMessages: Record<SharingAction, string> = {
   request: "Sharing request sent.",
@@ -70,6 +71,7 @@ export function FriendsManager({
         ok: false,
         error: "Your sharing settings could not be saved. Please try again.",
       }))
+      if (result.ok) notifyOtherTabs()
       setNotice(
         result.ok
           ? {
@@ -91,6 +93,7 @@ export function FriendsManager({
         ok: false,
         error: "The friend request could not be sent. Please try again.",
       }))
+      if (result.ok) notifyOtherTabs()
       setNotice(
         result.ok
           ? { message: `Request sent to @${handle.trim()}.`, error: false }

@@ -17,6 +17,10 @@ export function PageValueSkeleton({
   )
 }
 
+export function ProgressBarSkeleton() {
+  return <div aria-hidden="true" className="mt-3 h-1.5 w-full animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
+}
+
 export function DashboardCardsSkeleton({
   label = "Loading collection gaps",
   className,
