@@ -26,6 +26,12 @@ function callbackUrl() {
     : `${window.location.origin}/`
 }
 
+function signInDestination(data: unknown) {
+  if (data && typeof data === "object" && "redirect" in data && data.redirect === true &&
+    "url" in data && typeof data.url === "string") return data.url
+  return callbackUrl()
+}
+
 export function SignInOptions() {
   const [username, setUsername] = useState("")
   const [pending, setPending] = useState<"register" | "sign-in" | null>(null)
@@ -51,7 +57,7 @@ export function SignInOptions() {
         )
         return
       }
-      window.location.assign(callbackUrl())
+      window.location.assign(signInDestination(result.data))
     } catch {
       setError("Your account could not be created. Please try again.")
     } finally {
@@ -68,7 +74,7 @@ export function SignInOptions() {
         setError("We could not sign you in. Please try again.")
         return
       }
-      window.location.assign(callbackUrl())
+      window.location.assign(signInDestination(result.data))
     } catch {
       setError("We could not sign you in. Please try again.")
     } finally {

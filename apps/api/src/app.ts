@@ -5,7 +5,10 @@ import { requestId } from "hono/request-id"
 import { count, eq, sql } from "drizzle-orm"
 
 import { getCatalog } from "./catalog.ts"
-import { verifyMcpKey } from "./mcp-access.ts"
+import { oauthProviderAuthServerMetadata } from "@better-auth/oauth-provider"
+import { mcpOAuthRoutes } from "./mcp-oauth-routes.ts"
+import { mcpIssuer, mcpResource, mcpScopes } from "./mcp-oauth.ts"
+import { verifyMcpAccess, verifyMcpKey } from "./mcp-access.ts"
 import { mcpKeyRoutes } from "./mcp-key-routes.ts"
 import { createSpriteMcpHandler } from "./mcp.ts"
 
@@ -25,10 +28,12 @@ app.use("/api/*", async (context, next) => {
   context.header("Cache-Control", "no-store")
 })
 
-app.use("/api/mcp", limitBody(16 * 1024))
+app.use("/api/mcp*", limitBody(16 * 1024))
 
-const mcp = createSpriteMcpHandler({ verifyKey: verifyMcpKey })
-app.all("/api/mcp", async (context) => {
+const publicMcp = createSpriteMcpHandler({ verifyKey: verifyMcpKey })
+const collectionMcp = createSpriteMcpHandler({ verifyKey: verifyMcpAccess })
+app.all("/api/mcp*", async (context) => {
+  if (!["/api/mcp", "/api/mcp/collection"].includes(context.req.path)) return context.notFound()
   const request = context.req.raw
   const origin = request.headers.get("origin")
   const allowedHost = new URL(env.webOrigin).host
@@ -37,8 +42,21 @@ app.all("/api/mcp", async (context) => {
     new URL(request.url).host !== allowedHost) {
     return context.json({ error: { code: "INVALID_ORIGIN", message: "This MCP request has an unsupported origin or host." } }, 403)
   }
-  return mcp.fetch(request)
+  if (context.req.path === "/api/mcp/collection" && !request.headers.has("authorization"))
+    return context.json({ error: "Connect FortSprite to access your collection." }, 401, {
+      "WWW-Authenticate": `Bearer resource_metadata="${env.webOrigin}/.well-known/oauth-protected-resource/api/mcp/collection", scope="collection:read collection:write"`,
+    })
+  return (context.req.path === "/api/mcp/collection" ? collectionMcp : publicMcp).fetch(request)
 })
+
+app.get("/.well-known/oauth-protected-resource", (context) => context.json({
+  resource: mcpResource, authorization_servers: [mcpIssuer], scopes_supported: mcpScopes, bearer_methods_supported: ["header"], resource_name: "FortSprite collection",
+}))
+app.get("/.well-known/oauth-protected-resource/api/mcp/collection", (context) => context.json({
+  resource: mcpResource, authorization_servers: [mcpIssuer], scopes_supported: mcpScopes, bearer_methods_supported: ["header"], resource_name: "FortSprite collection",
+}))
+app.get("/.well-known/oauth-authorization-server", (context) => oauthProviderAuthServerMetadata(auth)(context.req.raw))
+app.get("/.well-known/oauth-authorization-server/api/auth", (context) => oauthProviderAuthServerMetadata(auth)(context.req.raw))
 
 app.get("/api/v1/catalog", async (context) => context.json(await getCatalog()))
 
@@ -83,6 +101,13 @@ app.on(["GET", "POST"], "/api/auth/*", async (context) => {
   const path = context.req.path.slice("/api/auth".length)
   const allowed = new Map([
     ["/get-session", ["GET"]],
+    ["/oauth2/register", ["POST"]],
+    ["/oauth2/authorize", ["GET"]],
+    ["/oauth2/token", ["POST"]],
+    ["/oauth2/consent", ["POST"]],
+    ["/oauth2/continue", ["POST"]],
+    ["/oauth2/revoke", ["POST"]],
+    ["/.well-known/oauth-authorization-server", ["GET"]],
     ["/sign-out", ["POST"]],
     ["/passkey/generate-register-options", ["GET"]],
     ["/passkey/verify-registration", ["POST"]],
@@ -166,6 +191,7 @@ app.route("/api/v1", collectionRoutes)
 app.route("/api/v1", friendRoutes)
 app.route("/api/v1", profileRoutes)
 app.route("/api/v1", mcpKeyRoutes)
+app.route("/api/v1", mcpOAuthRoutes)
 
 app.onError((error, context) => {
   console.error("Unhandled FortSprite API request error", {

@@ -19,7 +19,26 @@ See [Next.js rendering and navigation](docs/nextjs-optimization.md) for private 
 
 ## Use FortSprite with an LLM client
 
-The remote MCP server uses Streamable HTTP at **`https://fortsprite.net/api/mcp`**. Anyone can use `search_sprites` and `get_sprite`. A personal key also enables `get_collection` and `set_collection_state` for your own collection, including ownership and mastery.
+FortSprite provides two Streamable HTTP MCP endpoints.
+
+| Endpoint | Use |
+| --- | --- |
+| `https://fortsprite.net/api/mcp/collection` | Personal collection access through OAuth sign-in. Recommended for ChatGPT and Claude connectors. Also accepts personal bearer keys. |
+| `https://fortsprite.net/api/mcp` | Public catalog access without authentication, or personal collection access with a bearer key. |
+
+Both provide `search_sprites` and `get_sprite`. Collection access adds `get_collection` and, when write access is granted, `set_collection_state` for your own ownership and mastery.
+
+### ChatGPT and Claude with OAuth
+
+For [ChatGPT developer mode](https://developers.openai.com/api/docs/guides/developer-mode), create a custom app with **`https://fortsprite.net/api/mcp/collection`** and select **OAuth** authentication. Use Dynamic Client Registration (DCR) when the client offers a registration choice. FortSprite registers the client automatically, so you do not need to supply a client ID or secret. Availability depends on your plan and workspace settings.
+
+For [Claude web and desktop connectors](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp), add the same protected URL in connector settings, then choose **Connect**. Leave optional OAuth client ID and secret fields empty.
+
+The client opens FortSprite for passkey sign-in and shows a consent screen with the assistant name, your username, requested permissions, and return host. Review the request, then choose **Allow access**. Enable the connected app in your conversation. Disconnect it from **Account → Connected assistants** to revoke collection access and refresh tokens.
+
+Choose OAuth rather than Mixed Authentication in ChatGPT. The protected endpoint requires authentication during tool discovery. Personal keys remain useful for clients with custom bearer headers.
+
+### Create a personal bearer key
 
 Sign in at [fortsprite.net/account](https://fortsprite.net/account), then create a named key in **MCP access** and copy it before hiding it. Keys expire after 90 days and can be revoked there. For the environment variable examples below, set `FORTSPRITE_MCP_KEY` in the environment of the process that launches your client. Keep the real key out of committed configuration files.
 
@@ -103,13 +122,11 @@ Merge this into `.vscode/mcp.json`. Start the server from that file, enter your 
 
 See [VS Code MCP configuration](https://code.visualstudio.com/docs/agents/reference/mcp-configuration) for other configuration locations and Agent Host setup.
 
-### ChatGPT and Claude web or desktop connectors
+### Public catalog only
 
-Standard personal connector setup does not expose the custom bearer header used by FortSprite keys. These clients can use the public catalog without authentication. For personal collection access, use a header-capable client above. FortSprite does not currently provide MCP OAuth sign-in.
+Use **`https://fortsprite.net/api/mcp`** without an Authorization header for public catalog tools. In ChatGPT choose **No Authentication**. In Claude add that URL without OAuth credentials. This connection exposes catalog tools only.
 
-In [ChatGPT developer mode](https://developers.openai.com/api/docs/guides/developer-mode), create a custom app with the URL above and **No Authentication**, then enable it in a conversation. Availability depends on your plan and workspace settings. For [Claude custom connectors](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp), add the same URL in connector settings without OAuth credentials.
-
-Claude also has a limited organization-only [request header beta](https://claude.com/docs/connectors/building/authentication#static-credentials-in-request-headers). It shares one credential across members, so every member would act on the FortSprite key owner's collection. Use individual client configurations for individual collections.
+OAuth connects each person to their own collection. Claude's limited organization [request header beta](https://claude.com/docs/connectors/building/authentication#static-credentials-in-request-headers) shares one credential across members. A shared FortSprite key would make everyone act on its owner's collection.
 
 ### Try the tools
 

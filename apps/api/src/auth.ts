@@ -8,6 +8,7 @@ import { sql } from "drizzle-orm"
 import { user } from "./db/auth-schema.ts"
 import { databaseSchema, db } from "./db/client.ts"
 import { env } from "./env.ts"
+import { bindMcpAuthorizationFamily, mcpOAuthProvider, mcpOAuthResource } from "./mcp-oauth.ts"
 import { usernameSchema } from "./identity.ts"
 
 function requireRegistrationUsername(context: string | null | undefined) {
@@ -86,6 +87,7 @@ export const auth = betterAuth({
       "/passkey/generate-authenticate-options": { window: 60, max: 20 },
       "/passkey/verify-authentication": { window: 60, max: 20 },
       "/get-session": false,
+      "/oauth2/register": { window: 60, max: 10 },
     },
   },
   emailAndPassword: {
@@ -116,7 +118,16 @@ export const auth = betterAuth({
       domain: env.betterAuthCookieDomain,
     },
   },
+  databaseHooks: {
+    verification: {
+      create: {
+        before: async (verification) => { await bindMcpAuthorizationFamily(verification) },
+      },
+    },
+  },
   plugins: [
+    mcpOAuthProvider,
+    mcpOAuthResource,
     apiKey({
       configId: "mcp",
       references: "user",

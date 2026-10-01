@@ -17,3 +17,16 @@ export async function verifyMcpKey(
     ? { userId: result.key.referenceId }
     : null
 }
+
+
+export async function verifyMcpAccess(headers: Headers): Promise<{ userId: string; scopes?: string[] } | null> {
+  const authorization = headers.get("authorization")
+  const match = authorization?.match(/^Bearer ([A-Za-z0-9_-]+)$/i)
+  if (!match) return null
+  if (match[1]!.startsWith("fs_mcp_")) return verifyMcpKey(headers)
+  try {
+    return await auth.api.verifyMcpOAuthToken({ body: { token: match[1]! } })
+  } catch {
+    return null
+  }
+}

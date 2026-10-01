@@ -71,6 +71,20 @@
       "when": 1790869168411,
       "tag": "0009_mcp_account_keys",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790872913195,
+      "tag": "0010_mcp_oauth",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1790873565632,
+      "tag": "0011_mcp_oauth_family",
+      "breakpoints": true
     }
   ]
 }

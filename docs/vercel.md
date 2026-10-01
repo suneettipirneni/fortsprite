@@ -28,6 +28,8 @@ The passkey-only release was deployed on September 18, 2026. Production has `PAS
 
 Migration `0009_mcp_account_keys.sql` was rehearsed on an expiring production branch and applied to production on October 1, 2026. It adds the MCP key table and account deletion cascade. Existing account, passkey, collection, catalog, and sharing data digests were unchanged. MCP uses the existing web origin and auth configuration, with no additional deployment secrets. See [LLM client setup](../README.md#use-fortsprite-with-an-llm-client).
 
+Migrations `0010_mcp_oauth.sql` and `0011_mcp_oauth_family.sql` were rehearsed on the same expiring branch and applied to production on October 1, 2026. They add OAuth provider storage and bind authorization families to consent records. Existing account, passkey, collection, catalog, sharing, and MCP key data digests were unchanged. Hosted clients use `/api/mcp/collection` for OAuth sign-in. No additional deployment secrets are required.
+
 Required username selection was deployed on September 19, 2026 as `dpl_Aou7qKjUYBHkMs8TMRjqweQP5Ke9`. No additional Vercel environment variables are required. Username validation and case-insensitive uniqueness use the existing Better Auth application and PostgreSQL database configuration.
 
 Platform passkeys still need deployment verification across the supported browsers and device/password-manager combinations.

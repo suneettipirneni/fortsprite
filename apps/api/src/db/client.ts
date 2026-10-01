@@ -3,6 +3,7 @@ import { Pool } from "pg"
 
 import * as applicationSchema from "./schema.ts"
 import * as authSchema from "./auth-schema.ts"
+import * as oauthSchema from "./oauth-schema.ts"
 import * as mcpSchema from "./mcp-schema.ts"
 import { env } from "../env.ts"
 
@@ -18,6 +19,7 @@ export const databaseSchema = {
   ...applicationSchema,
   ...authSchema,
   ...mcpSchema,
+  ...oauthSchema,
 }
 
 export const db = drizzle({

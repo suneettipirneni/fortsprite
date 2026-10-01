@@ -14,6 +14,8 @@ import { DeleteAccountDialog } from "@/components/delete-account-dialog"
 import { CredentialManager } from "@/components/credential-manager"
 import { ProfileEditor } from "@/components/profile-editor"
 import { McpKeyManager } from "@/components/mcp-key-manager"
+import { McpGrantManager } from "@/components/mcp-grant-manager"
+import type { McpOAuthGrant } from "@/lib/mcp-oauth"
 import { PageHeader } from "@/components/page-header"
 import { getCredentials, getViewer } from "@/lib/api"
 
@@ -37,6 +39,9 @@ export default function AccountPage() {
           </Suspense>
           <Suspense fallback={<McpKeyManager keys={[]} endpoint="/api/mcp" loading />}>
             <AccountMcpKeys />
+          </Suspense>
+          <Suspense fallback={<McpGrantManager grants={[]} endpoint="/api/mcp/collection" loading />}>
+            <AccountMcpGrants />
           </Suspense>
           <Suspense fallback={<AccountDeletionSkeleton />}>
             <AccountDeletion />
@@ -95,4 +100,16 @@ async function AccountMcpKeys() {
   if (!response.ok) throw new Error("MCP keys could not be loaded.")
   const { keys } = await response.json() as { keys: McpKeySummary[] }
   return <McpKeyManager keys={keys} endpoint={new URL("/api/mcp", process.env.WEB_ORIGIN).href} />
+}
+
+async function AccountMcpGrants() {
+  const cookieStore = await cookies()
+  await io()
+  const { app } = await import("@fortsprite/api/app")
+  const response = await app.request("/api/v1/mcp-oauth/grants", {
+    headers: { cookie: cookieStore.toString() },
+  })
+  if (!response.ok) throw new Error("Connected assistants could not be loaded.")
+  const { grants } = await response.json() as { grants: McpOAuthGrant[] }
+  return <McpGrantManager grants={grants} endpoint={new URL("/api/mcp/collection", process.env.WEB_ORIGIN).href} />
 }

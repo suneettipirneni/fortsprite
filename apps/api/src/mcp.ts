@@ -3,11 +3,12 @@ import { pageItems, selectCatalogPage, spriteToolDefinitions } from "@workspace/
 import type { CollectionSnapshot } from "@workspace/contracts"
 import { createCollectionRoutes } from "./collection-routes.ts"
 import { db } from "./db/client.ts"
+import { mcpResource } from "./mcp-oauth.ts"
 import { getCatalog } from "./catalog.ts"
 
 export function createSpriteMcpHandler({ readCatalog = getCatalog, verifyKey = async () => null, database = db }: {
   readCatalog?: typeof getCatalog
-  verifyKey?: (headers: Headers) => Promise<{ userId: string } | null>
+  verifyKey?: (headers: Headers) => Promise<{ userId: string; scopes?: string[] } | null>
   database?: typeof db
 } = {}) {
   const handler = createMcpHandler(({ authInfo }) => {
@@ -39,7 +40,7 @@ export function createSpriteMcpHandler({ readCatalog = getCatalog, verifyKey = a
     const userId = authInfo?.extra?.userId
     if (typeof userId === "string") {
       const collection = createCollectionRoutes({ database, getSession: async () => ({ user: { id: userId } }) })
-      server.registerTool("get_collection", {
+      if (authInfo!.scopes.includes("collection:read")) server.registerTool("get_collection", {
         ...spriteToolDefinitions.get_collection,
         annotations,
       }, async ({ limit, offset, ...query }) => {
@@ -49,7 +50,7 @@ export function createSpriteMcpHandler({ readCatalog = getCatalog, verifyKey = a
         const result = { ...snapshot, ...pageItems(snapshot.items, { limit, offset }) }
         return { content: [{ type: "text", text: JSON.stringify(result) }], structuredContent: result }
       })
-      server.registerTool("set_collection_state", {
+      if (authInfo!.scopes.includes("collection:read") && authInfo!.scopes.includes("collection:write")) server.registerTool("set_collection_state", {
         ...spriteToolDefinitions.set_collection_state,
         annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       }, async ({ spriteId, state }) => {
@@ -68,11 +69,11 @@ export function createSpriteMcpHandler({ readCatalog = getCatalog, verifyKey = a
     async fetch(request: Request) {
       if (!request.headers.has("authorization")) return handler.fetch(request)
       const identity = await verifyKey(request.headers)
-      if (!identity) return Response.json({ error: "A valid FortSprite MCP key is required." }, {
-        status: 401, headers: { "WWW-Authenticate": 'Bearer realm="FortSprite MCP"', "Cache-Control": "no-store" },
+      if (!identity) return Response.json({ error: "A valid FortSprite connection or MCP key is required." }, {
+        status: 401, headers: { "WWW-Authenticate": `Bearer resource_metadata="${new URL("/.well-known/oauth-protected-resource/api/mcp/collection", mcpResource)}", scope="collection:read collection:write"`, "Cache-Control": "no-store" },
       })
       return handler.fetch(request, { authInfo: {
-        token: "", clientId: "fortsprite-personal-key", scopes: ["collection:read", "collection:write"], extra: { userId: identity.userId },
+        token: "", clientId: "fortsprite-personal-key", scopes: identity.scopes ?? ["collection:read", "collection:write"], extra: { userId: identity.userId },
       } })
     },
   }
@@ -81,7 +82,7 @@ export function createSpriteMcpHandler({ readCatalog = getCatalog, verifyKey = a
 async function collectionError(response: Response) {
   const messages: Record<number, string> = {
     400: "Choose a valid Sprite collection state or filter.",
-    401: "A valid FortSprite MCP key is required.",
+    401: "A valid FortSprite connection or MCP key is required.",
     404: "This released Sprite could not be found.",
     429: "Too many requests. Try again later.",
   }
