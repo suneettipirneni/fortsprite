@@ -26,6 +26,8 @@ Production deployments target [fortsprite.net](https://fortsprite.net) through t
 
 The passkey-only release was deployed on September 18, 2026. Production has `PASSKEY_RP_ID=fortsprite.net` and `PASSKEY_ORIGIN=https://fortsprite.net`; the former Epic OAuth variables were removed. Migration 0008 is applied to the production branch.
 
+Migration `0009_mcp_account_keys.sql` was rehearsed on an expiring production branch and applied to production on October 1, 2026. It adds the MCP key table and account deletion cascade. Existing account, passkey, collection, catalog, and sharing data digests were unchanged. MCP uses the existing web origin and auth configuration, with no additional deployment secrets. See [LLM client setup](../README.md#use-fortsprite-with-an-llm-client).
+
 Required username selection was deployed on September 19, 2026 as `dpl_Aou7qKjUYBHkMs8TMRjqweQP5Ke9`. No additional Vercel environment variables are required. Username validation and case-insensitive uniqueness use the existing Better Auth application and PostgreSQL database configuration.
 
 Platform passkeys still need deployment verification across the supported browsers and device/password-manager combinations.

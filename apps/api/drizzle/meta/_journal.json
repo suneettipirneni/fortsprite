@@ -64,6 +64,13 @@
       "when": 1789786800000,
       "tag": "0008_protect_last_passkey",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790869168411,
+      "tag": "0009_mcp_account_keys",
+      "breakpoints": true
     }
   ]
 }

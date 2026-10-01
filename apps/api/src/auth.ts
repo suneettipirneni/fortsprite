@@ -1,3 +1,4 @@
+import { apiKey } from "@better-auth/api-key"
 import { drizzleAdapter } from "@better-auth/drizzle-adapter"
 import { passkey } from "@better-auth/passkey"
 import { betterAuth } from "better-auth"
@@ -116,6 +117,19 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    apiKey({
+      configId: "mcp",
+      references: "user",
+      defaultPrefix: "fs_mcp_",
+      requireName: true,
+      minimumNameLength: 1,
+      maximumNameLength: 40,
+      startingCharactersConfig: { charactersLength: 14 },
+      enableSessionForAPIKeys: false,
+      keyExpiration: { defaultExpiresIn: 60 * 60 * 24 * 90 },
+      permissions: { defaultPermissions: { collection: ["read", "write"] } },
+      rateLimit: { enabled: true, timeWindow: 60_000, maxRequests: 120 },
+    }),
     passkey({
       rpID: env.passkeyRpId,
       rpName: "FortSprite",

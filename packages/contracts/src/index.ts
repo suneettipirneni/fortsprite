@@ -143,3 +143,16 @@ export interface ProfileUpdate {
   displayName: string
   fortniteDisplayName: string | null
 }
+
+export interface McpKeySummary {
+  id: string
+  name: string
+  start: string
+  createdAt: string
+  expiresAt: string | null
+  lastUsedAt: string | null
+}
+
+export interface McpKeyCredential extends McpKeySummary {
+  key: string
+}

@@ -9,6 +9,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import { MobileSurface, MobileSurfaceFallback } from "@/components/mobile-surface"
 
+import { PublicWebMcpTools } from "@/components/webmcp-tools"
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://fortsprite.net"),
   applicationName: "FortSprite",
@@ -58,6 +60,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
       <body>
+        <PublicWebMcpTools />
         <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
           <TooltipProvider>{children}</TooltipProvider>
           <footer className="border-t border-white/10 bg-background px-4 py-5 text-center text-xs leading-5 text-muted-foreground sm:px-6">

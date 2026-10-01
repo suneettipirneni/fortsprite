@@ -14,30 +14,9 @@ import { db } from "./db/client.ts"
 import { collectionEntries, sprites } from "./db/schema.ts"
 import { catalogRevision, getCatalog } from "./catalog.ts"
 
-export const collectionStateSchema = z.discriminatedUnion("owned", [
-  z
-    .object({
-      owned: z.literal(false),
-      mastered: z.literal(false),
-    })
-    .strict(),
-  z
-    .object({
-      owned: z.literal(true),
-      mastered: z.boolean(),
-    })
-    .strict(),
-])
+export { collectionStateSchema, collectionQuerySchema } from "@workspace/contracts/sprite-tools"
 
-export const spriteIdSchema = z.string().uuid()
-export const collectionQuerySchema = z
-  .object({
-    search: z.string().max(120).optional(),
-    variant: z.string().max(80).optional(),
-    rarity: z.string().max(80).optional(),
-    ownership: z.enum(["all", "owned", "missing"]).optional(),
-  })
-  .strict()
+export const spriteIdSchema = z.uuid()
 
 type Database = typeof db
 

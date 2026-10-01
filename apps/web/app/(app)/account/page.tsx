@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import Link from "next/link"
+import { cookies } from "next/headers"
+import { io } from "next/cache"
+import type { McpKeySummary } from "@workspace/contracts"
 
 import {
   AccountDeletionSkeleton,
@@ -10,6 +13,7 @@ import {
 import { DeleteAccountDialog } from "@/components/delete-account-dialog"
 import { CredentialManager } from "@/components/credential-manager"
 import { ProfileEditor } from "@/components/profile-editor"
+import { McpKeyManager } from "@/components/mcp-key-manager"
 import { PageHeader } from "@/components/page-header"
 import { getCredentials, getViewer } from "@/lib/api"
 
@@ -30,6 +34,9 @@ export default function AccountPage() {
           </Suspense>
           <Suspense fallback={<CredentialsSkeleton />}>
             <AccountCredentials />
+          </Suspense>
+          <Suspense fallback={<McpKeyManager keys={[]} endpoint="/api/mcp" loading />}>
+            <AccountMcpKeys />
           </Suspense>
           <Suspense fallback={<AccountDeletionSkeleton />}>
             <AccountDeletion />
@@ -76,4 +83,16 @@ async function AccountCredentials() {
 async function AccountDeletion() {
   const viewer = await getViewer()
   return <DeleteAccountDialog handle={viewer.handle} />
+}
+
+async function AccountMcpKeys() {
+  const cookieStore = await cookies()
+  await io()
+  const { app } = await import("@fortsprite/api/app")
+  const response = await app.request("/api/v1/mcp-keys", {
+    headers: { cookie: cookieStore.toString() },
+  })
+  if (!response.ok) throw new Error("MCP keys could not be loaded.")
+  const { keys } = await response.json() as { keys: McpKeySummary[] }
+  return <McpKeyManager keys={keys} endpoint={new URL("/api/mcp", process.env.WEB_ORIGIN).href} />
 }

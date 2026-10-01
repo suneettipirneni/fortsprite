@@ -4,6 +4,11 @@ import { cors } from "hono/cors"
 import { requestId } from "hono/request-id"
 import { count, eq, sql } from "drizzle-orm"
 
+import { getCatalog } from "./catalog.ts"
+import { verifyMcpKey } from "./mcp-access.ts"
+import { mcpKeyRoutes } from "./mcp-key-routes.ts"
+import { createSpriteMcpHandler } from "./mcp.ts"
+
 import { auth } from "./auth.ts"
 import { db } from "./db/client.ts"
 import { passkey } from "./db/auth-schema.ts"
@@ -16,9 +21,26 @@ export const app = new Hono()
 
 app.use("*", requestId())
 app.use("/api/*", async (context, next) => {
-  context.header("Cache-Control", "no-store")
   await next()
+  context.header("Cache-Control", "no-store")
 })
+
+app.use("/api/mcp", limitBody(16 * 1024))
+
+const mcp = createSpriteMcpHandler({ verifyKey: verifyMcpKey })
+app.all("/api/mcp", async (context) => {
+  const request = context.req.raw
+  const origin = request.headers.get("origin")
+  const allowedHost = new URL(env.webOrigin).host
+  const host = request.headers.get("host") ?? new URL(request.url).host
+  if ((origin !== null && origin !== env.webOrigin) || host !== allowedHost ||
+    new URL(request.url).host !== allowedHost) {
+    return context.json({ error: { code: "INVALID_ORIGIN", message: "This MCP request has an unsupported origin or host." } }, 403)
+  }
+  return mcp.fetch(request)
+})
+
+app.get("/api/v1/catalog", async (context) => context.json(await getCatalog()))
 
 app.use("/api/v1/*", limitBody(16 * 1024))
 app.use("/api/auth/*", limitBody(32 * 1024))
@@ -143,6 +165,7 @@ app.get("/api/v1/health", async (context) => {
 app.route("/api/v1", collectionRoutes)
 app.route("/api/v1", friendRoutes)
 app.route("/api/v1", profileRoutes)
+app.route("/api/v1", mcpKeyRoutes)
 
 app.onError((error, context) => {
   console.error("Unhandled FortSprite API request error", {
