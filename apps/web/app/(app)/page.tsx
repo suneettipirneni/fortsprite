@@ -1,73 +1,29 @@
-import { Suspense } from "react"
+import { Suspense, type ReactNode } from "react"
 import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@workspace/ui/components/avatar"
 import { Button } from "@workspace/ui/components/button"
-import { Progress } from "@workspace/ui/components/progress"
 
 import {
   DashboardCardsSkeleton,
   PageValueSkeleton,
-  ProgressBarSkeleton,
   SquadRowsSkeleton,
 } from "@/components/page-data-skeletons"
+import { DashboardStats } from "@/components/dashboard-stats"
 import { PageHeader } from "@/components/page-header"
 import { SpritePortrait } from "@/components/sprite-portrait"
 import { getCollection, getSharing, getViewer } from "@/lib/api"
 import { latestSeasonItems } from "@/lib/catalog-season"
-import { completionPercent, presentSprite } from "@/lib/catalog-presentation"
+import { summarizeDashboardProgress } from "@/lib/dashboard-progress"
+import { presentSprite } from "@/lib/catalog-presentation"
 
 function DashboardContent() {
   return (
     <>
-      <section aria-labelledby="progress-heading" className="@container">
-        <h2 id="progress-heading" className="sr-only">
-          Collection progress
-        </h2>
-        <dl className="grid grid-cols-2 border-y border-white/10 @min-[36rem]:grid-cols-4">
-          <div className="flex flex-col gap-1 py-5 pr-4">
-            <dt className="truncate text-base text-muted-foreground sm:text-sm">
-              Collected
-            </dt>
-            <dd className="tabular-nums text-3xl font-semibold tracking-tight">
-              <Suspense fallback={<PageValueSkeleton label="Loading collected count" />}>
-                <CollectionMetric metric="owned" />
-              </Suspense>
-            </dd>
-          </div>
-          <div className="flex flex-col gap-1 border-l border-white/10 py-5 pl-4 @min-[36rem]:px-6">
-            <dt className="truncate text-base text-muted-foreground sm:text-sm">
-              Completion
-            </dt>
-            <dd className="tabular-nums text-3xl font-semibold tracking-tight">
-              <Suspense fallback={<><PageValueSkeleton label="Loading completion" /><ProgressBarSkeleton /></>}>
-                <CollectionMetric metric="completion" />
-              </Suspense>
-            </dd>
-          </div>
-          <div className="flex flex-col gap-1 border-t border-white/10 py-5 pr-4 @min-[36rem]:border-t-0 @min-[36rem]:border-l @min-[36rem]:px-6">
-            <dt className="truncate text-base text-muted-foreground sm:text-sm">
-              Sharing friends
-            </dt>
-            <dd className="tabular-nums text-3xl font-semibold tracking-tight">
-              <Suspense fallback={<PageValueSkeleton label="Loading sharing friend count" />}>
-                <SharingCount />
-              </Suspense>
-            </dd>
-          </div>
-          <div className="flex flex-col gap-1 border-t border-l border-white/10 py-5 pl-4 @min-[36rem]:border-t-0 @min-[36rem]:pl-6">
-            <dt className="truncate text-base text-muted-foreground sm:text-sm">
-              Mastered
-            </dt>
-            <dd className="tabular-nums text-3xl font-semibold tracking-tight">
-              <Suspense fallback={<PageValueSkeleton label="Loading mastered count" />}>
-                <CollectionMetric metric="mastered" />
-              </Suspense>
-            </dd>
-          </div>
-        </dl>
-      </section>
+      <Suspense fallback={<DashboardStats sharingCount={<SharingMetric />} />}>
+        <CollectionStats sharingCount={<SharingMetric />} />
+      </Suspense>
 
       <section
         aria-labelledby="reach-heading"
@@ -176,19 +132,15 @@ async function GreetingName() {
   return viewer.displayName.split(/\s+/)[0] ?? viewer.displayName
 }
 
-async function CollectionMetric({
-  metric,
-}: {
-  metric: "owned" | "mastered" | "completion"
-}) {
-  const { progress } = await getCollection()
-  if (metric !== "completion") return progress[metric]
+async function CollectionStats({ sharingCount }: { sharingCount: ReactNode }) {
+  const { items } = await getCollection()
+  return <DashboardStats progress={summarizeDashboardProgress(items)} sharingCount={sharingCount} />
+}
 
-  const percent = completionPercent(progress.owned, progress.total)
-  return <>
-    {percent}%
-    <Progress value={percent} aria-label="Collection completion" className="mt-3 h-1.5" />
-  </>
+function SharingMetric() {
+  return <Suspense fallback={<PageValueSkeleton label="Loading sharing friend count" />}>
+    <SharingCount />
+  </Suspense>
 }
 
 async function SharingCount() {

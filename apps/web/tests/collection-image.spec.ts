@@ -100,12 +100,13 @@ test.afterEach(async () => {
 test("defaults to the current season's filtered selection", async ({ page }, testInfo) => {
   const dialog = await openExport(page)
   await expect(dialog.getByRole("radio", { name: "Current filters", exact: true })).toBeChecked()
+  await expect(dialog.getByRole("switch", { name: "Group by Sprite type", exact: true })).toBeChecked()
   const season = Math.max(...collection.items.flatMap((item) => item.sourceSeasonId === null ? [] : [item.sourceSeasonId]))
   const count = collection.items.filter((item) => item.sourceSeasonId === season).length
   expect(count).toBeLessThan(collection.items.length)
   await expect(dialog.getByText(`1 of ${count} captured`, { exact: true })).toBeVisible()
-  const dimensions = await savePreview(page, `current-season-${testInfo.project.name}`)
-  expect(dimensions.height).toBeLessThan(2500)
+  await savePreview(page, `current-season-${testInfo.project.name}`)
+  await expect(dialog.getByRole("link", { name: "Download PNG" })).toHaveAttribute("download", /-grouped\.png$/)
 })
 
 test("includes the signed-in username only when selected in either layout", async ({ page }, testInfo) => {
@@ -113,6 +114,7 @@ test("includes the signed-in username only when selected in either layout", asyn
   expect(response.status()).toBe(200)
   const { viewer } = await response.json() as { viewer: { handle: string } }
   const dialog = await openExport(page)
+  await dialog.getByRole("switch", { name: "Group by Sprite type", exact: true }).uncheck()
   const usernameSwitch = dialog.getByRole("switch", { name: "Include username", exact: true })
   await expect(usernameSwitch).not.toBeChecked()
   await expect(dialog.getByText(`Show @${viewer.handle} on the image.`, { exact: true })).toBeVisible()
@@ -144,6 +146,8 @@ test("includes the signed-in username only when selected in either layout", asyn
 
 test("groups Sprite variants and replaces the previous preview", async ({ page }, testInfo) => {
   const dialog = await openExport(page)
+  await expect(dialog.getByRole("switch", { name: "Group by Sprite type", exact: true })).toBeChecked()
+  await dialog.getByRole("switch", { name: "Group by Sprite type", exact: true }).uncheck()
   const grid = await savePreview(page, `grid-${testInfo.project.name}`)
   await dialog.getByRole("switch", { name: "Group by Sprite type", exact: true }).check()
   await expect(dialog.getByRole("img", { name: "Collection image preview" })).toHaveCount(0)
@@ -174,6 +178,78 @@ test("exports every sprite and downloads the exact preview PNG", async ({ page }
   expect(dimensions.height).toBeGreaterThan(2000)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
   await page.screenshot({ path: `/tmp/fortsprite-export-dialog-${testInfo.project.name}.png` })
+})
+
+test("keeps navigation and a tall export inside the safe area", async ({ page, isMobile }, testInfo) => {
+  await expect(page).toHaveURL(/\/collection$/)
+  await expect(page).toHaveTitle("My collection · FortSprite")
+  const consoleErrors: string[] = []
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text())
+  })
+  // Desktop WebKit does not expose device insets; exercise the CSS geometry
+  // with asymmetric portrait and landscape insets as well as a zero-inset screen.
+  for (const screen of isMobile
+    ? [
+        { width: 390, height: 844, top: 59, right: 0, bottom: 34, left: 0 },
+        { width: 844, height: 390, top: 0, right: 59, bottom: 21, left: 59 },
+      ]
+    : [{ width: 1440, height: 1000, top: 0, right: 0, bottom: 0, left: 0 }]) {
+    await page.setViewportSize({ width: screen.width, height: screen.height })
+    await page.evaluate((insets) => {
+      for (const edge of ["top", "right", "bottom", "left"] as const) {
+        document.documentElement.style.setProperty(`--safe-area-${edge}`, `${insets[edge]}px`)
+      }
+      window.scrollTo(0, 0)
+    }, screen)
+    const header = page.locator("header").filter({ has: page.getByRole("link", { name: "Homepage", exact: true }) })
+    const brand = header.getByRole("link", { name: "Homepage", exact: true })
+    const assertBrandInsets = async () => {
+      const bounds = (await brand.boundingBox())!
+      expect(bounds.y).toBeGreaterThanOrEqual(screen.top + 8)
+      expect(bounds.x).toBeGreaterThanOrEqual(screen.left)
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(screen.width - screen.right)
+    }
+    await assertBrandInsets()
+    await page.evaluate(() => window.scrollTo(0, 500))
+    await assertBrandInsets()
+    await page.screenshot({ path: `/tmp/fortsprite-safe-area-nav-${testInfo.project.name}-${screen.width}.png` })
+    await page.evaluate(() => window.scrollTo(0, 0))
+
+    const dialog = await openExport(page)
+    await dialog.getByRole("radio", { name: "Full collection", exact: true }).check()
+    await dialog.getByRole("button", { name: "Generate preview", exact: true }).click()
+    await expect(dialog.getByRole("img", { name: "Collection image preview" })).toBeVisible({ timeout: 45_000 })
+    const scroller = dialog.locator('[data-slot="export-scroll-content"]')
+    await scroller.evaluate((node) => { node.scrollTop = 0 })
+    const bounds = (await dialog.boundingBox())!
+    expect(bounds.y).toBeGreaterThanOrEqual(screen.top + 15)
+    if (isMobile) {
+      await expect(dialog).toHaveAttribute("data-slot", "drawer-content")
+      expect(bounds.y + bounds.height).toBeCloseTo(screen.height, 0)
+    } else {
+      await expect(dialog).toHaveAttribute("data-slot", "dialog-content")
+      expect(bounds.y + bounds.height).toBeLessThanOrEqual(screen.height - screen.bottom - 15)
+      expect(bounds.x).toBeGreaterThanOrEqual(screen.left + 15)
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(screen.width - screen.right - 15)
+    }
+    const title = dialog.getByRole("heading", { name: "Export collection image" })
+    await expect(title).toBeInViewport()
+    const titleBounds = (await title.boundingBox())!
+    expect(titleBounds.x).toBeGreaterThanOrEqual(screen.left + (isMobile ? 0 : 15))
+    expect(titleBounds.x + titleBounds.width).toBeLessThanOrEqual(screen.width - screen.right - (isMobile ? 0 : 15))
+    await expect(dialog.getByRole("button", { name: "Close", exact: true })).toBeInViewport()
+    await page.screenshot({ path: `/tmp/fortsprite-safe-area-dialog-${testInfo.project.name}-${screen.width}.png` })
+    await scroller.evaluate((node) => { node.scrollTop = node.scrollHeight })
+    await expect(title).toBeInViewport()
+    await dialog.getByRole("link", { name: "Download PNG" }).scrollIntoViewIfNeeded()
+    await expect(dialog.getByRole("link", { name: "Download PNG" })).toBeInViewport()
+    const downloadBounds = (await dialog.getByRole("link", { name: "Download PNG" }).boundingBox())!
+    expect(downloadBounds.y + downloadBounds.height).toBeLessThanOrEqual(screen.height - screen.bottom - 15)
+    await dialog.getByRole("button", { name: "Close", exact: true }).click()
+    await expect(dialog).toHaveCount(0)
+  }
+  expect(consoleErrors).toEqual([])
 })
 
 test("exports the current search and current mastery state", async ({ page }, testInfo) => {

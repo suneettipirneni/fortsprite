@@ -73,7 +73,7 @@ export function DeleteAccountDialog({ handle }: { handle: string }) {
             Delete FortSprite account
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent className="max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] overflow-y-auto">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete your FortSprite account?</AlertDialogTitle>
             <AlertDialogDescription>

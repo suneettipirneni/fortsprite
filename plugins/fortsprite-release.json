@@ -1,0 +1,10 @@
+{
+  "plugin_id": "plugins_6ac01e8ab42481918930cc445c33e276",
+  "current_release_id": "pluginrel_6ac01e8b50a8819188add72cca8c0b3a",
+  "plugin_url": "https://chatgpt.com/plugins/plugins_6ac01e8ab42481918930cc445c33e276",
+  "version": "0.1.0",
+  "scope": "USER",
+  "discoverability": "PRIVATE",
+  "source": "./fortsprite",
+  "archive": "../dist/plugins/fortsprite-0.1.0.zip"
+}

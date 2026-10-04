@@ -449,7 +449,7 @@ function SpriteDetailsOverlay({
           <DialogContent
             aria-busy={pending}
             onCloseAutoFocus={restoreTriggerFocus}
-            className="max-h-[calc(100dvh-2rem)] grid-rows-[minmax(0,1fr)_auto] gap-0 overflow-hidden p-0 sm:max-w-2xl"
+            className="grid-rows-[minmax(0,1fr)_auto] gap-0 overflow-hidden p-0 sm:max-w-2xl"
           >
             <DialogTitle className="sr-only">
               {sprite.variant} {sprite.baseName}

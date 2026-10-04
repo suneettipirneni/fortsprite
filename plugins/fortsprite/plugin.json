@@ -1,0 +1,30 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "fortsprite",
+  "version": "0.1.0",
+  "description": "Search released Fortnite Sprites and manage your FortSprite collection through its hosted MCP server.",
+  "author": {
+    "name": "FortSprite",
+    "url": "https://fortsprite.net"
+  },
+  "homepage": "https://fortsprite.net",
+  "keywords": ["fortsprite", "fortnite", "sprites", "collection", "mcp"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "FortSprite",
+        "shortDescription": "Track your Sprite collection",
+        "longDescription": "Find released Fortnite Sprites, inspect their details and source links, review your saved collection and progress, and update ownership or mastery. Connect your FortSprite account through OAuth; collection access follows your consent and is limited to your account.",
+        "developerName": "FortSprite",
+        "category": "Productivity",
+        "logo": "./assets/icon.png",
+        "composerIcon": "./assets/icon.png",
+        "defaultPrompt": [
+          "Show my FortSprite collection progress and what I am missing.",
+          "Find Birthday Sprites and show their details.",
+          "Help me update ownership and mastery in my FortSprite collection."
+        ]
+      }
+    }
+  }
+}

@@ -152,7 +152,7 @@ export function AppShell({
     <div className="locker-stage isolate min-h-dvh">
       <CrossTabRefresh />
       <SessionWebMcpTools />
-      <header className="sticky top-0 z-40 border-b border-white/8 bg-background/68 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-white/8 bg-background pt-[calc(var(--safe-area-top)+0.5rem)] lg:bg-background/68 lg:pt-[var(--safe-area-top)] lg:backdrop-blur-xl">
         <div className="app-container flex h-[var(--app-header-content-height)] items-center gap-3">
           <Brand />
 

@@ -147,6 +147,16 @@ export const variantStyles = {
     body: "bg-violet-500",
     glow: "bg-cyan-300/35",
   },
+  "Trick or Treat": {
+    frame: globularBackdrop(
+      "oklch(0.18 0.06 310)",
+      "oklch(0.72 0.19 48 / 62%)",
+      "oklch(0.5 0.22 305 / 48%)",
+      "oklch(0.67 0.2 138 / 32%)",
+    ),
+    body: "bg-orange-500",
+    glow: "bg-orange-400/35",
+  },
 } satisfies Record<string, VariantStyle>
 
 export function isStyledVariant(
