@@ -10,6 +10,7 @@ import {
 import {
   Grid2X2Icon,
   Grid3X3Icon,
+  ImageIcon,
   ListIcon,
   Rows3Icon,
   SquareIcon,
@@ -23,6 +24,7 @@ import {
 } from "@workspace/ui/components/tooltip"
 
 import { FilterSelect } from "@/components/filter-select"
+import { CollectionImageExport } from "@/components/collection-image-export"
 import { SpriteDetailsProvider } from "@/components/collection-sprite-tile"
 import {
   CollectionQueryBar,
@@ -111,16 +113,17 @@ function formatUtcDateTime(date: Date) {
   return `${formatUtcDate(date)}, ${formatUtcTime(date)} UTC`
 }
 
-export function CollectionExplorer({ catalog, collection }: {
+export function CollectionExplorer({ catalog, collection, usernamePromise }: {
   catalog: CatalogItem[]
   collection: Promise<CollectionTrackingSnapshot>
+  usernamePromise: Promise<string>
 }) {
   return <CollectionTrackingProvider collection={collection} catalog={new Map(catalog.map((item) => [item.id, item]))}>
-    <CollectionExplorerContent catalog={catalog} />
+    <CollectionExplorerContent catalog={catalog} usernamePromise={usernamePromise} />
   </CollectionTrackingProvider>
 }
 
-function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
+function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: CatalogItem[]; usernamePromise: Promise<string> }) {
   const { sync, pendingIds, notice, clearNotice } = useCollectionControls()
   const sprites = catalog
   const currentSeasonId = latestSeasonId(sprites)
@@ -433,6 +436,9 @@ function CollectionExplorerContent({ catalog }: { catalog: CatalogItem[] }) {
                 ))}
               </ToggleGroup>
             ) : null}
+            <CollectionTracking fallback={<Button type="button" variant="outline" className="sm:ml-auto" disabled><ImageIcon aria-hidden="true" />Export image</Button>}>
+              {(snapshot) => <CollectionImageExport items={snapshot.items} filters={{ query, capture, mastery, variants, rarities, seasons, sort }} usernamePromise={usernamePromise} />}
+            </CollectionTracking>
           </div>
           {notice ? (
             <p role="alert" className="text-sm text-destructive">

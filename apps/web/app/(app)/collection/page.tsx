@@ -3,7 +3,7 @@ import { ContentLoading } from "@/components/content-loading"
 import type { Metadata } from "next"
 
 import { CollectionExplorer } from "@/components/collection-explorer"
-import { getCollectionTracking } from "@/lib/api"
+import { getCollectionTracking, getViewer } from "@/lib/api"
 import { getCachedCatalog } from "@/lib/catalog"
 
 export const metadata: Metadata = { title: "My collection" }
@@ -38,5 +38,5 @@ export default function CollectionPage() {
 
 async function CollectionContent() {
   const catalog = await getCachedCatalog()
-  return <CollectionExplorer catalog={catalog.items} collection={getCollectionTracking()} />
+  return <CollectionExplorer catalog={catalog.items} collection={getCollectionTracking()} usernamePromise={getViewer().then((viewer) => viewer.handle)} />
 }
