@@ -109,6 +109,62 @@ test("defaults to the current season's filtered selection", async ({ page }, tes
   await expect(dialog.getByRole("link", { name: "Download PNG" })).toHaveAttribute("download", /-grouped\.png$/)
 })
 
+test("keeps a Generate press separate from sheet dragging", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "The export sheet is used on mobile.")
+  const dialog = await openExport(page)
+  const generate = dialog.getByRole("button", { name: "Generate preview", exact: true })
+  // Vaul ignores drag gestures for 500ms after opening.
+  await expect(dialog).toHaveCSS("transform", /^(none|matrix\(1, 0, 0, 1, 0, 0\))$/)
+  await page.waitForTimeout(550)
+  const sheetBounds = (await dialog.boundingBox())!
+  const buttonBounds = (await generate.boundingBox())!
+  const x = buttonBounds.x + buttonBounds.width / 2
+  const y = buttonBounds.y + buttonBounds.height / 2
+  await page.mouse.move(x, y)
+  await page.mouse.down()
+  await page.mouse.move(x, y + 5, { steps: 2 })
+  expect((await dialog.boundingBox())!.y).toBeCloseTo(sheetBounds.y, 0)
+  await page.mouse.up()
+  await expect(dialog.getByRole("img", { name: "Collection image preview" })).toBeVisible({ timeout: 45_000 })
+
+  const handle = dialog.locator('[data-vaul-handle]')
+  const handleBounds = (await handle.boundingBox())!
+  const handleX = handleBounds.x + handleBounds.width / 2
+  const handleY = handleBounds.y + handleBounds.height / 2
+  await page.mouse.move(handleX, handleY)
+  await page.mouse.down()
+  await page.mouse.move(handleX, handleY + sheetBounds.height * 0.6, { steps: 8 })
+  await page.mouse.up()
+  await expect(dialog).toHaveCount(0)
+})
+
+test("shows generation feedback on the button after a touch tap", async ({ page, isMobile }, testInfo) => {
+  test.skip(!isMobile, "This regression exercises touch input.")
+  let releaseArtwork: () => void = () => {}
+  const artworkGate = new Promise<void>((resolve) => { releaseArtwork = resolve })
+  await page.route("**/sprites/**", async (route) => {
+    if (route.request().resourceType() === "fetch") await artworkGate
+    await route.continue()
+  })
+  try {
+    await page.getByRole("button", { name: "Export image", exact: true }).tap()
+    const dialog = page.getByRole("dialog", { name: "Export collection image" })
+    await dialog.getByRole("button", { name: "Generate preview", exact: true }).tap()
+    const generating = dialog.getByRole("button", { name: "Generating...", exact: true })
+    await expect(generating).toBeDisabled()
+    await expect(generating).toBeInViewport()
+    await expect(dialog.getByRole("switch", { name: "Group by Sprite type", exact: true })).toBeDisabled()
+    releaseArtwork()
+    await expect(dialog.getByRole("img", { name: "Collection image preview" })).toBeVisible({ timeout: 45_000 })
+    await expect(dialog.getByRole("button", { name: "Generate again", exact: true })).toBeEnabled()
+    await expect(dialog.getByRole("link", { name: "Download PNG" })).toBeVisible()
+    await page.screenshot({ path: `/tmp/fortsprite-image-tap-ready-${testInfo.project.name}.png` })
+  } finally {
+    releaseArtwork()
+    await page.unrouteAll({ behavior: "wait" })
+  }
+})
+
 test("includes the signed-in username only when selected in either layout", async ({ page }, testInfo) => {
   const response = await page.request.get("/api/v1/me")
   expect(response.status()).toBe(200)

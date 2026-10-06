@@ -245,7 +245,8 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
         disabled={busy || selected.length === 0}
         className="grow sm:grow-0"
       >
-        {state.status === "error" ? "Retry" : state.status === "ready" ? "Generate again" : "Generate preview"}
+        {busy ? <LoaderCircleIcon aria-hidden="true" className="animate-spin motion-reduce:animate-none" /> : null}
+        {busy ? "Generating..." : state.status === "error" ? "Retry" : state.status === "ready" ? "Generate again" : "Generate preview"}
       </Button>
       {state.status === "ready" ? (
         <Button asChild className="grow sm:grow-0">
@@ -260,7 +261,7 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={changeOpen}>
+      <Drawer open={open} onOpenChange={changeOpen} handleOnly>
         <DrawerTrigger asChild>{trigger}</DrawerTrigger>
         <DrawerContent className="overflow-hidden data-[vaul-drawer-direction=bottom]:max-h-[calc(100dvh-var(--safe-area-top)-1rem)]">
           <DrawerHeader className="relative shrink-0 gap-2 pl-[max(1rem,var(--safe-area-left))] pr-[calc(max(1rem,var(--safe-area-right))+2.5rem)] text-left">

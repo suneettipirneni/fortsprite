@@ -65,7 +65,7 @@ function DrawerContent({
           data-slot="drawer-handle"
           className="hidden h-8 shrink-0 items-center justify-center bg-muted/25 group-data-[vaul-drawer-direction=bottom]/drawer-content:flex"
         >
-          <div className="h-1 w-12 rounded-full bg-muted-foreground/25" />
+          <DrawerPrimitive.Handle className="h-1 w-12 rounded-full bg-muted-foreground/25" />
         </div>
         {children}
       </DrawerPrimitive.Content>
