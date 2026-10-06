@@ -188,11 +188,19 @@ test("a passkey sign-in completes personal OAuth consent and disconnected grants
     expect(reconnectAuthorization.searchParams.has("prompt")).toBe(false)
     await page.goto(reconnectAuthorization.href)
     await expect(page).toHaveURL(/\/sign-in\?/)
-    const authenticated = page.waitForResponse((response) =>
-      new URL(response.url()).pathname === "/api/auth/passkey/verify-authentication" && response.request().method() === "POST",
-    )
+    const authenticated = Promise.withResolvers<{ redirect: boolean; url: string }>()
+    await page.route("**/api/auth/passkey/verify-authentication", async (route) => {
+      try {
+        const response = await route.fetch()
+        authenticated.resolve(await response.json())
+        await route.fulfill({ response })
+      } catch (error) {
+        authenticated.reject(error)
+        throw error
+      }
+    }, { times: 1 })
     await page.getByRole("button", { name: "Sign in", exact: true }).click()
-    const afterHook = await (await authenticated).json() as { redirect: boolean; url: string }
+    const afterHook = await authenticated.promise
     expect(afterHook.redirect).toBe(true)
     expect(new URL(afterHook.url).origin).toBe("https://assistant.test")
     await expect(page).toHaveURL(/\/oauth\/callback\?/)

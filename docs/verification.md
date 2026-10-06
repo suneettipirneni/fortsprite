@@ -28,6 +28,20 @@ TEST_DATABASE_URL="$TEST_DATABASE_URL" pnpm --filter @fortsprite/web test:e2e
 
 Browser tests create local fixture users with separate desktop and mobile sessions. Passkey journeys use Chromium's virtual WebAuthn authenticator with resident credentials and user verification. Test users, credentials, relationships, and collection entries are removed by teardown.
 
+## Verified on October 6, 2026
+
+The dependency upgrade uses Next.js, `eslint-config-next`, and `@next/playwright` 16.4.0. Better Auth and its plugins are aligned at 1.7.7. API, database, UI, and test packages were updated with a refreshed lockfile. Node type definitions match the production Node 22 runtime. TypeScript 5.9 and ESLint 9 remain pinned within the versions supported by Next.js's lint plugins; the root explicitly declares TypeScript so automatic peer installation cannot select an unsupported compiler.
+
+- Verification used Node 22.23.3 and the pinned pnpm 10.28.2, with a temporary local PostgreSQL database containing only test fixtures.
+- Root lint and typechecking passed. Lint retains the existing image-preview warning in `collection-image-export.tsx`.
+- All 63 API tests and 48 web unit tests passed.
+- The ordinary production build passed with all 239 Sprite images, Cache Components and Partial Prefetching enabled, and the production testing API disabled. A frozen-lockfile installation also passed.
+- Collection and prefetch tests passed 15 production-mode assertions across desktop and mobile, with one intentional skip for a mobile-only test in the desktop project. Collection tests ran together; prefetch tests ran once per project with fresh fixture accounts. Combining those groups in one run exhausted the shared fixture account's read budget and returned HTTP 429, so the isolated runs preserve the production rate limits.
+- Native WebMCP tests belong to `playwright.webmcp.config.ts`, which enables the experimental browser features. The ordinary browser configuration now excludes that test file; the WebMCP configuration explicitly includes it.
+- All six desktop/mobile MCP key, OAuth, and native WebMCP browser tests passed using that configuration. The OAuth test captures the authentication response before fulfilling the browser request, preventing navigation from discarding its response body.
+- The broader browser suite is not green. Its initial run had 90 passes, 13 failures, and three intentional skips. The WebMCP configuration and OAuth test fixes resolved four failures; a mobile control-height assertion passed on an isolated rerun. Eight consistent failures remain: desktop/mobile dashboard season counts and passkey-removal display refreshes, mobile Chromium/WebKit full-catalog image counts, mobile first-tile visibility, and a WebKit tooltip intercepting the grid selector after a dialog closes. Each reproduced in a separate copy of commit `8dea2cc` with its original frozen dependencies, including Next.js 16.3.6, on a different port and test database. These existing failures were not suppressed or repaired as part of the dependency upgrade.
+- `pnpm audit --prod` reported no vulnerabilities. The full audit retains one high-severity advisory in the development-only Next.js lint dependency chain, `fast-glob → micromatch → braces`: [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). No patched release was available, and no advisory suppression was added.
+
 ## Verified on September 18, 2026
 
 - Migration 0007 applied successfully to the expiring schema-only Neon branch and production.
