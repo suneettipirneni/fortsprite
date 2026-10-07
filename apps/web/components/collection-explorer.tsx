@@ -1,6 +1,7 @@
 "use client"
 
-import type { CatalogItem, CollectionTrackingSnapshot } from "@workspace/contracts"
+import type { CatalogItem } from "@workspace/contracts"
+import type { CollectionTrackingPayload } from "@/lib/collection-tracking-payload"
 import {
   useDeferredValue,
   useRef,
@@ -115,7 +116,7 @@ function formatUtcDateTime(date: Date) {
 
 export function CollectionExplorer({ catalog, collection, usernamePromise }: {
   catalog: CatalogItem[]
-  collection: Promise<CollectionTrackingSnapshot>
+  collection: Promise<CollectionTrackingPayload>
   usernamePromise: Promise<string>
 }) {
   return <CollectionTrackingProvider collection={collection} catalog={new Map(catalog.map((item) => [item.id, item]))}>

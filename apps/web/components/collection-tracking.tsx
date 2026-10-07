@@ -9,9 +9,10 @@ import type { CollectionNotice } from "@/components/collection-sprite-tile"
 import type { Sprite } from "@/lib/catalog-presentation"
 import { cn } from "@workspace/ui/lib/utils"
 import { notifyOtherTabs } from "@/lib/cross-tab-refresh"
+import { unpackCollectionTracking, type CollectionTrackingPayload } from "@/lib/collection-tracking-payload"
 
 type TrackingContextValue = {
-  collection: Promise<CollectionTrackingSnapshot>
+  collection: Promise<CollectionTrackingPayload>
   catalog: Map<string, CatalogItem>
   sync: ReturnType<typeof createCollectionSync>
   pendingIds: Set<string>
@@ -56,7 +57,7 @@ export function useCollectionControls() {
 }
 
 export function CollectionTrackingProvider({ collection, catalog, children }: {
-  collection: Promise<CollectionTrackingSnapshot>
+  collection: Promise<CollectionTrackingPayload>
   catalog: Map<string, CatalogItem>
   children: React.ReactNode
 }) {
@@ -100,14 +101,14 @@ export function CollectionTrackingProvider({ collection, catalog, children }: {
 
 function TrackingReconciler() {
   const { collection, sync } = useCollectionControls()
-  const snapshot = use(collection)
+  const snapshot = unpackCollectionTracking(use(collection))
   useLayoutEffect(() => { sync.reconcile(snapshot.entries) }, [snapshot, sync])
   return null
 }
 
 export function useTrackedCollection(): CollectionSnapshot {
   const { collection, catalog, sync, pendingIds } = useCollectionControls()
-  const snapshot = use(collection)
+  const snapshot = unpackCollectionTracking(use(collection))
   const queued = useSyncExternalStore(sync.subscribe, sync.getSnapshot, sync.getSnapshot)
   const tracking = indexTracking(snapshot)
   const items = [...catalog.values()].flatMap((item) => {
@@ -156,7 +157,7 @@ function SpriteTrackingValue({ spriteId, onChange, children }: {
   children: (value: { sprite: Sprite; onChange: (change: CollectionChange) => void }) => React.ReactNode
 }) {
   const { collection, catalog, sync, pendingIds } = useCollectionControls()
-  const snapshot = use(collection)
+  const snapshot = unpackCollectionTracking(use(collection))
   const queued = useSyncExternalStore(sync.subscribe, sync.getSnapshot, sync.getSnapshot)
   const tracking = indexTracking(snapshot)
   const item = catalog.get(spriteId)

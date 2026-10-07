@@ -5,6 +5,7 @@ import type { Metadata } from "next"
 import { CollectionExplorer } from "@/components/collection-explorer"
 import { getCollectionTracking, getViewer } from "@/lib/api"
 import { getCachedCatalog } from "@/lib/catalog"
+import { packCollectionTracking } from "@/lib/collection-tracking-payload"
 
 export const metadata: Metadata = { title: "My collection" }
 
@@ -38,5 +39,5 @@ export default function CollectionPage() {
 
 async function CollectionContent() {
   const catalog = await getCachedCatalog()
-  return <CollectionExplorer catalog={catalog.items} collection={getCollectionTracking()} usernamePromise={getViewer().then((viewer) => viewer.handle)} />
+  return <CollectionExplorer catalog={catalog.items} collection={getCollectionTracking().then(packCollectionTracking)} usernamePromise={getViewer().then((viewer) => viewer.handle)} />
 }

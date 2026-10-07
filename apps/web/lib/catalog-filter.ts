@@ -1,6 +1,22 @@
 import type { CatalogItem, SpriteHelper } from "@workspace/contracts"
 
-export type CatalogResult = CatalogItem & { helpers?: SpriteHelper[] }
+export type CatalogResult = Pick<
+  CatalogItem,
+  "id" | "baseName" | "variant" | "rarity" | "displayOrder" | "imagePath"
+> & { helpers?: SpriteHelper[] }
+
+// Send only fields used by result cards and filters across the client boundary.
+export function toCatalogResult(item: CatalogResult): CatalogResult {
+  return {
+    id: item.id,
+    baseName: item.baseName,
+    variant: item.variant,
+    rarity: item.rarity,
+    displayOrder: item.displayOrder,
+    imagePath: item.imagePath,
+    ...(item.helpers ? { helpers: item.helpers } : {}),
+  }
+}
 export type CatalogFilters = {
   query: string
   rarity: string

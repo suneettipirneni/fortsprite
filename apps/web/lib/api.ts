@@ -2,7 +2,6 @@ import "server-only"
 
 import type {
   ApiErrorResponse,
-  CatalogSnapshot,
   CollectionSnapshot,
   CollectionTrackingSnapshot,
   CredentialsResponse,
@@ -16,7 +15,7 @@ import { cacheLife, cacheTag } from "next/cache"
 import { cookies } from "next/headers"
 import { connection } from "next/server"
 
-import { getCatalog } from "@/lib/catalog"
+import { getCachedCatalog, getCatalog } from "@/lib/catalog"
 
 export class FortSpriteApiError extends Error {
   constructor(
@@ -75,13 +74,19 @@ export async function getCollectionTracking(): Promise<CollectionTrackingSnapsho
 }
 
 export const getCollection = cache(async (): Promise<CollectionSnapshot> => {
-  let tracking = await getCollectionTracking()
-  let catalog: CatalogSnapshot
-  try {
-    catalog = await getCatalog(tracking.catalogRevision)
-  } catch {
-    tracking = await getJson<CollectionTrackingSnapshot>("/api/v1/collection/state")
-    catalog = await getCatalog(tracking.catalogRevision)
+  // Catalog metadata is public and already warmed by Collection's static shell.
+  // Load it alongside private tracking, then verify both snapshots agree.
+  let [tracking, catalog] = await Promise.all([
+    getCollectionTracking(),
+    getCachedCatalog(),
+  ])
+  if (catalog.revision !== tracking.catalogRevision) {
+    try {
+      catalog = await getCatalog(tracking.catalogRevision)
+    } catch {
+      tracking = await getJson<CollectionTrackingSnapshot>("/api/v1/collection/state")
+      catalog = await getCatalog(tracking.catalogRevision)
+    }
   }
   return assembleCollection(catalog, tracking)
 })

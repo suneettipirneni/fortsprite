@@ -6,7 +6,9 @@ FortSprite renders its navigation and page headings before private data resolves
 
 ## Data boundaries
 
-[`lib/api.ts`](../apps/web/lib/api.ts) awaits `connection()` before reading cookies and calling the authenticated Hono API with `no-store`. This explicit request boundary keeps private work out of prerendering. Its `React.cache` wrappers deduplicate calls within a server render. They do not provide a persistent data cache.
+[`lib/api.ts`](../apps/web/lib/api.ts) forwards the request's cookies to the authenticated Hono API with `no-store`. Viewer, credentials, collection tracking, and sharing use `"use cache: private"` with a 600-second client stale window. Viewer, tracking, and sharing have mutation tags. This private browser cache does not share responses across users. `getCollection` and `getComparison` use `React.cache` to deduplicate work within a server render.
+
+The public catalog uses shared `"use cache"` with catalog revision tags. Collection assembly starts the shared catalog and private tracking concurrently, verifies their revisions, and loads a revision-specific catalog if the shared copy is stale. The existing retry handles a catalog change during loading.
 
 Do not add shared `"use cache"` boundaries around viewer, credential, collection, sharing, or comparison reads. Those responses depend on the signed-in user, linked credentials, accepted sharing, and blocks. The API continues to enforce those checks for every private read and mutation.
 
@@ -18,7 +20,7 @@ Public catalog metadata and fixed page copy can remain in the static shell. Priv
 
 [`AppShell`](../apps/web/components/app-shell.tsx) gives each navigation link a small Suspense boundary around `usePathname()`. The fallback renders the same link without an active-state marker. Resolving the pathname updates that marker without withholding the entire navigation. Keep responsive layout outside these boundaries so mobile and desktop use the same frame before and after streaming.
 
-The configuration uses Next.js 16.3 with `cacheComponents: true` and `partialPrefetching: true`. Cache Components permits a prerendered shell with fresh request-time content. Partial Prefetching prepares reusable shell content through normal links. Neither setting guarantees cached private data or a completed page before a click. Keep explicit full-prefetch requests limited to a measured need.
+The configuration uses Next.js 16.4 with `cacheComponents: true` and `partialPrefetching: true`. Cache Components permits a prerendered shell with fresh request-time content. Partial Prefetching prepares reusable shell content through normal links. The primary tabs explicitly request full prefetch, including private data, so their counts and controls are ready before a click. The desktop and mobile instant-navigation tests enforce that behavior. Privacy and terms use `ensureStatic = "navigation"` as static-rendering guardrails. Help retains normal prefetching: testing the static-prefetch setting increased its response size without a reliable visible navigation gain.
 
 Streamed account and mobile menu triggers are disabled until their own component hydrates. This prevents a visible server-rendered pointer control from losing an early click while its JavaScript is still loading. Ordinary navigation links remain usable. The hydration regression holds script requests, checks the disabled state, then releases them and opens each menu. The hook uses React's [server snapshot contract](https://react.dev/reference/react/useSyncExternalStore#adding-support-for-server-rendering).
 

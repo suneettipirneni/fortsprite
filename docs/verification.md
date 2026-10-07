@@ -28,6 +28,18 @@ TEST_DATABASE_URL="$TEST_DATABASE_URL" pnpm --filter @fortsprite/web test:e2e
 
 Browser tests create local fixture users with separate desktop and mobile sessions. Passkey journeys use Chromium's virtual WebAuthn authenticator with resident credentials and user verification. Test users, credentials, relationships, and collection entries are removed by teardown.
 
+## Verified on October 6, 2026 — authenticated performance
+
+- The [paired performance report](performance-2026-10-06.md) compares with upstream main `4a0a3d8`, using the same Next.js 16.4 dependencies and Rust React compiler. Working search improved by 7.3% on Collection and 8.2% on Matches (roughly half a second) under the tested constrained connection. JavaScript transfer fell 9.8%; Matches RSC was 72.5% smaller before compression and 41.4% smaller with estimated gzip. First paint had no significant improvement.
+- The normal production build passed with the testing API disabled. Root lint and TypeScript checks passed. Lint retains the existing warning for the canvas-generated preview `<img>`.
+- All 51 web unit tests passed, including lossless tracking-payload round trips and equivalent result filtering.
+- Production instant checks passed 19 tests across desktop and mobile, with one intentional desktop skip for the mobile density test. They cover gated private tracking, stable progress-block geometry, prefetched personalized controls, two-user isolation, mutation invalidation, cross-tab refresh, and optimistic failure rollback.
+- Native WebMCP passed on desktop and mobile Chromium after conditional code loading, including tool discovery, collection mutations, cancellation lifetime, cross-tab persistence, and sign-out.
+- Targeted ordinary browser checks passed 26 tests: six export journeys each on desktop Chromium, mobile Chromium, and mobile WebKit; friend comparisons/blocking on desktop and mobile; hydration gating on desktop and mobile; and mobile navigation in Chromium and WebKit. Export checks include filtering, grouping, valid PNG generation, failed-artwork retry, optimistic mastery, and cancellation/reopening.
+- Each browser suite ran with fresh isolated fixture users. The initial combined instant run exhausted the normal read budget and produced HTTP 429 errors; all affected checks passed when separated. Production rate limits were preserved.
+- An isolated catalog metadata change verified that collection assembly detects a stale shared catalog and loads the matching revision. A cold-request query probe confirmed removal of one redundant full-catalog read.
+- The full browser suite was not rerun. Previously reproduced failures documented below remain outside this change; no failures were suppressed.
+
 ## Verified on October 6, 2026
 
 The dependency upgrade uses Next.js, `eslint-config-next`, and `@next/playwright` 16.4.0. Better Auth and its plugins are aligned at 1.7.7. API, database, UI, and test packages were updated with a refreshed lockfile. Node type definitions match the production Node 22 runtime. TypeScript 5.9 and ESLint 9 remain pinned within the versions supported by Next.js's lint plugins; the root explicitly declares TypeScript so automatic peer installation cannot select an unsupported compiler.

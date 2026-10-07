@@ -8,6 +8,7 @@ import { RefreshDataButton } from "@/components/refresh-data-button"
 import { CatalogResults } from "@/components/catalog-results"
 import { PageHeader } from "@/components/page-header"
 import { FortSpriteApiError, getComparison } from "@/lib/api"
+import { toCatalogResult } from "@/lib/catalog-filter"
 
 export const metadata: Metadata = { title: "Compare collections" }
 
@@ -100,7 +101,7 @@ async function ComparisonContent({
       <div className="app-columns">
         <div className="min-w-0 lg:col-span-6">
           <CatalogResults
-            items={comparison.forYou}
+            items={comparison.forYou.map(toCatalogResult)}
             title="Sprites for you"
             description={`Sprites you are missing that ${comparison.friend.displayName} has captured.`}
             emptyMessage="Your friend has no captured Sprites that you are missing right now."
@@ -108,7 +109,7 @@ async function ComparisonContent({
         </div>
         <div className="min-w-0 lg:col-span-6">
           <CatalogResults
-            items={comparison.forFriend}
+            items={comparison.forFriend.map(toCatalogResult)}
             title="Sprites for your friend"
             description={`Sprites ${comparison.friend.displayName} is missing that you have captured.`}
             emptyMessage="You have no captured Sprites that your friend is missing right now."

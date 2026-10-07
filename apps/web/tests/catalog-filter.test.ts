@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 
-import { filterCatalogResults, type CatalogResult } from "../lib/catalog-filter"
+import { filterCatalogResults, toCatalogResult, type CatalogResult } from "../lib/catalog-filter"
 
 function item(
   id: string,
@@ -9,26 +9,11 @@ function item(
 ): CatalogResult {
   return {
     id,
-    slug: id,
-    stableKey: id,
     baseName: "Water",
     variant: "Base",
-    sourceVariant: "Base",
     rarity: "Rare",
-    releaseStatus: "released",
     displayOrder: 0,
-    season: null,
-    sourceSeasonId: null,
     imagePath: null,
-    description: null,
-    descriptionLines: [],
-    levelProgression: null,
-    location: null,
-    spriteDustValue: null,
-    dropChancePercent: null,
-    dropChances: [],
-    sourcePage: "https://example.com/sprites",
-    sourceVerifiedAt: "2026-09-06",
     ...overrides,
   }
 }
@@ -46,6 +31,29 @@ const all = {
   rarity: "all",
   availability: "all",
 } as const
+
+test("compact result payloads preserve filtering, ordering, and helper profiles", () => {
+  const entries = [
+    { ...item("water", { helpers: [helper], displayOrder: 2 }), description: "Unused detail" },
+    { ...item("gold", { variant: "Gold", rarity: "Epic" }), sourcePage: "https://example.com" },
+    { ...item("air", { baseName: "Air" }), descriptionLines: ["Unused detail"] },
+  ]
+  const compact = entries.map(toCatalogResult)
+  for (const filters of [
+    all,
+    { ...all, query: "water" },
+    { ...all, variant: "Gold", rarity: "Epic" },
+    { ...all, availability: "available" as const },
+    { ...all, availability: "unavailable" as const },
+  ]) {
+    assert.deepEqual(
+      filterCatalogResults(compact, filters),
+      filterCatalogResults(entries, filters).map(toCatalogResult),
+    )
+  }
+  assert.deepEqual(compact[0]?.helpers, [helper])
+  assert.ok(JSON.stringify(compact).length < JSON.stringify(entries).length)
+})
 
 test("availability comes before catalog order and ties have deterministic IDs", () => {
   const entries = [

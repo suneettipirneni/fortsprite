@@ -11,6 +11,7 @@ import {
 import { PageHeader } from "@/components/page-header"
 import { getCollection } from "@/lib/api"
 import { latestSeasonItems } from "@/lib/catalog-season"
+import { toCatalogResult } from "@/lib/catalog-filter"
 
 export const metadata: Metadata = { title: "Friends can help" }
 
@@ -83,7 +84,7 @@ async function MatchResults() {
   const missing = currentSeason.filter((item) => !item.owned)
   return (
     <CatalogResults
-      items={missing}
+      items={missing.map(toCatalogResult)}
       title={currentSeasonName ? `${currentSeasonName} missing Sprites` : "Latest-season missing Sprites"}
       description="Filter current-season collection gaps by name, rarity, variant, or friend availability."
       showAvailability

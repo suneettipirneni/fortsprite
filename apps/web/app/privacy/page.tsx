@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 
 import { LegalPage } from "@/components/legal-page"
 
+export const ensureStatic = "navigation"
+
 export const metadata: Metadata = { title: "Privacy Policy" }
 
 const sections = [

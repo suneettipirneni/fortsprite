@@ -27,11 +27,10 @@ import { Switch } from "@workspace/ui/components/switch"
 import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 
 import { filterCollection, type CollectionFilters } from "@/lib/collection-filter"
-import {
-  renderCollectionImage,
-  type CollectionImageInput,
-  type CollectionImageItem,
-  type CollectionImageLayout,
+import type {
+  CollectionImageInput,
+  CollectionImageItem,
+  CollectionImageLayout,
 } from "@/lib/collection-image"
 
 type ExportScope = "collection" | "filters"
@@ -142,6 +141,8 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
     }
     setState({ status: "rendering", input })
     try {
+      const { renderCollectionImage } = await import("@/lib/collection-image")
+      if (controller.signal.aborted || job.current !== controller) return
       const blob = await renderCollectionImage(input)
       if (controller.signal.aborted || job.current !== controller) return
       const url = URL.createObjectURL(blob)

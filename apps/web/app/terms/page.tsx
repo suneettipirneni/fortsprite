@@ -4,6 +4,8 @@ import { LegalPage } from "@/components/legal-page"
 
 export const metadata: Metadata = { title: "Terms" }
 
+export const ensureStatic = "navigation"
+
 const sections = [
   {
     heading: "Unofficial companion tool",
