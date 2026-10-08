@@ -233,12 +233,35 @@ import artwork229 from "../../assets/sprites/storm-scout.webp"
 import artwork230 from "../../assets/sprites/striker.webp"
 import artwork231 from "../../assets/sprites/tails.webp"
 import artwork232 from "../../assets/sprites/the-deer.webp"
-import artwork233 from "../../assets/sprites/trick-or-treat-crown.webp"
-import artwork234 from "../../assets/sprites/vampire.webp"
-import artwork235 from "../../assets/sprites/vini-jr.webp"
-import artwork236 from "../../assets/sprites/water.webp"
-import artwork237 from "../../assets/sprites/x-ray.webp"
-import artwork238 from "../../assets/sprites/zero-point.webp"
+import artwork233 from "../../assets/sprites/trick-or-treat-8-bit.webp"
+import artwork234 from "../../assets/sprites/trick-or-treat-adventure.webp"
+import artwork235 from "../../assets/sprites/trick-or-treat-birthday.webp"
+import artwork236 from "../../assets/sprites/trick-or-treat-blinky.webp"
+import artwork237 from "../../assets/sprites/trick-or-treat-bush.webp"
+import artwork238 from "../../assets/sprites/trick-or-treat-crash-bandicoot.webp"
+import artwork239 from "../../assets/sprites/trick-or-treat-crown.webp"
+import artwork240 from "../../assets/sprites/trick-or-treat-dumpster-dive.webp"
+import artwork241 from "../../assets/sprites/trick-or-treat-jackrabbit.webp"
+import artwork242 from "../../assets/sprites/trick-or-treat-jonesy.webp"
+import artwork243 from "../../assets/sprites/trick-or-treat-killswitch.webp"
+import artwork244 from "../../assets/sprites/trick-or-treat-klombo.webp"
+import artwork245 from "../../assets/sprites/trick-or-treat-morgana.webp"
+import artwork246 from "../../assets/sprites/trick-or-treat-onigiri.webp"
+import artwork247 from "../../assets/sprites/trick-or-treat-overshield.webp"
+import artwork248 from "../../assets/sprites/trick-or-treat-pond.webp"
+import artwork249 from "../../assets/sprites/trick-or-treat-shadow.webp"
+import artwork250 from "../../assets/sprites/trick-or-treat-sonic.webp"
+import artwork251 from "../../assets/sprites/trick-or-treat-spooky-dash.webp"
+import artwork252 from "../../assets/sprites/trick-or-treat-storm-scout.webp"
+import artwork253 from "../../assets/sprites/trick-or-treat-tails.webp"
+import artwork254 from "../../assets/sprites/trick-or-treat-the-deer.webp"
+import artwork255 from "../../assets/sprites/trick-or-treat-vampire.webp"
+import artwork256 from "../../assets/sprites/trick-or-treat-x-ray.webp"
+import artwork257 from "../../assets/sprites/vampire.webp"
+import artwork258 from "../../assets/sprites/vini-jr.webp"
+import artwork259 from "../../assets/sprites/water.webp"
+import artwork260 from "../../assets/sprites/x-ray.webp"
+import artwork261 from "../../assets/sprites/zero-point.webp"
 
 export const spriteArtwork: Record<string, StaticImageData> = {
   "/sprites/8-bit.webp": artwork0,
@@ -474,10 +497,33 @@ export const spriteArtwork: Record<string, StaticImageData> = {
   "/sprites/striker.webp": artwork230,
   "/sprites/tails.webp": artwork231,
   "/sprites/the-deer.webp": artwork232,
-  "/sprites/trick-or-treat-crown.webp": artwork233,
-  "/sprites/vampire.webp": artwork234,
-  "/sprites/vini-jr.webp": artwork235,
-  "/sprites/water.webp": artwork236,
-  "/sprites/x-ray.webp": artwork237,
-  "/sprites/zero-point.webp": artwork238,
+  "/sprites/trick-or-treat-8-bit.webp": artwork233,
+  "/sprites/trick-or-treat-adventure.webp": artwork234,
+  "/sprites/trick-or-treat-birthday.webp": artwork235,
+  "/sprites/trick-or-treat-blinky.webp": artwork236,
+  "/sprites/trick-or-treat-bush.webp": artwork237,
+  "/sprites/trick-or-treat-crash-bandicoot.webp": artwork238,
+  "/sprites/trick-or-treat-crown.webp": artwork239,
+  "/sprites/trick-or-treat-dumpster-dive.webp": artwork240,
+  "/sprites/trick-or-treat-jackrabbit.webp": artwork241,
+  "/sprites/trick-or-treat-jonesy.webp": artwork242,
+  "/sprites/trick-or-treat-killswitch.webp": artwork243,
+  "/sprites/trick-or-treat-klombo.webp": artwork244,
+  "/sprites/trick-or-treat-morgana.webp": artwork245,
+  "/sprites/trick-or-treat-onigiri.webp": artwork246,
+  "/sprites/trick-or-treat-overshield.webp": artwork247,
+  "/sprites/trick-or-treat-pond.webp": artwork248,
+  "/sprites/trick-or-treat-shadow.webp": artwork249,
+  "/sprites/trick-or-treat-sonic.webp": artwork250,
+  "/sprites/trick-or-treat-spooky-dash.webp": artwork251,
+  "/sprites/trick-or-treat-storm-scout.webp": artwork252,
+  "/sprites/trick-or-treat-tails.webp": artwork253,
+  "/sprites/trick-or-treat-the-deer.webp": artwork254,
+  "/sprites/trick-or-treat-vampire.webp": artwork255,
+  "/sprites/trick-or-treat-x-ray.webp": artwork256,
+  "/sprites/vampire.webp": artwork257,
+  "/sprites/vini-jr.webp": artwork258,
+  "/sprites/water.webp": artwork259,
+  "/sprites/x-ray.webp": artwork260,
+  "/sprites/zero-point.webp": artwork261,
 }

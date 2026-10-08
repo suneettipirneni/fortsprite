@@ -169,6 +169,39 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-jonesy",
+    "stableKey": "fortnite-gg:244",
+    "name": "Trick or Treat Jonesy",
+    "slug": "trick-or-treat-jonesy",
+    "baseName": "Jonesy",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 5,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-jonesy.webp",
+    "description": "Recover some health or shields after being damaged after a short duration.",
+    "descriptionLines": [
+      "Recover some health or shields after being damaged after a short duration."
+    ],
+    "levelProgression": "Increase amount healed with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/244-trick-or-treat-jonesy-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Jonesy_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "adventure",
     "stableKey": "fortnite-gg:176",
     "name": "Adventure",
@@ -178,7 +211,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 5,
+    "displayOrder": 6,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/adventure.webp",
@@ -209,7 +242,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 6,
+    "displayOrder": 7,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-adventure.webp",
@@ -242,7 +275,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 7,
+    "displayOrder": 8,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-adventure.webp",
@@ -275,7 +308,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 8,
+    "displayOrder": 9,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-adventure.webp",
@@ -308,7 +341,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 9,
+    "displayOrder": 10,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-adventure.png",
@@ -332,6 +365,38 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-adventure",
+    "stableKey": "fortnite-gg:242",
+    "name": "Trick or Treat Adventure",
+    "slug": "trick-or-treat-adventure",
+    "baseName": "Adventure",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 11,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-adventure.webp",
+    "description": "Upgrades a random item in the player's inventory with each Level Up!",
+    "descriptionLines": [
+      "Upgrades a random item in the player's inventory with each Level Up!"
+    ],
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/242-trick-or-treat-adventure-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Dwarf_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "bush",
     "stableKey": "fortnite-gg:167",
     "name": "Bush",
@@ -341,7 +406,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 10,
+    "displayOrder": 12,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bush.webp",
@@ -375,7 +440,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 11,
+    "displayOrder": 13,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-bush.webp",
@@ -410,7 +475,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 12,
+    "displayOrder": 14,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-bush.webp",
@@ -445,7 +510,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 13,
+    "displayOrder": 15,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-bushranger.webp",
@@ -479,7 +544,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 14,
+    "displayOrder": 16,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-bush.png",
@@ -504,6 +569,38 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-bush",
+    "stableKey": "fortnite-gg:240",
+    "name": "Trick or Treat Bush",
+    "slug": "trick-or-treat-bush",
+    "baseName": "Bush",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 17,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-bush.webp",
+    "description": "Grants a bush on you after a duration, gain a bush on elimination at max level.",
+    "descriptionLines": [
+      "Grants a bush on you after a duration, gain a bush on elimination at max level."
+    ],
+    "levelProgression": "Time between bush activating decreases with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/240-trick-or-treat-bushranger-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_BushRanger_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "sonic",
     "stableKey": "fortnite-gg:185",
     "name": "Sonic",
@@ -513,7 +610,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 15,
+    "displayOrder": 18,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/sonic.webp",
@@ -546,7 +643,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 16,
+    "displayOrder": 19,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-sonic.webp",
@@ -580,7 +677,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 17,
+    "displayOrder": 20,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-sonic.webp",
@@ -614,7 +711,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 18,
+    "displayOrder": 21,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-sonic.webp",
@@ -648,7 +745,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 19,
+    "displayOrder": 22,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-sonic.png",
@@ -673,6 +770,39 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-sonic",
+    "stableKey": "fortnite-gg:245",
+    "name": "Trick or Treat Sonic",
+    "slug": "trick-or-treat-sonic",
+    "baseName": "Sonic",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 23,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-sonic.webp",
+    "description": "Gotta Go Fast!",
+    "descriptionLines": [
+      "Gotta Go Fast!"
+    ],
+    "levelProgression": "Sprint faster with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/245-trick-or-treat-sonic-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_NarrowFlea_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "tails",
     "stableKey": "fortnite-gg:170",
     "name": "Tails",
@@ -682,7 +812,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 20,
+    "displayOrder": 24,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/tails.webp",
@@ -715,7 +845,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 21,
+    "displayOrder": 25,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-tails.webp",
@@ -749,7 +879,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 22,
+    "displayOrder": 26,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-tails.webp",
@@ -783,7 +913,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 23,
+    "displayOrder": 27,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-tails.webp",
@@ -817,7 +947,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 24,
+    "displayOrder": 28,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-tails.png",
@@ -842,6 +972,39 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-tails",
+    "stableKey": "fortnite-gg:238",
+    "name": "Trick or Treat Tails",
+    "slug": "trick-or-treat-tails",
+    "baseName": "Tails",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 29,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-tails.webp",
+    "description": "(Active - Jump In Air) Hover with the help of Tails!",
+    "descriptionLines": [
+      "(Active - Jump In Air) Hover with the help of Tails!"
+    ],
+    "levelProgression": "Hover speed increased with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/238-trick-or-treat-tails-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_NarrowFleaMonkey_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "shadow",
     "stableKey": "fortnite-gg:164",
     "name": "Shadow",
@@ -851,7 +1014,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 25,
+    "displayOrder": 30,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/shadow.webp",
@@ -885,7 +1048,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 26,
+    "displayOrder": 31,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-shadow.webp",
@@ -920,7 +1083,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 27,
+    "displayOrder": 32,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-shadow.webp",
@@ -955,7 +1118,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 28,
+    "displayOrder": 33,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-shadow.webp",
@@ -990,7 +1153,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 29,
+    "displayOrder": 34,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-shadow.png",
@@ -1016,6 +1179,40 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-shadow",
+    "stableKey": "fortnite-gg:239",
+    "name": "Trick or Treat Shadow",
+    "slug": "trick-or-treat-shadow",
+    "baseName": "Shadow",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 35,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-shadow.webp",
+    "description": "Automatically reload unequipped weapons over time. Reloads equipped weapon at max level.",
+    "descriptionLines": [
+      "Automatically reload unequipped weapons over time.",
+      "Reloads equipped weapon at max level."
+    ],
+    "levelProgression": "Automatic reload gets faster with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/239-trick-or-treat-shadow-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_ReloadOverTime_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "8-bit",
     "stableKey": "fortnite-gg:191",
     "name": "8-Bit",
@@ -1025,7 +1222,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 30,
+    "displayOrder": 36,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/8-bit.webp",
@@ -1058,7 +1255,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 31,
+    "displayOrder": 37,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-8-bit.webp",
@@ -1092,7 +1289,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 32,
+    "displayOrder": 38,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-8-bit.webp",
@@ -1126,7 +1323,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 33,
+    "displayOrder": 39,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-8-bit.webp",
@@ -1160,7 +1357,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 34,
+    "displayOrder": 40,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-8-bit.png",
@@ -1185,6 +1382,38 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-8-bit",
+    "stableKey": "fortnite-gg:246",
+    "name": "Trick or Treat 8-Bit",
+    "slug": "trick-or-treat-8-bit",
+    "baseName": "8-Bit",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 41,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-8-bit.webp",
+    "description": "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it.",
+    "descriptionLines": [
+      "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it."
+    ],
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/246-trick-or-treat-8-bit-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_8BitBlaster_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "jackrabbit",
     "stableKey": "fortnite-gg:161",
     "name": "Jackrabbit",
@@ -1194,7 +1423,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 35,
+    "displayOrder": 42,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/jackrabbit.webp",
@@ -1227,7 +1456,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 36,
+    "displayOrder": 43,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-jackrabbit.webp",
@@ -1261,7 +1490,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 37,
+    "displayOrder": 44,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-jackrabbit.webp",
@@ -1295,7 +1524,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 38,
+    "displayOrder": 45,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-jackrabbit.webp",
@@ -1329,7 +1558,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 39,
+    "displayOrder": 46,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-jackrabbit.png",
@@ -1354,6 +1583,39 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-jackrabbit",
+    "stableKey": "fortnite-gg:225",
+    "name": "Trick or Treat Jackrabbit",
+    "slug": "trick-or-treat-jackrabbit",
+    "baseName": "Jackrabbit",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 47,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-jackrabbit.webp",
+    "description": "(Active - Jump In Air) Double Jump.",
+    "descriptionLines": [
+      "(Active - Jump In Air) Double Jump."
+    ],
+    "levelProgression": "Cooldown between jumps decreases with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/225-trick-or-treat-jackrabbit-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_DoubleJump_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "crown",
     "stableKey": "fortnite-gg:188",
     "name": "Crown",
@@ -1363,7 +1625,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 40,
+    "displayOrder": 48,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/crown.webp",
@@ -1398,7 +1660,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 41,
+    "displayOrder": 49,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-crown.webp",
@@ -1434,7 +1696,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 42,
+    "displayOrder": 50,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-crown.webp",
@@ -1470,7 +1732,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 43,
+    "displayOrder": 51,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-crown.webp",
@@ -1506,7 +1768,7 @@
     "sourceVariant": "Reaper",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 44,
+    "displayOrder": 52,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-crown.webp",
@@ -1542,7 +1804,7 @@
     "sourceVariant": "Trick or Treat",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 45,
+    "displayOrder": 53,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-crown.webp",
@@ -1576,7 +1838,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 46,
+    "displayOrder": 54,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/killswitch.webp",
@@ -1600,40 +1862,6 @@
     "sourceVerifiedAt": "2026-09-06"
   },
   {
-    "id": "bounty-hunter-killswitch",
-    "slug": "bounty-hunter-killswitch",
-    "stableKey": "fortnite-gg:206",
-    "name": "Bounty Hunter Killswitch",
-    "baseName": "Killswitch",
-    "variant": "Bounty Hunter",
-    "sourceVariant": "Bounty Hunter",
-    "rarity": "Special",
-    "releaseStatus": "released",
-    "displayOrder": 47,
-    "season": "C7 S4",
-    "sourceSeasonId": 42,
-    "localPath": "/sprites/bounty-hunter-killswitch.png",
-    "description": "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules. (Active - Aim In Air) Enter Hangtime with improved accuracy.",
-    "descriptionLines": [
-      "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules.",
-      "(Active - Aim In Air) Enter Hangtime with improved accuracy."
-    ],
-    "levelProgression": "Accuracy increases with each Level Up!",
-    "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
-    "sourceSummonCost": "0",
-    "dropChancePercent": "0",
-    "dropChances": [
-      {
-        "source": "Sprite Chest",
-        "percent": "0"
-      }
-    ],
-    "sourcePage": "https://fortnite.gg/sprites/206-bounty-hunter-killswitch-sprite",
-    "sourceImage": "https://cdn.fn-api.cc/sprites/killswitchsprite_variant_reaper/largeicon.png",
-    "sourceVerifiedAt": "2026-09-24"
-  },
-  {
     "id": "gold-killswitch",
     "stableKey": "fortnite-gg:175",
     "name": "Gold Killswitch",
@@ -1643,7 +1871,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 48,
+    "displayOrder": 55,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-killswitch.webp",
@@ -1677,7 +1905,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 49,
+    "displayOrder": 56,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-killswitch.webp",
@@ -1711,7 +1939,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 50,
+    "displayOrder": 57,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-killswitch.webp",
@@ -1736,6 +1964,73 @@
     "sourceVerifiedAt": "2026-09-13"
   },
   {
+    "id": "bounty-hunter-killswitch",
+    "slug": "bounty-hunter-killswitch",
+    "stableKey": "fortnite-gg:206",
+    "name": "Bounty Hunter Killswitch",
+    "baseName": "Killswitch",
+    "variant": "Bounty Hunter",
+    "sourceVariant": "Bounty Hunter",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 58,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/bounty-hunter-killswitch.png",
+    "description": "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules. (Active - Aim In Air) Enter Hangtime with improved accuracy.",
+    "descriptionLines": [
+      "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules.",
+      "(Active - Aim In Air) Enter Hangtime with improved accuracy."
+    ],
+    "levelProgression": "Accuracy increases with each Level Up!",
+    "location": "Found in the world at nighttime",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/206-bounty-hunter-killswitch-sprite",
+    "sourceImage": "https://cdn.fn-api.cc/sprites/killswitchsprite_variant_reaper/largeicon.png",
+    "sourceVerifiedAt": "2026-09-24"
+  },
+  {
+    "id": "trick-or-treat-killswitch",
+    "stableKey": "fortnite-gg:241",
+    "name": "Trick or Treat Killswitch",
+    "slug": "trick-or-treat-killswitch",
+    "baseName": "Killswitch",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 59,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-killswitch.webp",
+    "description": "(Active - Aim In Air) Enter Hangtime with improved accuracy.",
+    "descriptionLines": [
+      "(Active - Aim In Air) Enter Hangtime with improved accuracy."
+    ],
+    "levelProgression": "Accuracy increases with each Level Up!",
+    "location": "Found in the world at nighttime",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/241-trick-or-treat-killswitch-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Killswitch_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "klombo",
     "stableKey": "fortnite-gg:179",
     "name": "Klombo",
@@ -1745,7 +2040,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 51,
+    "displayOrder": 60,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/klombo.webp",
@@ -1778,7 +2073,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 52,
+    "displayOrder": 61,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-klombo.webp",
@@ -1812,7 +2107,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 53,
+    "displayOrder": 62,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-klombo.webp",
@@ -1846,7 +2141,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 54,
+    "displayOrder": 63,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-klombo.webp",
@@ -1880,7 +2175,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 55,
+    "displayOrder": 64,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-klombo.png",
@@ -1905,6 +2200,39 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-klombo",
+    "stableKey": "fortnite-gg:262",
+    "name": "Trick or Treat Klombo",
+    "slug": "trick-or-treat-klombo",
+    "baseName": "Klombo",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 65,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-klombo.webp",
+    "description": "Grants random items at each level, only levels up by consuming items.",
+    "descriptionLines": [
+      "Grants random items at each level, only levels up by consuming items."
+    ],
+    "levelProgression": "Item quality increases with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/262-trick-or-treat-klombo-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Klombo_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "mega-man",
     "slug": "mega-man",
     "stableKey": "fortnite-gg:92",
@@ -1914,7 +2242,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 56,
+    "displayOrder": 66,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/mega-man.webp",
@@ -1947,7 +2275,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 57,
+    "displayOrder": 67,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/overshield.webp",
@@ -1980,7 +2308,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 58,
+    "displayOrder": 68,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-overshield.webp",
@@ -2014,7 +2342,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 59,
+    "displayOrder": 69,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-overshield.webp",
@@ -2048,7 +2376,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 60,
+    "displayOrder": 70,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-overshield.webp",
@@ -2082,7 +2410,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 61,
+    "displayOrder": 71,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-overshield.png",
@@ -2107,6 +2435,38 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-overshield",
+    "stableKey": "fortnite-gg:233",
+    "name": "Trick or Treat Overshield",
+    "slug": "trick-or-treat-overshield",
+    "baseName": "Overshield",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 72,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-overshield.webp",
+    "description": "Grants overshield, scaling with level.",
+    "descriptionLines": [
+      "Grants overshield, scaling with level."
+    ],
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/233-trick-or-treat-overshield-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Overshield_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "x-ray",
     "slug": "x-ray",
     "stableKey": "fortnite-gg:93",
@@ -2116,7 +2476,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 62,
+    "displayOrder": 73,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/x-ray.webp",
@@ -2150,7 +2510,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 63,
+    "displayOrder": 74,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-x-ray.webp",
@@ -2185,7 +2545,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 64,
+    "displayOrder": 75,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-x-ray.webp",
@@ -2220,7 +2580,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 65,
+    "displayOrder": 76,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-x-ray.webp",
@@ -2254,7 +2614,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 66,
+    "displayOrder": 77,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-x-ray.png",
@@ -2279,6 +2639,38 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-x-ray",
+    "stableKey": "fortnite-gg:237",
+    "name": "Trick or Treat X-Ray",
+    "slug": "trick-or-treat-x-ray",
+    "baseName": "X-Ray",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 78,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-x-ray.webp",
+    "description": "Periodically mark enemies in an area around you.",
+    "descriptionLines": [
+      "Periodically mark enemies in an area around you."
+    ],
+    "levelProgression": "Mark more often with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/237-trick-or-treat-x-ray-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WinnerB_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "onigiri",
     "slug": "onigiri",
     "stableKey": "fortnite-gg:97",
@@ -2288,7 +2680,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 67,
+    "displayOrder": 79,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/onigiri.webp",
@@ -2322,7 +2714,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 68,
+    "displayOrder": 80,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-onigiri.webp",
@@ -2357,7 +2749,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 69,
+    "displayOrder": 81,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-onigiri.webp",
@@ -2392,7 +2784,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 70,
+    "displayOrder": 82,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-onigiri.webp",
@@ -2426,7 +2818,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 71,
+    "displayOrder": 83,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-onigiri.png",
@@ -2451,6 +2843,38 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-onigiri",
+    "stableKey": "fortnite-gg:255",
+    "name": "Trick or Treat Onigiri",
+    "slug": "trick-or-treat-onigiri",
+    "baseName": "Onigiri",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 84,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-onigiri.webp",
+    "description": "Applies Overdrive after eating or drinking a Consumable.",
+    "descriptionLines": [
+      "Applies Overdrive after eating or drinking a Consumable."
+    ],
+    "levelProgression": "Overdrive lasts longer with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/255-trick-or-treat-onigiri-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WinnerC_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "storm-scout",
     "slug": "storm-scout",
     "stableKey": "fortnite-gg:194",
@@ -2460,7 +2884,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 72,
+    "displayOrder": 85,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/storm-scout.webp",
@@ -2493,7 +2917,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 73,
+    "displayOrder": 86,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-storm-scout.webp",
@@ -2527,7 +2951,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 74,
+    "displayOrder": 87,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-storm-scout.webp",
@@ -2561,7 +2985,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 75,
+    "displayOrder": 88,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-storm-scout.webp",
@@ -2595,7 +3019,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 76,
+    "displayOrder": 89,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-storm-scout.png",
@@ -2620,6 +3044,40 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-storm-scout",
+    "stableKey": "fortnite-gg:247",
+    "name": "Trick or Treat Storm Scout",
+    "slug": "trick-or-treat-storm-scout",
+    "baseName": "Storm Scout",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 90,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-storm-scout.webp",
+    "description": "Applies Overdrive after taking a certain amount of storm damage. Reveals future Storm Circles at max level.",
+    "descriptionLines": [
+      "Applies Overdrive after taking a certain amount of storm damage.",
+      "Reveals future Storm Circles at max level."
+    ],
+    "levelProgression": "Increases Overdrive duration with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/247-trick-or-treat-storm-scout-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_StormScout_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "blinky",
     "stableKey": "fortnite-gg:120",
     "name": "Blinky",
@@ -2629,7 +3087,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 77,
+    "displayOrder": 91,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/blinky.webp",
@@ -2662,7 +3120,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 78,
+    "displayOrder": 92,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-blinky.webp",
@@ -2696,7 +3154,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 79,
+    "displayOrder": 93,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-blinky.webp",
@@ -2730,7 +3188,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 80,
+    "displayOrder": 94,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-blinky.webp",
@@ -2764,7 +3222,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 81,
+    "displayOrder": 95,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-blinky.png",
@@ -2789,6 +3247,39 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-blinky",
+    "stableKey": "fortnite-gg:232",
+    "name": "Trick or Treat Blinky",
+    "slug": "trick-or-treat-blinky",
+    "baseName": "Blinky",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 96,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-blinky.webp",
+    "description": "Grants cloak for a duration when you take damage.",
+    "descriptionLines": [
+      "Grants cloak for a duration when you take damage."
+    ],
+    "levelProgression": "Cloak duration increases with each Level Up!",
+    "location": "Found in the world at nighttime",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/232-trick-or-treat-blinky-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_GhostDamage_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "birthday",
     "stableKey": "fortnite-gg:127",
     "name": "Birthday",
@@ -2798,7 +3289,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 82,
+    "displayOrder": 97,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/birthday.png",
@@ -2832,7 +3323,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 83,
+    "displayOrder": 98,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-birthday.png",
@@ -2867,7 +3358,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 84,
+    "displayOrder": 99,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-birthday.png",
@@ -2902,7 +3393,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 85,
+    "displayOrder": 100,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-birthday.png",
@@ -2937,7 +3428,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 86,
+    "displayOrder": 101,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-birthday.png",
@@ -2963,6 +3454,40 @@
     "sourceVerifiedAt": "2026-09-26"
   },
   {
+    "id": "trick-or-treat-birthday",
+    "stableKey": "fortnite-gg:234",
+    "name": "Trick or Treat Birthday",
+    "slug": "trick-or-treat-birthday",
+    "baseName": "Birthday",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 102,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-birthday.webp",
+    "description": "Opening chests has a chance to spawn a piece of cake. Eliminations can spawn cake at max level.",
+    "descriptionLines": [
+      "Opening chests has a chance to spawn a piece of cake.",
+      "Eliminations can spawn cake at max level."
+    ],
+    "levelProgression": "Chance to spawn cake increases with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/234-trick-or-treat-birthday-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Birthday_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "crash-bandicoot",
     "stableKey": "fortnite-gg:135",
     "name": "Crash Bandicoot",
@@ -2972,7 +3497,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 87,
+    "displayOrder": 103,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/crash-bandicoot.webp",
@@ -3005,7 +3530,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 88,
+    "displayOrder": 104,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-crash-bandicoot.webp",
@@ -3039,7 +3564,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 89,
+    "displayOrder": 105,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-crash-bandicoot.webp",
@@ -3073,7 +3598,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 90,
+    "displayOrder": 106,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-crash-bandicoot.webp",
@@ -3107,7 +3632,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 91,
+    "displayOrder": 107,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-body-slam.png",
@@ -3132,6 +3657,39 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-crash-bandicoot",
+    "stableKey": "fortnite-gg:235",
+    "name": "Trick or Treat Crash Bandicoot",
+    "slug": "trick-or-treat-crash-bandicoot",
+    "baseName": "Crash Bandicoot",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 108,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-crash-bandicoot.webp",
+    "description": "(Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies.",
+    "descriptionLines": [
+      "(Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies."
+    ],
+    "levelProgression": "Damage increases and cooldown decreases with each Level Up!",
+    "location": "Spotted near high and mountainous areas",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/235-trick-or-treat-crash-bandicoot-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_BodySlam_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "pond",
     "stableKey": "fortnite-gg:147",
     "name": "Pond",
@@ -3141,7 +3699,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 92,
+    "displayOrder": 109,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/pond.webp",
@@ -3175,7 +3733,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 93,
+    "displayOrder": 110,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-pond.webp",
@@ -3210,7 +3768,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 94,
+    "displayOrder": 111,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-pond.webp",
@@ -3245,7 +3803,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 95,
+    "displayOrder": 112,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-pond.webp",
@@ -3280,7 +3838,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 96,
+    "displayOrder": 113,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-pond.png",
@@ -3306,6 +3864,39 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-pond",
+    "stableKey": "fortnite-gg:236",
+    "name": "Trick or Treat Pond",
+    "slug": "trick-or-treat-pond",
+    "baseName": "Pond",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 114,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-pond.webp",
+    "description": "(Active) - Jump shortly after landing to trigger a Super Jump, if charges are present. Gain charges over time.",
+    "descriptionLines": [
+      "(Active) - Jump shortly after landing to trigger a Super Jump, if charges are present.",
+      "Gain charges over time."
+    ],
+    "levelProgression": "Super jump strength increases and cooldown decreases with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/236-trick-or-treat-pond-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WinnerA_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "morgana",
     "slug": "morgana",
     "stableKey": "fortnite-gg:213",
@@ -3315,7 +3906,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 97,
+    "displayOrder": 115,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/morgana.png",
@@ -3348,7 +3939,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 98,
+    "displayOrder": 116,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-morgana.png",
@@ -3382,7 +3973,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 99,
+    "displayOrder": 117,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-morgana.png",
@@ -3416,7 +4007,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 100,
+    "displayOrder": 118,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-morgana.png",
@@ -3450,7 +4041,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 101,
+    "displayOrder": 119,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-morgana.png",
@@ -3475,6 +4066,38 @@
     "sourceVerifiedAt": "2026-09-24"
   },
   {
+    "id": "trick-or-treat-morgana",
+    "stableKey": "fortnite-gg:248",
+    "name": "Trick or Treat Morgana",
+    "slug": "trick-or-treat-morgana",
+    "baseName": "Morgana",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 120,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-morgana.webp",
+    "description": "Increases the effectiveness of healing items.",
+    "descriptionLines": [
+      "Increases the effectiveness of healing items."
+    ],
+    "levelProgression": "Healing effectiveness increases with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/248-trick-or-treat-morgana-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_IncreaseHeals_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "spooky-dash",
     "stableKey": "fortnite-gg:219",
     "name": "Spooky Dash",
@@ -3484,7 +4107,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 102,
+    "displayOrder": 121,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/spooky-dash.webp",
@@ -3518,7 +4141,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 103,
+    "displayOrder": 122,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-spooky-dash.webp",
@@ -3552,7 +4175,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 104,
+    "displayOrder": 123,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-spooky-dash.webp",
@@ -3586,7 +4209,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 105,
+    "displayOrder": 124,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-spooky-dash.webp",
@@ -3620,7 +4243,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 106,
+    "displayOrder": 125,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-spooky-dash.webp",
@@ -3645,6 +4268,39 @@
     "sourceVerifiedAt": "2026-10-01"
   },
   {
+    "id": "trick-or-treat-spooky-dash",
+    "stableKey": "fortnite-gg:224",
+    "name": "Trick or Treat Spooky Dash",
+    "slug": "trick-or-treat-spooky-dash",
+    "baseName": "Spooky Dash",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 126,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-spooky-dash.webp",
+    "description": "(Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
+    "descriptionLines": [
+      "(Active - Jump In Air) Spooky Dash lets you phase through some objects.",
+      "Gain charges over time."
+    ],
+    "levelProgression": "Charge cooldown decreases with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/224-trick-or-treat-spooky-dash-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PhaseDash_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "vampire",
     "stableKey": "fortnite-gg:226",
     "name": "Vampire",
@@ -3654,7 +4310,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 107,
+    "displayOrder": 127,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/vampire.webp",
@@ -3687,7 +4343,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 108,
+    "displayOrder": 128,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-vampire.webp",
@@ -3720,7 +4376,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 109,
+    "displayOrder": 129,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-vampire.webp",
@@ -3753,7 +4409,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 110,
+    "displayOrder": 130,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-vampire.webp",
@@ -3786,7 +4442,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 111,
+    "displayOrder": 131,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-vampire.webp",
@@ -3810,6 +4466,38 @@
     "sourceVerifiedAt": "2026-10-01"
   },
   {
+    "id": "trick-or-treat-vampire",
+    "stableKey": "fortnite-gg:231",
+    "name": "Trick or Treat Vampire",
+    "slug": "trick-or-treat-vampire",
+    "baseName": "Vampire",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 132,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-vampire.webp",
+    "description": "Recover health when damaging an enemy.",
+    "descriptionLines": [
+      "Recover health when damaging an enemy."
+    ],
+    "levelProgression": "Health recovered percent increases with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/231-trick-or-treat-vampire-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_HealthSiphon_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "the-deer",
     "stableKey": "fortnite-gg:249",
     "name": "The Deer",
@@ -3819,7 +4507,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 112,
+    "displayOrder": 133,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/the-deer.webp",
@@ -3852,7 +4540,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 113,
+    "displayOrder": 134,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-the-deer.webp",
@@ -3885,7 +4573,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 114,
+    "displayOrder": 135,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-the-deer.webp",
@@ -3918,7 +4606,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 115,
+    "displayOrder": 136,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-the-deer.webp",
@@ -3951,7 +4639,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 116,
+    "displayOrder": 137,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-the-deer.webp",
@@ -3975,6 +4663,38 @@
     "sourceVerifiedAt": "2026-10-01"
   },
   {
+    "id": "trick-or-treat-the-deer",
+    "stableKey": "fortnite-gg:254",
+    "name": "Trick or Treat The Deer",
+    "slug": "trick-or-treat-the-deer",
+    "baseName": "The Deer",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 138,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-the-deer.webp",
+    "description": "Melee attacks deal more damage.",
+    "descriptionLines": [
+      "Melee attacks deal more damage."
+    ],
+    "levelProgression": "Melee attack damage increases with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/254-trick-or-treat-the-deer-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_IncreasedMelee_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "dumpster-dive",
     "stableKey": "fortnite-gg:256",
     "name": "Dumpster Dive",
@@ -3984,7 +4704,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 117,
+    "displayOrder": 139,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/dumpster-dive.webp",
@@ -4018,7 +4738,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 118,
+    "displayOrder": 140,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-dumpster-dive.webp",
@@ -4052,7 +4772,7 @@
     "sourceVariant": "Cheatmaster",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 119,
+    "displayOrder": 141,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-dumpster-dive.webp",
@@ -4086,7 +4806,7 @@
     "sourceVariant": "Hacker",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 120,
+    "displayOrder": 142,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-dumpster-dive.webp",
@@ -4120,7 +4840,7 @@
     "sourceVariant": "Bounty Hunter",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 121,
+    "displayOrder": 143,
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-dumpster-dive.webp",
@@ -4145,6 +4865,39 @@
     "sourceVerifiedAt": "2026-10-01"
   },
   {
+    "id": "trick-or-treat-dumpster-dive",
+    "stableKey": "fortnite-gg:261",
+    "name": "Trick or Treat Dumpster Dive",
+    "slug": "trick-or-treat-dumpster-dive",
+    "baseName": "Dumpster Dive",
+    "variant": "Trick or Treat",
+    "sourceVariant": "Trick or Treat",
+    "rarity": "Special",
+    "releaseStatus": "released",
+    "displayOrder": 144,
+    "season": "C7 S4",
+    "sourceSeasonId": 42,
+    "localPath": "/sprites/trick-or-treat-dumpster-dive.webp",
+    "description": "Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
+    "descriptionLines": [
+      "Food provides bonus healing.",
+      "Find food when jumping out of hiding props, and a small chance when opening containers."
+    ],
+    "levelProgression": "Find better food with each Level Up!",
+    "spriteDustValue": 0,
+    "sourceSummonCost": "0",
+    "dropChancePercent": "0",
+    "dropChances": [
+      {
+        "source": "Sprite Chest",
+        "percent": "0"
+      }
+    ],
+    "sourcePage": "https://fortnite.gg/sprites/261-trick-or-treat-dumpster-dive-sprite",
+    "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WinnerD_TrickTreat_L.webp",
+    "sourceVerifiedAt": "2026-10-08"
+  },
+  {
     "id": "john-wick",
     "stableKey": "fortnite-gg:138",
     "name": "John Wick",
@@ -4154,7 +4907,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 122,
+    "displayOrder": 145,
     "localPath": "/sprites/john-wick.webp",
     "description": "Knocking players reveals others nearby.",
     "descriptionLines": [
@@ -4187,7 +4940,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 123,
+    "displayOrder": 146,
     "localPath": "/sprites/batman.webp",
     "description": "Grants the ability to launch in the air and deploy the Bat Cape!",
     "descriptionLines": [
@@ -4220,7 +4973,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 124,
+    "displayOrder": 147,
     "localPath": "/sprites/cube-batman.webp",
     "description": "Grants the ability to launch in the air and deploy the Bat Cape!",
     "descriptionLines": [
@@ -4253,7 +5006,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 125,
+    "displayOrder": 148,
     "localPath": "/sprites/gold-batman.webp",
     "description": "Gain 3x bonus XP from eliminations Grants the ability to launch in the air and deploy the Bat Cape!",
     "descriptionLines": [
@@ -4287,7 +5040,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 126,
+    "displayOrder": 149,
     "localPath": "/sprites/gummy-batman.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Grants the ability to launch in the air and deploy the Bat Cape!",
     "descriptionLines": [
@@ -4321,7 +5074,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 127,
+    "displayOrder": 150,
     "localPath": "/sprites/galaxy-batman.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Grants the ability to launch in the air and deploy the Bat Cape!",
     "descriptionLines": [
@@ -4355,7 +5108,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 128,
+    "displayOrder": 151,
     "localPath": "/sprites/holofoil-batman.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Grants the ability to launch in the air and deploy the Bat Cape!",
     "descriptionLines": [
@@ -4389,7 +5142,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 129,
+    "displayOrder": 152,
     "localPath": "/sprites/water.webp",
     "description": "Replenish shields while standing in water!",
     "descriptionLines": [
@@ -4422,7 +5175,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 130,
+    "displayOrder": 153,
     "localPath": "/sprites/gold-water.webp",
     "description": "Gain 3x bonus XP from eliminations Replenish shields while standing in water!",
     "descriptionLines": [
@@ -4456,7 +5209,7 @@
     "sourceVariant": "Quack",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 131,
+    "displayOrder": 154,
     "localPath": "/sprites/quack-water.webp",
     "description": "Replenish shields while standing in water!",
     "descriptionLines": [
@@ -4489,7 +5242,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 132,
+    "displayOrder": 155,
     "localPath": "/sprites/gummy-water.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Replenish shields while standing in water!",
     "descriptionLines": [
@@ -4523,7 +5276,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 133,
+    "displayOrder": 156,
     "localPath": "/sprites/galaxy-water.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Replenish shields while standing in water!",
     "descriptionLines": [
@@ -4557,7 +5310,7 @@
     "sourceVariant": "Gem",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 134,
+    "displayOrder": 157,
     "localPath": "/sprites/gem-water.webp",
     "description": "Take 30% less Fall damage Replenish shields while standing in water!",
     "descriptionLines": [
@@ -4591,7 +5344,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 135,
+    "displayOrder": 158,
     "localPath": "/sprites/holofoil-water.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Replenish shields while standing in water!",
     "descriptionLines": [
@@ -4625,7 +5378,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 136,
+    "displayOrder": 159,
     "localPath": "/sprites/earth.webp",
     "description": "You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
@@ -4658,7 +5411,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 137,
+    "displayOrder": 160,
     "localPath": "/sprites/cube-earth.webp",
     "description": "You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
@@ -4691,7 +5444,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 138,
+    "displayOrder": 161,
     "localPath": "/sprites/gold-earth.webp",
     "description": "Gain 3x bonus XP from eliminations You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
@@ -4725,7 +5478,7 @@
     "sourceVariant": "Quack",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 139,
+    "displayOrder": 162,
     "localPath": "/sprites/quack-earth.webp",
     "description": "You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
@@ -4758,7 +5511,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 140,
+    "displayOrder": 163,
     "localPath": "/sprites/gummy-earth.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
@@ -4792,7 +5545,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 141,
+    "displayOrder": 164,
     "localPath": "/sprites/galaxy-earth.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
@@ -4826,7 +5579,7 @@
     "sourceVariant": "Gem",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 142,
+    "displayOrder": 165,
     "localPath": "/sprites/gem-earth.webp",
     "description": "Take 30% less Fall damage You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
@@ -4860,7 +5613,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 143,
+    "displayOrder": 166,
     "localPath": "/sprites/fire.webp",
     "description": "Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
@@ -4893,7 +5646,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 144,
+    "displayOrder": 167,
     "localPath": "/sprites/cube-fire.webp",
     "description": "Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
@@ -4926,7 +5679,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 145,
+    "displayOrder": 168,
     "localPath": "/sprites/gold-fire.webp",
     "description": "Gain 3x bonus XP from eliminations Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
@@ -4960,7 +5713,7 @@
     "sourceVariant": "Quack",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 146,
+    "displayOrder": 169,
     "localPath": "/sprites/quack-fire.webp",
     "description": "Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
@@ -4993,7 +5746,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 147,
+    "displayOrder": 170,
     "localPath": "/sprites/gummy-fire.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
@@ -5027,7 +5780,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 148,
+    "displayOrder": 171,
     "localPath": "/sprites/galaxy-fire.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
@@ -5061,7 +5814,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 149,
+    "displayOrder": 172,
     "localPath": "/sprites/holofoil-fire.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
@@ -5095,7 +5848,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 150,
+    "displayOrder": 173,
     "localPath": "/sprites/duck.webp",
     "description": "Emoting or Jamming replenishes shields.",
     "descriptionLines": [
@@ -5128,7 +5881,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 151,
+    "displayOrder": 174,
     "localPath": "/sprites/gold-duck.webp",
     "description": "Gain 3x bonus XP from eliminations Emoting or Jamming replenishes shields.",
     "descriptionLines": [
@@ -5162,7 +5915,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 152,
+    "displayOrder": 175,
     "localPath": "/sprites/gummy-duck.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Emoting or Jamming replenishes shields.",
     "descriptionLines": [
@@ -5196,7 +5949,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 153,
+    "displayOrder": 176,
     "localPath": "/sprites/galaxy-duck.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Emoting or Jamming replenishes shields.",
     "descriptionLines": [
@@ -5230,7 +5983,7 @@
     "sourceVariant": "Gem",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 154,
+    "displayOrder": 177,
     "localPath": "/sprites/gem-duck.webp",
     "description": "Take 30% less Fall damage Emoting or Jamming replenishes shields.",
     "descriptionLines": [
@@ -5264,7 +6017,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 155,
+    "displayOrder": 178,
     "localPath": "/sprites/ghost.webp",
     "description": "Grants cloak for a duration upon reloading.",
     "descriptionLines": [
@@ -5297,7 +6050,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 156,
+    "displayOrder": 179,
     "localPath": "/sprites/gold-ghost.webp",
     "description": "Gain 3x bonus XP from eliminations Grants cloak for a duration upon reloading.",
     "descriptionLines": [
@@ -5331,7 +6084,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 157,
+    "displayOrder": 180,
     "localPath": "/sprites/gummy-ghost.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Grants cloak for a duration upon reloading.",
     "descriptionLines": [
@@ -5365,7 +6118,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 158,
+    "displayOrder": 181,
     "localPath": "/sprites/galaxy-ghost.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Grants cloak for a duration upon reloading.",
     "descriptionLines": [
@@ -5399,7 +6152,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 159,
+    "displayOrder": 182,
     "localPath": "/sprites/holofoil-ghost.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Grants cloak for a duration upon reloading.",
     "descriptionLines": [
@@ -5433,7 +6186,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 160,
+    "displayOrder": 183,
     "localPath": "/sprites/dream.webp",
     "description": "Grants a random item at each level, exploding with legendary loot at Max Level.",
     "descriptionLines": [
@@ -5466,7 +6219,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 161,
+    "displayOrder": 184,
     "localPath": "/sprites/cube-dream.webp",
     "description": "Grants a random item at each level, exploding with legendary loot at Max Level.",
     "descriptionLines": [
@@ -5499,7 +6252,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 162,
+    "displayOrder": 185,
     "localPath": "/sprites/gold-dream.webp",
     "description": "Gain 3x bonus XP from eliminations Grants a random item at each level, exploding with legendary loot at Max Level.",
     "descriptionLines": [
@@ -5533,7 +6286,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 163,
+    "displayOrder": 186,
     "localPath": "/sprites/gummy-dream.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Grants a random item at each level, exploding with legendary loot at Max Level.",
     "descriptionLines": [
@@ -5567,7 +6320,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 164,
+    "displayOrder": 187,
     "localPath": "/sprites/galaxy-dream.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Grants a random item at each level, exploding with legendary loot at Max Level.",
     "descriptionLines": [
@@ -5601,7 +6354,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 165,
+    "displayOrder": 188,
     "localPath": "/sprites/demon.webp",
     "description": "Siphon some health and shields when you eliminate an opponent.",
     "descriptionLines": [
@@ -5634,7 +6387,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 166,
+    "displayOrder": 189,
     "localPath": "/sprites/gold-demon.webp",
     "description": "Gain 3x bonus XP from eliminations Siphon some health and shields when you eliminate an opponent.",
     "descriptionLines": [
@@ -5668,7 +6421,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 167,
+    "displayOrder": 190,
     "localPath": "/sprites/gummy-demon.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Siphon some health and shields when you eliminate an opponent.",
     "descriptionLines": [
@@ -5702,7 +6455,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 168,
+    "displayOrder": 191,
     "localPath": "/sprites/galaxy-demon.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Siphon some health and shields when you eliminate an opponent.",
     "descriptionLines": [
@@ -5736,7 +6489,7 @@
     "sourceVariant": "Gem",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 169,
+    "displayOrder": 192,
     "localPath": "/sprites/gem-demon.webp",
     "description": "Take 30% less Fall damage Siphon some health and shields when you eliminate an opponent.",
     "descriptionLines": [
@@ -5770,7 +6523,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 170,
+    "displayOrder": 193,
     "localPath": "/sprites/punk.webp",
     "description": "Possibly nothing... or infinitely something",
     "descriptionLines": [
@@ -5803,7 +6556,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 171,
+    "displayOrder": 194,
     "localPath": "/sprites/cube-punk.webp",
     "description": "Possibly nothing... or infinitely something",
     "descriptionLines": [
@@ -5836,7 +6589,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 172,
+    "displayOrder": 195,
     "localPath": "/sprites/gold-punk.webp",
     "description": "Gain 3x bonus XP from eliminations Possibly nothing... or infinitely something",
     "descriptionLines": [
@@ -5870,7 +6623,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 173,
+    "displayOrder": 196,
     "localPath": "/sprites/gummy-punk.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Possibly nothing... or infinitely something",
     "descriptionLines": [
@@ -5904,7 +6657,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 174,
+    "displayOrder": 197,
     "localPath": "/sprites/galaxy-punk.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Possibly nothing... or infinitely something",
     "descriptionLines": [
@@ -5938,7 +6691,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 175,
+    "displayOrder": 198,
     "localPath": "/sprites/king.webp",
     "description": "Your Pickaxe deals more damage.",
     "descriptionLines": [
@@ -5971,7 +6724,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 176,
+    "displayOrder": 199,
     "localPath": "/sprites/gold-king.webp",
     "description": "Gain 3x bonus XP from eliminations Your Pickaxe deals more damage.",
     "descriptionLines": [
@@ -6005,7 +6758,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 177,
+    "displayOrder": 200,
     "localPath": "/sprites/gummy-king.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Your Pickaxe deals more damage.",
     "descriptionLines": [
@@ -6039,7 +6792,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 178,
+    "displayOrder": 201,
     "localPath": "/sprites/galaxy-king.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Your Pickaxe deals more damage.",
     "descriptionLines": [
@@ -6073,7 +6826,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 179,
+    "displayOrder": 202,
     "localPath": "/sprites/holofoil-king.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Your Pickaxe deals more damage.",
     "descriptionLines": [
@@ -6107,7 +6860,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 180,
+    "displayOrder": 203,
     "localPath": "/sprites/vini-jr.webp",
     "description": "Sprinting for a short time makes your slide destructive. Slidekicking enemies increases rate of fire and reload speed.",
     "descriptionLines": [
@@ -6141,7 +6894,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 181,
+    "displayOrder": 204,
     "localPath": "/sprites/burnt-peanut.webp",
     "description": "Goop! When eliminating players, you may find more loot. Sometimes mythic!",
     "descriptionLines": [
@@ -6174,7 +6927,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 182,
+    "displayOrder": 205,
     "localPath": "/sprites/zero-point.webp",
     "description": "Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
@@ -6207,7 +6960,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 183,
+    "displayOrder": 206,
     "localPath": "/sprites/cube-zero-point.webp",
     "description": "Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
@@ -6240,7 +6993,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 184,
+    "displayOrder": 207,
     "localPath": "/sprites/gold-zero-point.webp",
     "description": "Gain 3x bonus XP from eliminations Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
@@ -6274,7 +7027,7 @@
     "sourceVariant": "Quack",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 185,
+    "displayOrder": 208,
     "localPath": "/sprites/quack-zero-point.webp",
     "description": "Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
@@ -6307,7 +7060,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 186,
+    "displayOrder": 209,
     "localPath": "/sprites/gummy-zero-point.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
@@ -6341,7 +7094,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 187,
+    "displayOrder": 210,
     "localPath": "/sprites/galaxy-zero-point.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
@@ -6375,7 +7128,7 @@
     "sourceVariant": "Gem",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 188,
+    "displayOrder": 211,
     "localPath": "/sprites/gem-zero-point.webp",
     "description": "Take 30% less Fall damage Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
@@ -6409,7 +7162,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 189,
+    "displayOrder": 212,
     "localPath": "/sprites/holofoil-zero-point.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
@@ -6443,7 +7196,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 190,
+    "displayOrder": 213,
     "localPath": "/sprites/fishy.webp",
     "description": "Swim speed greatly increased. Taking damage also briefly increases movement speed.",
     "descriptionLines": [
@@ -6476,7 +7229,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 191,
+    "displayOrder": 214,
     "localPath": "/sprites/cube-fishy.webp",
     "description": "Swim speed greatly increased. Taking damage also briefly increases movement speed.",
     "descriptionLines": [
@@ -6509,7 +7262,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 192,
+    "displayOrder": 215,
     "localPath": "/sprites/gold-fishy.webp",
     "description": "Gain 3x bonus XP from eliminations Swim speed greatly increased. Taking damage also briefly increases movement speed.",
     "descriptionLines": [
@@ -6543,7 +7296,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 193,
+    "displayOrder": 216,
     "localPath": "/sprites/gummy-fishy.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Swim speed greatly increased. Taking damage also briefly increases movement speed.",
     "descriptionLines": [
@@ -6577,7 +7330,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 194,
+    "displayOrder": 217,
     "localPath": "/sprites/galaxy-fishy.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Swim speed greatly increased. Taking damage also briefly increases movement speed.",
     "descriptionLines": [
@@ -6611,7 +7364,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 195,
+    "displayOrder": 218,
     "localPath": "/sprites/striker.webp",
     "description": "Gain the Overdrive effect when you Mantle, Hurdle, or Wall Scramble.",
     "descriptionLines": [
@@ -6644,7 +7397,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 196,
+    "displayOrder": 219,
     "localPath": "/sprites/gold-striker.webp",
     "description": "Gain 3x bonus XP from eliminations Gain the Overdrive effect when you Mantle, Hurdle, or Wall Scramble.",
     "descriptionLines": [
@@ -6678,7 +7431,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 197,
+    "displayOrder": 220,
     "localPath": "/sprites/gummy-striker.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Gain the Overdrive effect when you Mantle, Hurdle, or Wall Scramble.",
     "descriptionLines": [
@@ -6712,7 +7465,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 198,
+    "displayOrder": 221,
     "localPath": "/sprites/galaxy-striker.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Gain the Overdrive effect when you Mantle, Hurdle, or Wall Scramble.",
     "descriptionLines": [
@@ -6746,7 +7499,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 199,
+    "displayOrder": 222,
     "localPath": "/sprites/holofoil-striker.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Gain the Overdrive effect when you Mantle, Hurdle, or Wall Scramble.",
     "descriptionLines": [
@@ -6780,7 +7533,7 @@
     "sourceVariant": "Base",
     "rarity": "Epic",
     "releaseStatus": "released",
-    "displayOrder": 200,
+    "displayOrder": 223,
     "localPath": "/sprites/aura.webp",
     "description": "Gain a Shock Rock charge when you deal enough damage to enemies!",
     "descriptionLines": [
@@ -6813,7 +7566,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 201,
+    "displayOrder": 224,
     "localPath": "/sprites/gold-aura.webp",
     "description": "Gain 3x bonus XP from eliminations Gain a Shock Rock charge when you deal enough damage to enemies!",
     "descriptionLines": [
@@ -6847,7 +7600,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 202,
+    "displayOrder": 225,
     "localPath": "/sprites/gummy-aura.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Gain a Shock Rock charge when you deal enough damage to enemies!",
     "descriptionLines": [
@@ -6881,7 +7634,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 203,
+    "displayOrder": 226,
     "localPath": "/sprites/galaxy-aura.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Gain a Shock Rock charge when you deal enough damage to enemies!",
     "descriptionLines": [
@@ -6915,7 +7668,7 @@
     "sourceVariant": "Gem",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 204,
+    "displayOrder": 227,
     "localPath": "/sprites/gem-aura.webp",
     "description": "Take 30% less Fall damage Gain a Shock Rock charge when you deal enough damage to enemies!",
     "descriptionLines": [
@@ -6949,7 +7702,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 205,
+    "displayOrder": 228,
     "localPath": "/sprites/boss.webp",
     "description": "Grants an increase to your max HP and Shield.",
     "descriptionLines": [
@@ -6982,7 +7735,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 206,
+    "displayOrder": 229,
     "localPath": "/sprites/cube-boss.webp",
     "description": "Grants an increase to your max HP and Shield.",
     "descriptionLines": [
@@ -7015,7 +7768,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 207,
+    "displayOrder": 230,
     "localPath": "/sprites/gold-boss.webp",
     "description": "Gain 3x bonus XP from eliminations Grants an increase to your max HP and Shield.",
     "descriptionLines": [
@@ -7049,7 +7802,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 208,
+    "displayOrder": 231,
     "localPath": "/sprites/gummy-boss.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Grants an increase to your max HP and Shield.",
     "descriptionLines": [
@@ -7083,7 +7836,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 209,
+    "displayOrder": 232,
     "localPath": "/sprites/galaxy-boss.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Grants an increase to your max HP and Shield.",
     "descriptionLines": [
@@ -7117,7 +7870,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 210,
+    "displayOrder": 233,
     "localPath": "/sprites/grim.webp",
     "description": "Players who attack you are marked for a duration.",
     "descriptionLines": [
@@ -7150,7 +7903,7 @@
     "sourceVariant": "Cube",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 211,
+    "displayOrder": 234,
     "localPath": "/sprites/cube-grim.webp",
     "description": "Players who attack you are marked for a duration.",
     "descriptionLines": [
@@ -7183,7 +7936,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 212,
+    "displayOrder": 235,
     "localPath": "/sprites/gold-grim.webp",
     "description": "Gain 3x bonus XP from eliminations Players who attack you are marked for a duration.",
     "descriptionLines": [
@@ -7217,7 +7970,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 213,
+    "displayOrder": 236,
     "localPath": "/sprites/gummy-grim.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Players who attack you are marked for a duration.",
     "descriptionLines": [
@@ -7251,7 +8004,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 214,
+    "displayOrder": 237,
     "localPath": "/sprites/galaxy-grim.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Players who attack you are marked for a duration.",
     "descriptionLines": [
@@ -7285,7 +8038,7 @@
     "sourceVariant": "Gem",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 215,
+    "displayOrder": 238,
     "localPath": "/sprites/gem-grim.webp",
     "description": "Take 30% less Fall damage Players who attack you are marked for a duration.",
     "descriptionLines": [
@@ -7319,7 +8072,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 216,
+    "displayOrder": 239,
     "localPath": "/sprites/holofoil-grim.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Players who attack you are marked for a duration.",
     "descriptionLines": [
@@ -7353,7 +8106,7 @@
     "sourceVariant": "Base",
     "rarity": "Rare",
     "releaseStatus": "released",
-    "displayOrder": 217,
+    "displayOrder": 240,
     "localPath": "/sprites/air.webp",
     "description": "Increases sprinting speed and jump height. Also nullifies fall damage.",
     "descriptionLines": [
@@ -7387,7 +8140,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 218,
+    "displayOrder": 241,
     "localPath": "/sprites/gold-air.webp",
     "description": "Gain 3x bonus XP from eliminations Increases sprinting speed and jump height. Also nullifies fall damage.",
     "descriptionLines": [
@@ -7422,7 +8175,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 219,
+    "displayOrder": 242,
     "localPath": "/sprites/gummy-air.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Increases sprinting speed and jump height. Also nullifies fall damage.",
     "descriptionLines": [
@@ -7457,7 +8210,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 220,
+    "displayOrder": 243,
     "localPath": "/sprites/galaxy-air.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Increases sprinting speed and jump height. Also nullifies fall damage.",
     "descriptionLines": [
@@ -7492,7 +8245,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 221,
+    "displayOrder": 244,
     "localPath": "/sprites/holofoil-air.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Increases sprinting speed and jump height. Also nullifies fall damage.",
     "descriptionLines": [
@@ -7527,7 +8280,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 222,
+    "displayOrder": 245,
     "localPath": "/sprites/seven.webp",
     "description": "Enemy player foot trails are visible in the world for your Squad.",
     "descriptionLines": [
@@ -7560,7 +8313,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 223,
+    "displayOrder": 246,
     "localPath": "/sprites/gold-seven.webp",
     "description": "Gain 3x bonus XP from eliminations Enemy player foot trails are visible in the world for your Squad.",
     "descriptionLines": [
@@ -7594,7 +8347,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 224,
+    "displayOrder": 247,
     "localPath": "/sprites/gummy-seven.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Enemy player foot trails are visible in the world for your Squad.",
     "descriptionLines": [
@@ -7628,7 +8381,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 225,
+    "displayOrder": 248,
     "localPath": "/sprites/galaxy-seven.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Enemy player foot trails are visible in the world for your Squad.",
     "descriptionLines": [
@@ -7662,7 +8415,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 226,
+    "displayOrder": 249,
     "localPath": "/sprites/holofoil-seven.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Enemy player foot trails are visible in the world for your Squad.",
     "descriptionLines": [
@@ -7696,7 +8449,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 227,
+    "displayOrder": 250,
     "localPath": "/sprites/ironmouse.webp",
     "description": "Regenerate health over time when low. While regenerating, gain Cloak and low gravity!",
     "descriptionLines": [
@@ -7730,7 +8483,7 @@
     "sourceVariant": "Base",
     "rarity": "Mythic",
     "releaseStatus": "released",
-    "displayOrder": 228,
+    "displayOrder": 251,
     "localPath": "/sprites/pollo.webp",
     "description": "Upon earning an elimination, slowly replenish shield for you and nearby squad members for a duration. Location",
     "descriptionLines": [
@@ -7764,7 +8517,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 229,
+    "displayOrder": 252,
     "localPath": "/sprites/llama.webp",
     "description": "Opening ammo boxes has a chance to grant a weapon upgrade.",
     "descriptionLines": [
@@ -7797,7 +8550,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 230,
+    "displayOrder": 253,
     "localPath": "/sprites/gold-llama.webp",
     "description": "Gain 3x bonus XP from eliminations Opening ammo boxes has a chance to grant a weapon upgrade.",
     "descriptionLines": [
@@ -7831,7 +8584,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 231,
+    "displayOrder": 254,
     "localPath": "/sprites/gummy-llama.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Opening ammo boxes has a chance to grant a weapon upgrade.",
     "descriptionLines": [
@@ -7865,7 +8618,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 232,
+    "displayOrder": 255,
     "localPath": "/sprites/galaxy-llama.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Opening ammo boxes has a chance to grant a weapon upgrade.",
     "descriptionLines": [
@@ -7899,7 +8652,7 @@
     "sourceVariant": "Gem",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 233,
+    "displayOrder": 256,
     "localPath": "/sprites/gem-llama.webp",
     "description": "Take 30% less Fall damage Opening ammo boxes has a chance to grant a weapon upgrade.",
     "descriptionLines": [
@@ -7933,7 +8686,7 @@
     "sourceVariant": "Base",
     "rarity": "Legendary",
     "releaseStatus": "released",
-    "displayOrder": 234,
+    "displayOrder": 257,
     "localPath": "/sprites/peely.webp",
     "description": "Emits a ping for players with rare sprites nearby, but marks you on the map.",
     "descriptionLines": [
@@ -7966,7 +8719,7 @@
     "sourceVariant": "Gold",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 235,
+    "displayOrder": 258,
     "localPath": "/sprites/gold-peely.webp",
     "description": "Gain 3x bonus XP from eliminations Emits a ping for players with rare sprites nearby, but marks you on the map.",
     "descriptionLines": [
@@ -8000,7 +8753,7 @@
     "sourceVariant": "Candy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 236,
+    "displayOrder": 259,
     "localPath": "/sprites/gummy-peely.webp",
     "description": "Gain 20% more Sprite Dust upon Extraction Emits a ping for players with rare sprites nearby, but marks you on the map.",
     "descriptionLines": [
@@ -8034,7 +8787,7 @@
     "sourceVariant": "Galaxy",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 237,
+    "displayOrder": 260,
     "localPath": "/sprites/galaxy-peely.webp",
     "description": "Gain 30% more Ammo whenever picked up in the world Emits a ping for players with rare sprites nearby, but marks you on the map.",
     "descriptionLines": [
@@ -8068,7 +8821,7 @@
     "sourceVariant": "Holofoil",
     "rarity": "Special",
     "releaseStatus": "released",
-    "displayOrder": 238,
+    "displayOrder": 261,
     "localPath": "/sprites/holofoil-peely.webp",
     "description": "5% chance for your squad to find rare Sprite Variants from looting chests Emits a ping for players with rare sprites nearby, but marks you on the map.",
     "descriptionLines": [
