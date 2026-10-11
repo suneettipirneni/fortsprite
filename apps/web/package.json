@@ -7,7 +7,7 @@
     "build": "node scripts/prepare-sprite-assets.mjs --production && next build",
     "catalog:sync-assets": "node scripts/sync-sprite-assets.mjs",
     "catalog:validate": "node scripts/validate-sprite-catalog.mjs",
-    "lint": "eslint .",
+    "lint": "oxlint -c ../../.oxlintrc.json .",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:instant": "playwright test --config playwright.instant.config.ts",
@@ -19,15 +19,15 @@
     "@better-auth/passkey": "1.7.7",
     "@better-auth/utils": "0.4.2",
     "@fortsprite/api": "workspace:*",
-    "@tanstack/react-virtual": "^3.14.13",
+    "@tanstack/react-virtual": "^3.14.15",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "@workspace/contracts": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "^1.7.7",
     "hono": "^4.13.13",
-    "lucide-react": "^1.52.0",
-    "motion": "^14.0.0",
+    "lucide-react": "^1.55.0",
+    "motion": "^14.1.0",
     "next": "16.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0"
@@ -35,13 +35,13 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@next/playwright": "16.4.0",
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.20.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   }
 }

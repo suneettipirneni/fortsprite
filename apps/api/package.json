@@ -22,15 +22,15 @@
     "@better-auth/oauth-provider": "1.7.7",
     "@better-auth/passkey": "1.7.7",
     "@better-auth/utils": "0.4.2",
-    "@hono/node-server": "^2.1.3",
+    "@hono/node-server": "^2.1.4",
     "@modelcontextprotocol/server": "2.3.1",
     "@workspace/contracts": "workspace:*",
     "better-auth": "^1.7.7",
-    "dotenv": "^18.0.6",
-    "drizzle-orm": "^0.45.3",
+    "dotenv": "^18.0.7",
+    "drizzle-orm": "^0.45.4",
     "hono": "^4.13.13",
     "pg": "^8.23.1",
-    "zod": "^4.6.5"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "2.3.1",
@@ -38,7 +38,7 @@
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.11",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   },
   "exports": {
     "./app": "./src/app.ts",

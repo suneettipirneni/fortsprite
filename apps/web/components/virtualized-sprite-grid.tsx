@@ -219,6 +219,8 @@ export function VirtualizedSpriteGrid({
     () => estimatedRowHeight(view, gridSize),
     [gridSize, view],
   )
+  // This component opts out of compilation with "use no memo" above.
+  // oxlint-disable-next-line react/incompatible-library -- TanStack Virtual requires fresh reads from its mutable instance.
   const virtualizer = useWindowVirtualizer({
     count: rows.length,
     enabled: hydrated,
@@ -323,6 +325,8 @@ export function VirtualizedSpriteGroups({
     },
     [columns, gridGap, gridSize, groups, view],
   )
+  // This component opts out of compilation with "use no memo" above.
+  // oxlint-disable-next-line react/incompatible-library -- TanStack Virtual requires fresh reads from its mutable instance.
   const virtualizer = useWindowVirtualizer({
     count: groups.length,
     enabled: hydrated,

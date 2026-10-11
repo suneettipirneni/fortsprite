@@ -125,7 +125,7 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
     setIncludeUsername(included)
   }
 
-  async function generate() {
+  async function generate(generatedAt: Date) {
     clearArtifact()
     const controller = new AbortController()
     job.current = controller
@@ -136,7 +136,7 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
       scopeLabel: scope === "collection" ? "Full collection" : seasonLabel ?? "Current filters",
       layout,
       username: includeUsername ? username : null,
-      generatedAt: new Date(),
+      generatedAt,
       signal: controller.signal,
     }
     setState({ status: "rendering", input })
@@ -242,7 +242,7 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
       <Button
         type="button"
         variant={state.status === "ready" ? "outline" : "default"}
-        onClick={generate}
+        onClick={() => generate(new Date())}
         disabled={busy || selected.length === 0}
         className="grow sm:grow-0"
       >

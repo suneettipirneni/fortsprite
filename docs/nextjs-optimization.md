@@ -49,11 +49,24 @@ The app and shared UI use ordinary functions and derived values instead of manua
 `useMemo`/`useCallback`. Collection saves retain their per-Sprite synchronization
 queue; profile failures retain the controlled draft.
 
-The root `eslint.config.mjs` applies Next.js React/TypeScript rules and all 16
-recommended React Hooks rules at error severity to both `apps/web` and
-`packages/ui/src`. Run `pnpm lint` from the root. Compiler diagnostics supported
-by the plugin fail lint, including purity, refs, unsupported syntax and incompatible
-libraries. The lint task includes this configuration in its Turborepo cache inputs.
+The root `.oxlintrc.json` applies native Next.js, React, TypeScript, import and
+accessibility rules to both `apps/web` and `packages/ui/src`. Run `pnpm lint`
+from the root. Fourteen recommended React Hooks/compiler rules run natively at error severity.
+Export timestamps are captured directly in the click handler. The virtualized grid
+components retain their `"use no memo"` compiler directives and have narrow
+`react/incompatible-library` annotations because TanStack Virtual requires fresh
+reads from its mutable instance. No JavaScript lint plugins or ESLint runner remain.
+The five checks without stable native equivalents (`react/no-deprecated`,
+`react/require-render-return`, `@next/next/no-location-assign-relative-destination`,
+`react-hooks/config` and `react-hooks/gating`) are omitted. JSX usage is handled
+by Oxlint rather than ESLint's `jsx-uses-react` and `jsx-uses-vars` helper rules.
+The lint task includes the Oxlint configuration in its Turborepo cache inputs.
+API and contracts retain their existing `tsc --noEmit` lint tasks.
+
+All workspace type checks and API compilation use TypeScript 7's native `tsc`.
+Next.js 16.4 also uses the project-local CLI for production build checks by default.
+Oxlint runs the configured syntax rules; its optional `tsgolint` type-aware backend
+is not enabled.
 
 The compiler cleanup passed root lint/typechecking, 23 web unit tests, the 30-case
 desktop/mobile suite, and 18 targeted browser checks after the final action changes.

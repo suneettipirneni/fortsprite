@@ -11,18 +11,16 @@
     "security:audit": "pnpm audit --audit-level=low"
   },
   "devDependencies": {
-    "eslint": "^9.39.5",
-    "eslint-config-next": "16.4.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
+    "oxlint": "1.87.0",
     "turbo": "^2.11.7",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   },
   "packageManager": "pnpm@10.28.2",
   "engines": {
     "node": ">=22.12.0 <23"
   },
   "dependencies": {
-    "@neon/config": "^1.8.4",
-    "@neon/env": "^1.5.1"
+    "@neon/config": "^1.8.6",
+    "@neon/env": "^1.5.3"
   }
 }
