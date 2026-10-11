@@ -42,11 +42,11 @@ export function McpConsent({ request }: { request: McpOAuthConsent }) {
         You will return to <span className="break-all font-medium text-foreground">{request.client.redirectHost}</span>. Disconnect this assistant any time in Account settings.
       </p>
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button className="sm:flex-1" variant="outline" disabled={pending !== null} onClick={() => respond(false)}>
+        <Button className="sm:flex-1" variant="outline" disabled={pending !== null} onClick={() => { void respond(false) }}>
           {pending === "deny" ? <LoaderCircleIcon className="animate-spin" /> : null}
           Deny access
         </Button>
-        <Button className="sm:flex-1" disabled={pending !== null} onClick={() => respond(true)}>
+        <Button className="sm:flex-1" disabled={pending !== null} onClick={() => { void respond(true) }}>
           {pending === "allow" ? <LoaderCircleIcon className="animate-spin" /> : null}
           Allow access
         </Button>

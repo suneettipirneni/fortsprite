@@ -84,7 +84,7 @@ export function SignInOptions() {
 
   return (
     <div className="flex flex-col gap-3">
-      <form onSubmit={createAccount} className="flex flex-col gap-3">
+      <form onSubmit={(event) => { void createAccount(event) }} className="flex flex-col gap-3">
         <Field data-disabled={pending !== null || undefined}>
           <FieldLabel htmlFor="username">Username</FieldLabel>
           <Input
@@ -124,7 +124,7 @@ export function SignInOptions() {
         type="button"
         size="lg"
         variant="outline"
-        onClick={signInWithPasskey}
+        onClick={() => { void signInWithPasskey() }}
         disabled={pending !== null}
       >
         {pending === "sign-in" ? (

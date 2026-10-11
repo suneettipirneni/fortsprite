@@ -46,7 +46,7 @@ export function McpGrantManager({ grants, endpoint, loading = false }: { grants:
       </div>
       <div className="flex items-center gap-2">
         <Input aria-label="Assistant MCP URL" readOnly value={endpoint} className="min-w-0 font-mono text-xs" />
-        <Button variant="outline" disabled={loading} onClick={copyEndpoint} aria-label="Copy assistant MCP URL"><CopyIcon /></Button>
+        <Button variant="outline" disabled={loading} onClick={() => { void copyEndpoint() }} aria-label="Copy assistant MCP URL"><CopyIcon /></Button>
       </div>
       {grants.length ? (
         <div className="divide-y divide-border rounded-xl border border-border">
@@ -56,7 +56,7 @@ export function McpGrantManager({ grants, endpoint, loading = false }: { grants:
                 <p className="break-words font-medium">{grant.clientName}</p>
                 <p className="text-xs text-muted-foreground">{grant.scopes.map((scope) => mcpScopeLabels[scope] ?? scope).join(" · ")}</p>
               </div>
-              <Button variant="outline" disabled={pending !== null} aria-label={`Disconnect assistant ${grant.clientName}`} onClick={() => disconnect(grant)}>
+              <Button variant="outline" disabled={pending !== null} aria-label={`Disconnect assistant ${grant.clientName}`} onClick={() => { void disconnect(grant) }}>
                 {pending === grant.id ? <LoaderCircleIcon className="animate-spin" /> : null}
                 Disconnect
               </Button>

@@ -99,7 +99,7 @@ export function CredentialManager({
                   variant="outline"
                   disabled={pending !== null || passkeys.length === 1}
                   aria-label={`Remove passkey ${credential.name || "Passkey"}`}
-                  onClick={() => removePasskey(credential.id)}
+                  onClick={() => { void removePasskey(credential.id) }}
                 >
                   {pending === credential.id ? <LoaderCircleIcon className="animate-spin" /> : null}
                   Remove
@@ -118,7 +118,7 @@ export function CredentialManager({
             placeholder="Passkey name, optional"
             aria-label="Passkey name"
           />
-          <Button disabled={pending !== null} onClick={addPasskey}>
+          <Button disabled={pending !== null} onClick={() => { void addPasskey() }}>
             {pending === "add-passkey" ? <LoaderCircleIcon className="animate-spin" /> : <FingerprintIcon />}
             Add passkey
           </Button>

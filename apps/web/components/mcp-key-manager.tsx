@@ -82,7 +82,7 @@ export function McpKeyManager({ keys, endpoint, loading = false }: { keys: McpKe
         <p className="text-muted-foreground">Use this remote MCP URL with an Authorization header containing Bearer followed by your key.</p>
         <div className="flex items-center gap-2">
           <Input aria-label="Remote MCP URL" readOnly value={endpoint} className="min-w-0 font-mono text-xs" />
-          <Button variant="outline" disabled={loading} onClick={() => copy(endpoint, "MCP URL")} aria-label="Copy MCP URL"><CopyIcon /></Button>
+          <Button variant="outline" disabled={loading} onClick={() => { void copy(endpoint, "MCP URL") }} aria-label="Copy MCP URL"><CopyIcon /></Button>
         </div>
       </div>
       {credential ? (
@@ -90,7 +90,7 @@ export function McpKeyManager({ keys, endpoint, loading = false }: { keys: McpKe
           <p className="text-sm font-medium">Copy your new key now. FortSprite shows it only once.</p>
           <div className="flex items-center gap-2">
             <Input aria-label="New MCP key" readOnly value={credential.key} className="min-w-0 font-mono text-xs" />
-            <Button variant="outline" onClick={() => copy(credential.key, "MCP key")} aria-label="Copy MCP key"><CopyIcon /></Button>
+            <Button variant="outline" onClick={() => { void copy(credential.key, "MCP key") }} aria-label="Copy MCP key"><CopyIcon /></Button>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setCredential(null)}>Done, hide key</Button>
         </div>
@@ -106,7 +106,7 @@ export function McpKeyManager({ keys, endpoint, loading = false }: { keys: McpKe
                   {key.expiresAt ? ` · Expires ${new Date(key.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}` : ""}
                 </p>
               </div>
-              <Button variant="outline" disabled={pending !== null} aria-label={`Revoke MCP key ${key.name}`} onClick={() => revokeKey(key.id)}>
+              <Button variant="outline" disabled={pending !== null} aria-label={`Revoke MCP key ${key.name}`} onClick={() => { void revokeKey(key.id) }}>
                 {pending === key.id ? <LoaderCircleIcon className="animate-spin" /> : null}
                 Revoke
               </Button>
@@ -114,7 +114,7 @@ export function McpKeyManager({ keys, endpoint, loading = false }: { keys: McpKe
           ))}
         </div>
       ) : <p role={loading ? "status" : undefined} className="flex min-h-20 items-center text-sm text-muted-foreground">{loading ? "Loading MCP keys…" : "No MCP keys created yet."}</p>}
-      <form onSubmit={createKey} className="flex flex-col gap-3 sm:flex-row">
+      <form onSubmit={(event) => { void createKey(event) }} className="flex flex-col gap-3 sm:flex-row">
         <Input value={name} onChange={(event) => setName(event.target.value)} disabled={loading} maxLength={40} required placeholder="Key name, e.g. Desktop assistant" aria-label="MCP key name" />
         <Button type="submit" disabled={loading || pending !== null || !name.trim()}>
           {pending === "create" ? <LoaderCircleIcon className="animate-spin" /> : <KeyRoundIcon />}

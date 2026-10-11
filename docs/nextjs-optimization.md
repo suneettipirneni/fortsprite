@@ -65,8 +65,12 @@ API and contracts retain their existing `tsc --noEmit` lint tasks.
 
 All workspace type checks and API compilation use TypeScript 7's native `tsc`.
 Next.js 16.4 also uses the project-local CLI for production build checks by default.
-Oxlint runs the configured syntax rules; its optional `tsgolint` type-aware backend
-is not enabled.
+Oxlint runs the configured syntax rules and the `oxlint-tsgolint` type-aware backend.
+`await-thenable`, `no-floating-promises` and `no-misused-promises` run at error severity
+in the web and shared UI packages. Node's `test` registrations are allowed because
+the test runner manages their completion and failures; other promises still require
+explicit handling. React event handlers return `void` and their async operations
+handle failures internally. TS7's `tsc` remains the separate type-check command.
 
 The compiler cleanup passed root lint/typechecking, 23 web unit tests, the 30-case
 desktop/mobile suite, and 18 targeted browser checks after the final action changes.

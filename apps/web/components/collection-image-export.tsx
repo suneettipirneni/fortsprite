@@ -242,7 +242,7 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
       <Button
         type="button"
         variant={state.status === "ready" ? "outline" : "default"}
-        onClick={() => generate(new Date())}
+        onClick={() => { void generate(new Date()) }}
         disabled={busy || selected.length === 0}
         className="grow sm:grow-0"
       >

@@ -112,10 +112,15 @@ export function PwaInstallPrompt({
 
   async function install() {
     if (!installEvent) return
-    await installEvent.prompt()
-    const choice = await installEvent.userChoice
-    setInstallEvent(null)
-    if (choice.outcome === "accepted") setVisible(false)
+    try {
+      await installEvent.prompt()
+      const choice = await installEvent.userChoice
+      setInstallEvent(null)
+      if (choice.outcome === "accepted") setVisible(false)
+    } catch {
+      // Keep the prompt available when the browser cannot show it.
+      return
+    }
   }
 
   if (!visible) return null
@@ -146,7 +151,7 @@ export function PwaInstallPrompt({
             </p>
           ) : null}
           {installEvent ? (
-            <Button type="button" size="sm" className="mt-3" onClick={install}>
+            <Button type="button" size="sm" className="mt-3" onClick={() => { void install() }}>
               <DownloadIcon />
               Install app
             </Button>
