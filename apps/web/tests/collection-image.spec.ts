@@ -105,7 +105,22 @@ test("defaults to the current season's filtered selection", async ({ page }, tes
   const count = collection.items.filter((item) => item.sourceSeasonId === season).length
   expect(count).toBeLessThan(collection.items.length)
   await expect(dialog.getByText(`1 of ${count} captured`, { exact: true })).toBeVisible()
+  const scroller = dialog.locator('[data-slot="export-scroll-content"]')
+  expect(await scroller.evaluate((node) => node.scrollWidth - node.clientWidth)).toBe(0)
+  const layoutSwitch = dialog.getByRole("switch", { name: "Group by Sprite type", exact: true })
+  // Wait for the dialog's opening scale animation before measuring the target.
+  await expect.poll(async () => (await layoutSwitch.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44)
+  const hitArea = (await layoutSwitch.boundingBox())!
+  expect(hitArea.width).toBeGreaterThanOrEqual(44)
+  expect(hitArea.height).toBeGreaterThanOrEqual(44)
+  // The area beside the visible track is part of the real button.
+  await layoutSwitch.click({ position: { x: 2, y: hitArea.height / 2 } })
+  await expect(layoutSwitch).not.toBeChecked()
+  await layoutSwitch.press("Space")
+  await expect(layoutSwitch).toBeChecked()
+  await page.screenshot({ path: `/tmp/fortsprite-export-options-${testInfo.project.name}.png` })
   await savePreview(page, `current-season-${testInfo.project.name}`)
+  expect(await scroller.evaluate((node) => node.scrollWidth - node.clientWidth)).toBe(0)
   await expect(dialog.getByRole("link", { name: "Download PNG" })).toHaveAttribute("download", /-grouped\.png$/)
 })
 
