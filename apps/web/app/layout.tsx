@@ -10,6 +10,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { MobileSurface, MobileSurfaceFallback } from "@/components/mobile-surface"
 
 import { PublicWebMcpTools } from "@/components/webmcp-tools"
+import { appleStartupImages, PWA_BACKGROUND } from "@/lib/pwa"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fortsprite.net"),
@@ -38,6 +39,7 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "FortSprite",
+    startupImage: appleStartupImages.map(({ url, media }) => ({ url, media })),
   },
   formatDetection: {
     telephone: false,
@@ -46,7 +48,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "dark",
-  themeColor: "#061947",
+  themeColor: PWA_BACKGROUND,
   viewportFit: "cover",
 }
 
@@ -54,12 +56,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="scheme-only-dark" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="scheme-only-dark"
+      style={{ backgroundColor: PWA_BACKGROUND, colorScheme: "dark" }}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="preconnect" href="https://rsms.me" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
-      <body>
+      <body style={{ backgroundColor: `var(--background, ${PWA_BACKGROUND})` }}>
         <PublicWebMcpTools />
         <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
           <TooltipProvider>{children}</TooltipProvider>

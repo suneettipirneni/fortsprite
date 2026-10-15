@@ -10,6 +10,7 @@ import {
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import { authClient } from "@/lib/auth-client"
+import { passkeyErrorMessage, withPasskeyCeremony } from "@/lib/passkeys"
 
 const usernamePattern = /^[A-Za-z0-9_-]{3,24}$/
 
@@ -45,21 +46,21 @@ export function SignInOptions() {
     setError(undefined)
     setPending("register")
     try {
-      const result = await authClient.passkey.addPasskey({
+      const result = await withPasskeyCeremony(() => authClient.passkey.addPasskey({
         context: normalizedUsername,
         createSession: true,
-      })
+      }))
       if (result.error) {
         setError(
           result.error.status === 409
             ? "That username is already taken. Choose another."
-            : "Your account could not be created. Please try again.",
+            : passkeyErrorMessage(result.error, "Your account could not be created. Please try again."),
         )
         return
       }
       window.location.assign(signInDestination(result.data))
-    } catch {
-      setError("Your account could not be created. Please try again.")
+    } catch (error) {
+      setError(passkeyErrorMessage(error, "Your account could not be created. Please try again."))
     } finally {
       setPending(null)
     }
@@ -69,14 +70,14 @@ export function SignInOptions() {
     setError(undefined)
     setPending("sign-in")
     try {
-      const result = await authClient.signIn.passkey()
+      const result = await withPasskeyCeremony(() => authClient.signIn.passkey())
       if (result.error) {
-        setError("We could not sign you in. Please try again.")
+        setError(passkeyErrorMessage(result.error, "We could not sign you in. Please try again."))
         return
       }
       window.location.assign(signInDestination(result.data))
-    } catch {
-      setError("We could not sign you in. Please try again.")
+    } catch (error) {
+      setError(passkeyErrorMessage(error, "We could not sign you in. Please try again."))
     } finally {
       setPending(null)
     }
@@ -97,7 +98,7 @@ export function SignInOptions() {
             spellCheck={false}
             minLength={3}
             maxLength={24}
-            pattern="[A-Za-z0-9_-]{3,24}"
+            pattern="[A-Za-z0-9_\-]{3,24}"
             aria-describedby="username-help"
             disabled={pending !== null}
             required

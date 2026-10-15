@@ -50,6 +50,7 @@ function isUniqueViolation(error: unknown) {
 function requireVerifiedUser(verified: boolean | undefined) {
   if (!verified)
     throw new APIError("UNAUTHORIZED", {
+      code: "USER_VERIFICATION_REQUIRED",
       message: "Passkey user verification is required.",
     })
 }

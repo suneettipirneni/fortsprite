@@ -3,6 +3,7 @@ import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { requestId } from "hono/request-id"
 import { count, eq, sql } from "drizzle-orm"
+import { z } from "zod"
 
 import { getCatalog } from "./catalog.ts"
 import { oauthProviderAuthServerMetadata } from "@better-auth/oauth-provider"
@@ -149,6 +150,24 @@ app.on(["GET", "POST"], "/api/auth/*", async (context) => {
   }
 
   const response = await auth.handler(context.req.raw)
+  if (path.startsWith("/passkey/") && !response.ok) {
+    const failure = z.object({ code: z.string().regex(/^[A-Z_]{1,64}$/) })
+      .safeParse(await response.clone().json().catch(() => null))
+    console.warn("FortSprite passkey request failed", {
+      path,
+      status: response.status,
+      code: failure.success ? failure.data.code : `HTTP_${response.status}`,
+      requestId: context.get("requestId"),
+    })
+  }
+  if (path === "/passkey/generate-authenticate-options" && response.ok) {
+    // Better Auth 1.7's authenticatorSelection only configures registration.
+    // Match the verification policy during sign-in while preserving its cookie.
+    return Response.json(
+      { ...await response.json(), userVerification: "required" },
+      { headers: response.headers },
+    )
+  }
   if (path !== "/get-session" || !response.ok) return response
   const body = await response.json()
   if (!body) return Response.json(null, { headers: response.headers })

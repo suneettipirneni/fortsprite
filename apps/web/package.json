@@ -7,6 +7,7 @@
     "build": "node scripts/prepare-sprite-assets.mjs --production && next build",
     "catalog:sync-assets": "node scripts/sync-sprite-assets.mjs",
     "catalog:validate": "node scripts/validate-sprite-catalog.mjs",
+    "pwa:generate-splash": "node --import tsx scripts/generate-pwa-splash.mjs",
     "lint": "oxlint -c ../../.oxlintrc.json .",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",

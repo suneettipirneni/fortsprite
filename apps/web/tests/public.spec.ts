@@ -14,6 +14,9 @@ test("social preview images are public PNGs", async ({ request }) => {
 test("a verified passkey atomically creates the account and its first session", async ({
   page,
 }, testInfo) => {
+  await page.route("**/api/auth/**", (route) => route.continue({
+    headers: { ...route.request().headers(), "x-real-ip": `198.18.74.${testInfo.project.name === "desktop" ? 1 : 2}` },
+  }))
   const username = `e2e_${testInfo.project.name}_${Date.now().toString(36)}`
   const cdp = await page.context().newCDPSession(page)
   await cdp.send("WebAuthn.enable")
@@ -33,6 +36,10 @@ test("a verified passkey atomically creates the account and its first session", 
 
   await page.goto("/sign-in")
   await page.getByRole("textbox", { name: "Username" }).fill(username)
+  await page.route("**/api/auth/passkey/generate-register-options**", async (route) => {
+    const response = await route.fetch()
+    await route.fulfill({ response, json: { ...await response.json(), timeout: 500 } })
+  }, { times: 1 })
   await page
     .getByRole("button", { name: "Create account" })
     .click()

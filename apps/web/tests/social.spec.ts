@@ -193,7 +193,10 @@ test("blocking revokes sharing and unblocking does not restore it", async ({
 
 test("a verified resident passkey can be added and used to sign back in", async ({
   page,
-}) => {
+}, testInfo) => {
+  await page.route("**/api/auth/**", (route) => route.continue({
+    headers: { ...route.request().headers(), "x-real-ip": `198.18.75.${testInfo.project.name === "desktop" ? 1 : 2}` },
+  }))
   const cdp = await page.context().newCDPSession(page)
   await cdp.send("WebAuthn.enable")
   const { authenticatorId } = await cdp.send(
@@ -217,6 +220,10 @@ test("a verified resident passkey can be added and used to sign back in", async 
     kind: string
   }[]
   await page.getByRole("textbox", { name: "Passkey name" }).fill("Test device")
+  await page.route("**/api/auth/passkey/generate-register-options**", async (route) => {
+    const response = await route.fetch()
+    await route.fulfill({ response, json: { ...await response.json(), timeout: 500 } })
+  }, { times: 1 })
   await page.getByRole("button", { name: "Add passkey" }).click()
   await expect(
     page.getByRole("alert").filter({
@@ -296,6 +303,10 @@ test("a verified resident passkey can be added and used to sign back in", async 
     authenticatorId: backupAuthenticatorId,
     isUserVerified: false,
   })
+  await page.route("**/api/auth/passkey/generate-authenticate-options", async (route) => {
+    const response = await route.fetch()
+    await route.fulfill({ response, json: { ...await response.json(), timeout: 500 } })
+  }, { times: 1 })
   await page.getByRole("button", { name: "Sign in" }).click()
   await expect(
     page.getByRole("alert").filter({

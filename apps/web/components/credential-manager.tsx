@@ -8,6 +8,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { authClient } from "@/lib/auth-client"
 import { notifyOtherTabs } from "@/lib/cross-tab-refresh"
+import { passkeyErrorMessage, withPasskeyCeremony } from "@/lib/passkeys"
 
 export function CredentialManager({
   credentials,
@@ -39,17 +40,17 @@ export function CredentialManager({
     setNotice(null)
     setPending("add-passkey")
     try {
-      const result = await authClient.passkey.addPasskey({
+      const result = await withPasskeyCeremony(() => authClient.passkey.addPasskey({
         name: name.trim() || undefined,
-      })
+      }))
       if (result.error) {
-        fail("The passkey could not be added. Please try again.")
+        fail(passkeyErrorMessage(result.error, "The passkey could not be added. Please try again."))
         return
       }
       setName("")
       finish("Passkey added.")
-    } catch {
-      fail("The passkey could not be added. Please try again.")
+    } catch (error) {
+      fail(passkeyErrorMessage(error, "The passkey could not be added. Please try again."))
     }
   }
 

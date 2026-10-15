@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next"
+import { PWA_BACKGROUND } from "@/lib/pwa"
 
 const description =
   "Track your Fortnite Sprite collection and see which friends can help fill the gaps."
@@ -12,8 +13,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/",
     scope: "/",
     display: "standalone",
-    background_color: "#061947",
-    theme_color: "#061947",
+    background_color: PWA_BACKGROUND,
+    theme_color: PWA_BACKGROUND,
     categories: ["games", "utilities"],
     icons: [
       {
