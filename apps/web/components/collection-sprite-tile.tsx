@@ -37,6 +37,8 @@ import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
 
 import type { CollectionChange } from "@/lib/collection-state"
 import type { CatalogItem } from "@workspace/contracts"
+import { spriteAbilities } from "@/lib/sprite-abilities"
+import { variantStyle } from "@/lib/variant-style"
 import {
   SpriteTracking,
   TrackingSkeleton,
@@ -498,6 +500,7 @@ function SpriteDetails({
   notice: CollectionNotice | null
   onChange: (change: CollectionChange) => void
 }) {
+  const { variantAbility, baseAbilities } = spriteAbilities(sprite)
   return (
     <>
       <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-center gap-3 border-b border-white/10 bg-muted/25 p-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6 sm:p-6">
@@ -610,11 +613,22 @@ function SpriteDetails({
 
         <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_15rem]">
           <section className="flex flex-col gap-3 rounded-xl bg-muted/25 p-5 ring-1 ring-inset ring-white/10 sm:p-4">
-            <h3 className="font-semibold">About this Sprite</h3>
-            <p className="text-pretty text-foreground/80">
-              {sprite.description ??
-                "No description is available for this Sprite."}
-            </p>
+            {variantAbility ? (
+              <div
+                data-slot="variant-ability"
+                className="flex flex-col gap-3 rounded-lg p-4 text-white ring-1 ring-inset ring-white/15"
+                style={variantStyle(sprite.variant).frame}
+              >
+                <h3 className="font-semibold">{sprite.variant}</h3>
+                <p className="text-pretty text-white/90">{variantAbility.description}</p>
+              </div>
+            ) : null}
+            <h3 className="font-semibold">{sprite.baseName} abilities</h3>
+            {baseAbilities.length > 0 ? baseAbilities.map((ability) => (
+              <p key={ability} className="text-pretty text-foreground/80">{ability}</p>
+            )) : (
+              <p className="text-pretty text-muted-foreground">No base ability description is available for this Sprite.</p>
+            )}
             {sprite.levelProgression ? (
               <p className="text-pretty text-muted-foreground">
                 {sprite.levelProgression}

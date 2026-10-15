@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs"
 import { test, expect, type Page } from "@playwright/test"
 import AxeBuilder from "@axe-core/playwright"
 import type { CollectionSnapshot } from "@workspace/contracts"
+import { variantAbilities } from "../lib/sprite-abilities"
 
 type BrowserFixture = {
   baseURL: string
@@ -240,6 +241,53 @@ test("virtualized collection renders the final Sprite after a full-page scroll",
     path: `/tmp/fortsprite-${testInfo.project.name}-collection-bottom.png`,
     fullPage: false,
   })
+})
+
+test("details separate variant bonuses from base abilities", async ({ page }, testInfo) => {
+  await expect(page).toHaveURL(/\/collection$/)
+  await expect(page).toHaveTitle(/My collection/)
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
+  for (const [variant, baseName] of [
+    ["Gold", "Vampire"],
+    ["Trick or Treat", "Jonesy"],
+    ["Quack", "Water"],
+    ["Cube", "Boss"],
+    ["Base", "Jonesy"],
+  ]) {
+    const search = page.getByRole("combobox", { name: "Search collection", exact: true })
+    await search.fill(`${variant} ${baseName}`)
+    await expect(search).toHaveValue(`${variant} ${baseName}`)
+    await expect(page.getByTestId("virtualized-sprite-grid")).toHaveAttribute("data-total-items", "1")
+    await page.getByRole("button", { name: new RegExp(`^Open ${variant} ${baseName} details\\.`) }).click()
+    const dialog = page.getByRole("dialog")
+    const baseHeading = dialog.getByRole("heading", { name: `${baseName} abilities`, exact: true })
+    await baseHeading.scrollIntoViewIfNeeded()
+    await expect(baseHeading).toBeVisible()
+    if (variant !== "Base") {
+      const bonus = variantAbilities[variant]!
+      await expect(dialog.getByRole("heading", { name: variant, exact: true })).toBeVisible()
+      await expect(dialog.getByText(bonus.description, { exact: true })).toHaveCount(1)
+      await expect(dialog.locator('[data-slot="variant-ability"]').getByRole("link")).toHaveCount(0)
+      const background = await dialog.locator('[data-slot="variant-ability"]').evaluate((element) => {
+        const style = getComputedStyle(element)
+        return [style.backgroundColor, style.backgroundImage, style.backgroundBlendMode]
+      })
+      const portraitBackground = await dialog.getByRole("img", { name: `${variant} ${baseName} Sprite`, exact: true }).evaluate((image) => {
+        const style = getComputedStyle(image.parentElement!)
+        return [style.backgroundColor, style.backgroundImage, style.backgroundBlendMode]
+      })
+      expect(background).toEqual(portraitBackground)
+    } else {
+      await expect(dialog.getByRole("link", { name: "Variant ability source" })).toHaveCount(0)
+    }
+    await expect(page.locator("nextjs-dialog")).toHaveCount(0)
+    await assertFits(page)
+    if (variant === "Trick or Treat") {
+      await page.screenshot({ path: `/tmp/fortsprite-variant-ability-${testInfo.project.name}.png` })
+    }
+    await dialog.getByRole("button", { name: "Done", exact: true }).click()
+    await expect(dialog).toHaveCount(0)
+  }
 })
 
 test("capture and mastery persist and clearing capture clears mastery", async ({

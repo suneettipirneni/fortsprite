@@ -182,8 +182,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-jonesy.webp",
-    "description": "Recover some health or shields after being damaged after a short duration.",
+    "description": "Chance to find candy when opening containers. Recover some health or shields after being damaged after a short duration.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Recover some health or shields after being damaged after a short duration."
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
@@ -215,8 +216,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/quack-jonesy.webp",
-    "description": "Recover some health or shields after being damaged after a short duration.",
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory. Recover some health or shields after being damaged after a short duration.",
     "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
       "Recover some health or shields after being damaged after a short duration."
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
@@ -411,8 +413,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-adventure.webp",
-    "description": "Upgrades a random item in the player's inventory with each Level Up!",
+    "description": "Chance to find candy when opening containers. Upgrades a random item in the player's inventory with each Level Up!",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Upgrades a random item in the player's inventory with each Level Up!"
     ],
     "location": "Spotted near high and mountainous areas",
@@ -443,8 +446,10 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/quack-adventure.webp",
-    "description": "",
-    "descriptionLines": [],
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
+    "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory."
+    ],
     "levelProgression": "Upgrades a random item in the player's inventory with each Level Up!",
     "location": "Spotted near high and mountainous areas",
     "spriteDustValue": 0,
@@ -646,8 +651,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-bush.webp",
-    "description": "Grants a bush on you after a duration, gain a bush on elimination at max level.",
+    "description": "Chance to find candy when opening containers. Grants a bush on you after a duration, gain a bush on elimination at max level.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Grants a bush on you after a duration, gain a bush on elimination at max level."
     ],
     "levelProgression": "Time between bush activating decreases with each Level Up!",
@@ -678,8 +684,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/quack-bush.webp",
-    "description": "Grants a bush on you after a duration, gain a bush on elimination at max level. Location",
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory. Grants a bush on you after a duration, gain a bush on elimination at max level. Location",
     "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
       "Grants a bush on you after a duration, gain a bush on elimination at max level.",
       "Location"
     ],
@@ -881,8 +888,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-sonic.webp",
-    "description": "Gotta Go Fast!",
+    "description": "Chance to find candy when opening containers. Gotta Go Fast!",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Gotta Go Fast!"
     ],
     "levelProgression": "Sprint faster with each Level Up!",
@@ -1083,8 +1091,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-tails.webp",
-    "description": "(Active - Jump In Air) Hover with the help of Tails!",
+    "description": "Chance to find candy when opening containers. (Active - Jump In Air) Hover with the help of Tails!",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "(Active - Jump In Air) Hover with the help of Tails!"
     ],
     "levelProgression": "Hover speed increased with each Level Up!",
@@ -1290,8 +1299,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-shadow.webp",
-    "description": "Automatically reload unequipped weapons over time. Reloads equipped weapon at max level.",
+    "description": "Chance to find candy when opening containers. Automatically reload unequipped weapons over time. Reloads equipped weapon at max level.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Automatically reload unequipped weapons over time.",
       "Reloads equipped weapon at max level."
     ],
@@ -1493,8 +1503,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-8-bit.webp",
-    "description": "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it.",
+    "description": "Chance to find candy when opening containers. Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it."
     ],
     "location": "Spotted near high and mountainous areas",
@@ -1694,8 +1705,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-jackrabbit.webp",
-    "description": "(Active - Jump In Air) Double Jump.",
+    "description": "Chance to find candy when opening containers. (Active - Jump In Air) Double Jump.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "(Active - Jump In Air) Double Jump."
     ],
     "levelProgression": "Cooldown between jumps decreases with each Level Up!",
@@ -1906,8 +1918,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-crown.webp",
-    "description": "Only levels up by winning matches while equipped. Mastery with 1 win.",
+    "description": "Chance to find candy when opening containers. Only levels up by winning matches while equipped. Mastery with 1 win.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Only levels up by winning matches while equipped.",
       "Mastery with 1 win."
     ],
@@ -2109,8 +2122,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-killswitch.webp",
-    "description": "(Active - Aim In Air) Enter Hangtime with improved accuracy.",
+    "description": "Chance to find candy when opening containers. (Active - Aim In Air) Enter Hangtime with improved accuracy.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "(Active - Aim In Air) Enter Hangtime with improved accuracy."
     ],
     "levelProgression": "Accuracy increases with each Level Up!",
@@ -2311,8 +2325,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-klombo.webp",
-    "description": "Grants random items at each level, only levels up by consuming items.",
+    "description": "Chance to find candy when opening containers. Grants random items at each level, only levels up by consuming items.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Grants random items at each level, only levels up by consuming items."
     ],
     "levelProgression": "Item quality increases with each Level Up!",
@@ -2344,8 +2359,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/quack-klombo.webp",
-    "description": "Grants random items at each level, only levels up by consuming items.",
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory. Grants random items at each level, only levels up by consuming items.",
     "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
       "Grants random items at each level, only levels up by consuming items."
     ],
     "levelProgression": "Item quality increases with each Level Up!",
@@ -2579,8 +2595,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-overshield.webp",
-    "description": "Grants overshield, scaling with level.",
+    "description": "Chance to find candy when opening containers. Grants overshield, scaling with level.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Grants overshield, scaling with level."
     ],
     "location": "Spotted near high and mountainous areas",
@@ -2783,8 +2800,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-x-ray.webp",
-    "description": "Periodically mark enemies in an area around you.",
+    "description": "Chance to find candy when opening containers. Periodically mark enemies in an area around you.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Periodically mark enemies in an area around you."
     ],
     "levelProgression": "Mark more often with each Level Up!",
@@ -2987,8 +3005,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-onigiri.webp",
-    "description": "Applies Overdrive after eating or drinking a Consumable.",
+    "description": "Chance to find candy when opening containers. Applies Overdrive after eating or drinking a Consumable.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Applies Overdrive after eating or drinking a Consumable."
     ],
     "levelProgression": "Overdrive lasts longer with each Level Up!",
@@ -3188,8 +3207,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-storm-scout.webp",
-    "description": "Applies Overdrive after taking a certain amount of storm damage. Reveals future Storm Circles at max level.",
+    "description": "Chance to find candy when opening containers. Applies Overdrive after taking a certain amount of storm damage. Reveals future Storm Circles at max level.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Applies Overdrive after taking a certain amount of storm damage.",
       "Reveals future Storm Circles at max level."
     ],
@@ -3391,8 +3411,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-blinky.webp",
-    "description": "Grants cloak for a duration when you take damage.",
+    "description": "Chance to find candy when opening containers. Grants cloak for a duration when you take damage.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Grants cloak for a duration when you take damage."
     ],
     "levelProgression": "Cloak duration increases with each Level Up!",
@@ -3598,8 +3619,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-birthday.webp",
-    "description": "Opening chests has a chance to spawn a piece of cake. Eliminations can spawn cake at max level.",
+    "description": "Chance to find candy when opening containers. Opening chests has a chance to spawn a piece of cake. Eliminations can spawn cake at max level.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Opening chests has a chance to spawn a piece of cake.",
       "Eliminations can spawn cake at max level."
     ],
@@ -3801,8 +3823,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-crash-bandicoot.webp",
-    "description": "(Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies.",
+    "description": "Chance to find candy when opening containers. (Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "(Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies."
     ],
     "levelProgression": "Damage increases and cooldown decreases with each Level Up!",
@@ -4008,8 +4031,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-pond.webp",
-    "description": "(Active) - Jump shortly after landing to trigger a Super Jump, if charges are present. Gain charges over time.",
+    "description": "Chance to find candy when opening containers. (Active) - Jump shortly after landing to trigger a Super Jump, if charges are present. Gain charges over time.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "(Active) - Jump shortly after landing to trigger a Super Jump, if charges are present.",
       "Gain charges over time."
     ],
@@ -4210,8 +4234,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-morgana.webp",
-    "description": "Increases the effectiveness of healing items.",
+    "description": "Chance to find candy when opening containers. Increases the effectiveness of healing items.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Increases the effectiveness of healing items."
     ],
     "levelProgression": "Healing effectiveness increases with each Level Up!",
@@ -4276,8 +4301,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-spooky-dash.webp",
-    "description": "(Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
+    "description": "Gain 3x bonus XP from eliminations (Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
     "descriptionLines": [
+      "Gain 3x bonus XP from eliminations",
       "(Active - Jump In Air) Spooky Dash lets you phase through some objects.",
       "Gain charges over time."
     ],
@@ -4310,8 +4336,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-spooky-dash.webp",
-    "description": "(Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
+    "description": "Button mash! All inputs are correct when entering cheat codes found in the world (Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
     "descriptionLines": [
+      "Button mash! All inputs are correct when entering cheat codes found in the world",
       "(Active - Jump In Air) Spooky Dash lets you phase through some objects.",
       "Gain charges over time."
     ],
@@ -4344,8 +4371,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-spooky-dash.webp",
-    "description": "(Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
+    "description": "Increases chances of spawning items from your Loot Hacks. (Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
     "descriptionLines": [
+      "Increases chances of spawning items from your Loot Hacks.",
       "(Active - Jump In Air) Spooky Dash lets you phase through some objects.",
       "Gain charges over time."
     ],
@@ -4378,8 +4406,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-spooky-dash.webp",
-    "description": "(Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
+    "description": "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules. (Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
     "descriptionLines": [
+      "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules.",
       "(Active - Jump In Air) Spooky Dash lets you phase through some objects.",
       "Gain charges over time."
     ],
@@ -4412,8 +4441,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-spooky-dash.webp",
-    "description": "(Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
+    "description": "Chance to find candy when opening containers. (Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "(Active - Jump In Air) Spooky Dash lets you phase through some objects.",
       "Gain charges over time."
     ],
@@ -4445,8 +4475,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/quack-spooky-dash.webp",
-    "description": "(Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory. (Active - Jump In Air) Spooky Dash lets you phase through some objects. Gain charges over time.",
     "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
       "(Active - Jump In Air) Spooky Dash lets you phase through some objects.",
       "Gain charges over time."
     ],
@@ -4512,8 +4543,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-vampire.webp",
-    "description": "Recover health when damaging an enemy.",
+    "description": "Gain 3x bonus XP from eliminations Recover health when damaging an enemy.",
     "descriptionLines": [
+      "Gain 3x bonus XP from eliminations",
       "Recover health when damaging an enemy."
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
@@ -4545,8 +4577,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-vampire.webp",
-    "description": "Recover health when damaging an enemy.",
+    "description": "Button mash! All inputs are correct when entering cheat codes found in the world Recover health when damaging an enemy.",
     "descriptionLines": [
+      "Button mash! All inputs are correct when entering cheat codes found in the world",
       "Recover health when damaging an enemy."
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
@@ -4578,8 +4611,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-vampire.webp",
-    "description": "Recover health when damaging an enemy.",
+    "description": "Increases chances of spawning items from your Loot Hacks. Recover health when damaging an enemy.",
     "descriptionLines": [
+      "Increases chances of spawning items from your Loot Hacks.",
       "Recover health when damaging an enemy."
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
@@ -4611,8 +4645,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-vampire.webp",
-    "description": "Recover health when damaging an enemy.",
+    "description": "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules. Recover health when damaging an enemy.",
     "descriptionLines": [
+      "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules.",
       "Recover health when damaging an enemy."
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
@@ -4644,8 +4679,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-vampire.webp",
-    "description": "Recover health when damaging an enemy.",
+    "description": "Chance to find candy when opening containers. Recover health when damaging an enemy.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Recover health when damaging an enemy."
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
@@ -4709,8 +4745,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-the-deer.webp",
-    "description": "Melee attacks deal more damage.",
+    "description": "Gain 3x bonus XP from eliminations Melee attacks deal more damage.",
     "descriptionLines": [
+      "Gain 3x bonus XP from eliminations",
       "Melee attacks deal more damage."
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
@@ -4742,8 +4779,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-the-deer.webp",
-    "description": "Melee attacks deal more damage.",
+    "description": "Button mash! All inputs are correct when entering cheat codes found in the world Melee attacks deal more damage.",
     "descriptionLines": [
+      "Button mash! All inputs are correct when entering cheat codes found in the world",
       "Melee attacks deal more damage."
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
@@ -4775,8 +4813,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-the-deer.webp",
-    "description": "Melee attacks deal more damage.",
+    "description": "Increases chances of spawning items from your Loot Hacks. Melee attacks deal more damage.",
     "descriptionLines": [
+      "Increases chances of spawning items from your Loot Hacks.",
       "Melee attacks deal more damage."
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
@@ -4808,8 +4847,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-the-deer.webp",
-    "description": "Melee attacks deal more damage.",
+    "description": "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules. Melee attacks deal more damage.",
     "descriptionLines": [
+      "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules.",
       "Melee attacks deal more damage."
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
@@ -4841,8 +4881,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-the-deer.webp",
-    "description": "Melee attacks deal more damage.",
+    "description": "Chance to find candy when opening containers. Melee attacks deal more damage.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Melee attacks deal more damage."
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
@@ -4907,8 +4948,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/gold-dumpster-dive.webp",
-    "description": "Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
+    "description": "Gain 3x bonus XP from eliminations Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
     "descriptionLines": [
+      "Gain 3x bonus XP from eliminations",
       "Food provides bonus healing.",
       "Find food when jumping out of hiding props, and a small chance when opening containers."
     ],
@@ -4941,8 +4983,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/cheat-master-dumpster-dive.webp",
-    "description": "Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
+    "description": "Button mash! All inputs are correct when entering cheat codes found in the world Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
     "descriptionLines": [
+      "Button mash! All inputs are correct when entering cheat codes found in the world",
       "Food provides bonus healing.",
       "Find food when jumping out of hiding props, and a small chance when opening containers."
     ],
@@ -4975,8 +5018,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/loot-hacker-dumpster-dive.webp",
-    "description": "Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
+    "description": "Increases chances of spawning items from your Loot Hacks. Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
     "descriptionLines": [
+      "Increases chances of spawning items from your Loot Hacks.",
       "Food provides bonus healing.",
       "Find food when jumping out of hiding props, and a small chance when opening containers."
     ],
@@ -5009,8 +5053,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/bounty-hunter-dumpster-dive.webp",
-    "description": "Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
+    "description": "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules. Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
     "descriptionLines": [
+      "Chance to find sprites when eliminating opponents. Only gains sprite XP from eliminations, unless sprite has special XP rules.",
       "Food provides bonus healing.",
       "Find food when jumping out of hiding props, and a small chance when opening containers."
     ],
@@ -5043,8 +5088,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-dumpster-dive.webp",
-    "description": "Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
+    "description": "Chance to find candy when opening containers. Food provides bonus healing. Find food when jumping out of hiding props, and a small chance when opening containers.",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Food provides bonus healing.",
       "Find food when jumping out of hiding props, and a small chance when opening containers."
     ],
@@ -5245,8 +5291,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-honey.webp",
-    "description": "Chance to spawn bees at the hit location upon dealing damage with a ranged weapon",
+    "description": "Chance to find candy when opening containers. Chance to spawn bees at the hit location upon dealing damage with a ranged weapon",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Chance to spawn bees at the hit location upon dealing damage with a ranged weapon"
     ],
     "levelProgression": null,
@@ -5457,8 +5504,9 @@
     "season": "C7 S4",
     "sourceSeasonId": 42,
     "localPath": "/sprites/trick-or-treat-one-wish-willow.webp",
-    "description": "Extract other players equipped Sprites when eliminating them. Push everything away when damaged. Gets upset when removed and marks you on the map",
+    "description": "Chance to find candy when opening containers. Extract other players equipped Sprites when eliminating them. Push everything away when damaged. Gets upset when removed and marks you on the map",
     "descriptionLines": [
+      "Chance to find candy when opening containers.",
       "Extract other players equipped Sprites when eliminating them.",
       "Push everything away when damaged.",
       "Gets upset when removed and marks you on the map"
@@ -5556,8 +5604,9 @@
     "releaseStatus": "released",
     "displayOrder": 164,
     "localPath": "/sprites/cube-batman.webp",
-    "description": "Grants the ability to launch in the air and deploy the Bat Cape!",
+    "description": "Grants the Overdrive effect while you are in the Storm. Grants the ability to launch in the air and deploy the Bat Cape!",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "Grants the ability to launch in the air and deploy the Bat Cape!"
     ],
     "location": "Found rarely in Sprite Chests",
@@ -5792,8 +5841,9 @@
     "releaseStatus": "released",
     "displayOrder": 171,
     "localPath": "/sprites/quack-water.webp",
-    "description": "Replenish shields while standing in water!",
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory. Replenish shields while standing in water!",
     "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
       "Replenish shields while standing in water!"
     ],
     "levelProgression": "Increases in power at each Level Up: 2 Shield -> 3 Shield -> 4 Shield -> 5 Shield -> 6 Shield per tick",
@@ -5994,8 +6044,9 @@
     "releaseStatus": "released",
     "displayOrder": 177,
     "localPath": "/sprites/cube-earth.webp",
-    "description": "You have a chance to find additional rare items when opening chests.",
+    "description": "Grants the Overdrive effect while you are in the Storm. You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "You have a chance to find additional rare items when opening chests."
     ],
     "levelProgression": "Chance increases at each Level Up: 10% -> 12.5% -> 15% -> 17.5% -> 20% chance to find additional rare loot",
@@ -6061,8 +6112,9 @@
     "releaseStatus": "released",
     "displayOrder": 179,
     "localPath": "/sprites/quack-earth.webp",
-    "description": "You have a chance to find additional rare items when opening chests.",
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory. You have a chance to find additional rare items when opening chests.",
     "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
       "You have a chance to find additional rare items when opening chests."
     ],
     "levelProgression": "Chance increases at each Level Up: 10% -> 12.5% -> 15% -> 17.5% -> 20% chance to find additional rare loot",
@@ -6229,8 +6281,9 @@
     "releaseStatus": "released",
     "displayOrder": 184,
     "localPath": "/sprites/cube-fire.webp",
-    "description": "Creates a fiery burst when you deal enough damage to an enemy!",
+    "description": "Grants the Overdrive effect while you are in the Storm. Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "Creates a fiery burst when you deal enough damage to an enemy!"
     ],
     "levelProgression": "Required damage decreases at each Level Up: 150 Damage -> 125 Damage -> 100 Damage -> 75 Damage -> 50 Damage to trigger",
@@ -6296,8 +6349,9 @@
     "releaseStatus": "released",
     "displayOrder": 186,
     "localPath": "/sprites/quack-fire.webp",
-    "description": "Creates a fiery burst when you deal enough damage to an enemy!",
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory. Creates a fiery burst when you deal enough damage to an enemy!",
     "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
       "Creates a fiery burst when you deal enough damage to an enemy!"
     ],
     "levelProgression": "Required damage decreases at each Level Up: 150 Damage -> 125 Damage -> 100 Damage -> 75 Damage -> 50 Damage to trigger",
@@ -6802,8 +6856,9 @@
     "releaseStatus": "released",
     "displayOrder": 201,
     "localPath": "/sprites/cube-dream.webp",
-    "description": "Grants a random item at each level, exploding with legendary loot at Max Level.",
+    "description": "Grants the Overdrive effect while you are in the Storm. Grants a random item at each level, exploding with legendary loot at Max Level.",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "Grants a random item at each level, exploding with legendary loot at Max Level."
     ],
     "levelProgression": "Loot value increases at each Level Up!",
@@ -7139,8 +7194,9 @@
     "releaseStatus": "released",
     "displayOrder": 211,
     "localPath": "/sprites/cube-punk.webp",
-    "description": "Possibly nothing... or infinitely something",
+    "description": "Grants the Overdrive effect while you are in the Storm. Possibly nothing... or infinitely something",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "Possibly nothing... or infinitely something"
     ],
     "location": "Found rarely in Sprite Chests",
@@ -7543,8 +7599,9 @@
     "releaseStatus": "released",
     "displayOrder": 223,
     "localPath": "/sprites/cube-zero-point.webp",
-    "description": "Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
+    "description": "Grants the Overdrive effect while you are in the Storm. Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades)."
     ],
     "levelProgression": "Increases in duration at each Level Up: 6 Seconds -> 7 Seconds -> 8 Seconds -> 9 Seconds -> 10 Seconds",
@@ -7610,8 +7667,9 @@
     "releaseStatus": "released",
     "displayOrder": 225,
     "localPath": "/sprites/quack-zero-point.webp",
-    "description": "Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
+    "description": "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory. Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades).",
     "descriptionLines": [
+      "While equipped, shares 50% of the Sprite XP it earns with every other Sprite in your match inventory.",
       "Spawn a Shield Bubble Jr. when you use a healing item on yourself (excluding splashes and grenades)."
     ],
     "levelProgression": "Increases in duration at each Level Up: 6 Seconds -> 7 Seconds -> 8 Seconds -> 9 Seconds -> 10 Seconds",
@@ -7812,8 +7870,9 @@
     "releaseStatus": "released",
     "displayOrder": 231,
     "localPath": "/sprites/cube-fishy.webp",
-    "description": "Swim speed greatly increased. Taking damage also briefly increases movement speed.",
+    "description": "Grants the Overdrive effect while you are in the Storm. Swim speed greatly increased. Taking damage also briefly increases movement speed.",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "Swim speed greatly increased. Taking damage also briefly increases movement speed."
     ],
     "levelProgression": "Increases in power at each Level Up: 25% Swim Speed / 10% Movement Speed -> 50% Swim Speed / 20% Movement Speed -> 100% Swim Speed / 30% Movement Speed -> 150% Swim Speed / 40% Movement Speed -> 200% Swim Speed / 50% Movement Speed Bonuses",
@@ -8318,8 +8377,9 @@
     "releaseStatus": "released",
     "displayOrder": 246,
     "localPath": "/sprites/cube-boss.webp",
-    "description": "Grants an increase to your max HP and Shield.",
+    "description": "Grants the Overdrive effect while you are in the Storm. Grants an increase to your max HP and Shield.",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "Grants an increase to your max HP and Shield."
     ],
     "levelProgression": "Increases at each Level Up: 5 HP/Shield -> 10 HP/Shield -> 15 HP/Shield -> 20 HP/Shield -> 25 HP/Shield",
@@ -8486,8 +8546,9 @@
     "releaseStatus": "released",
     "displayOrder": 251,
     "localPath": "/sprites/cube-grim.webp",
-    "description": "Players who attack you are marked for a duration.",
+    "description": "Grants the Overdrive effect while you are in the Storm. Players who attack you are marked for a duration.",
     "descriptionLines": [
+      "Grants the Overdrive effect while you are in the Storm.",
       "Players who attack you are marked for a duration."
     ],
     "levelProgression": "Increases in duration at each Level Up: 3 Seconds -> 3.5 Seconds -> 4 Seconds -> 4.5 Seconds -> 5 Seconds",
