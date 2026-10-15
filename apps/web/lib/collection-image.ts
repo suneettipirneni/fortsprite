@@ -1,6 +1,7 @@
 import type { CatalogItem, CollectionState } from "@workspace/contracts"
 
 import { completionPercent } from "@/lib/catalog-presentation"
+import { variantStyle } from "@/lib/variant-style"
 
 export type CollectionImageItem = Readonly<
   Pick<CatalogItem, "id" | "baseName" | "variant" | "imagePath"> & CollectionState
@@ -136,6 +137,29 @@ function readPalette(): Palette {
 function roundedRect(context: CanvasRenderingContext2D, x: number, y: number, rectWidth: number, height: number, radius: number) {
   context.beginPath()
   context.roundRect(x, y, rectWidth, height, radius)
+}
+
+function spriteBackground(variant: string, size: number, background: string): HTMLCanvasElement {
+  const canvas = document.createElement("canvas")
+  canvas.width = canvas.height = Math.ceil(size)
+  const context = canvas.getContext("2d")
+  if (!context) throw new Error("Image export is unavailable in this browser.")
+  const { backdrop } = variantStyle(variant)
+  context.fillStyle = backdrop?.color ?? background
+  context.fillRect(0, 0, canvas.width, canvas.height)
+  for (const layer of backdrop?.layers ?? []) {
+    context.save()
+    context.translate(layer.x * canvas.width, layer.y * canvas.height)
+    context.scale(layer.rx * canvas.width, layer.ry * canvas.height)
+    const gradient = context.createRadialGradient(0, 0, 0, 0, 0, layer.stop)
+    gradient.addColorStop(0, layer.color)
+    gradient.addColorStop(1, layer.color.replace(/\/ [\d.]+%\)/, "/ 0%)"))
+    context.globalCompositeOperation = layer.blend
+    context.fillStyle = gradient
+    context.fillRect(-layer.x / layer.rx, -layer.y / layer.ry, 1 / layer.rx, 1 / layer.ry)
+    context.restore()
+  }
+  return canvas
 }
 
 function drawMarker(
@@ -380,6 +404,7 @@ export async function renderCollectionImage({
       }
     }
 
+    const backgrounds = new Map<string, HTMLCanvasElement>()
     for (const section of geometry.sections) {
       if (section.title !== null) {
         drawGroupHeading(context, { ...section, title: section.title }, fontFamily, palette)
@@ -392,9 +417,17 @@ export async function renderCollectionImage({
         const rowStart = section.title === null ? section.x + (section.width - rowWidth) / 2 : section.x
         const x = rowStart + index % section.columns * (section.tileSize + section.gap)
         const y = section.y + (section.title === null ? 0 : 42) + row * (section.tileSize + section.gap)
-        context.fillStyle = palette.card
+        const backgroundKey = `${item.variant}:${section.tileSize}`
+        let background = backgrounds.get(backgroundKey)
+        if (!background) {
+          background = spriteBackground(item.variant, section.tileSize, palette.background)
+          backgrounds.set(backgroundKey, background)
+        }
+        context.save()
         roundedRect(context, x, y, section.tileSize, section.tileSize, 8)
-        context.fill()
+        context.clip()
+        context.drawImage(background, x, y, section.tileSize, section.tileSize)
+        context.restore()
         context.strokeStyle = item.mastered ? palette.mastered : palette.foreground
         context.globalAlpha = item.mastered ? 0.3 : 0.08
         context.lineWidth = 1
