@@ -1,4 +1,10 @@
+export type VariantBackdrop = {
+  color: string
+  layers: { color: string; x: number; y: number; rx: number; ry: number; stop: number; blend: GlobalCompositeOperation }[]
+}
+
 export type VariantStyle = {
+  backdrop?: VariantBackdrop
   frame: {
     backgroundBlendMode?: string
     backgroundColor: string
@@ -13,16 +19,27 @@ function globularBackdrop(
   topLeft: string,
   bottomRight: string,
   topRight: string,
-): VariantStyle["frame"] {
+): Pick<VariantStyle, "frame" | "backdrop"> {
   return {
-    backgroundColor,
-    backgroundImage: [
-      `radial-gradient(ellipse 145% 125% at -32% -28%, ${topLeft} 0%, transparent 78%)`,
-      `radial-gradient(ellipse 140% 130% at 132% 132%, ${bottomRight} 0%, transparent 80%)`,
-      `radial-gradient(ellipse 125% 155% at 136% -38%, ${topRight} 0%, transparent 78%)`,
-      `radial-gradient(ellipse 135% 115% at -26% 138%, ${topRight} 0%, transparent 82%)`,
-    ].join(", "),
-    backgroundBlendMode: "soft-light, screen, screen, normal",
+    frame: {
+      backgroundColor,
+      backgroundImage: [
+        `radial-gradient(ellipse 145% 125% at -32% -28%, ${topLeft} 0%, transparent 78%)`,
+        `radial-gradient(ellipse 140% 130% at 132% 132%, ${bottomRight} 0%, transparent 80%)`,
+        `radial-gradient(ellipse 125% 155% at 136% -38%, ${topRight} 0%, transparent 78%)`,
+        `radial-gradient(ellipse 135% 115% at -26% 138%, ${topRight} 0%, transparent 82%)`,
+      ].join(", "),
+      backgroundBlendMode: "soft-light, screen, screen, normal",
+    },
+    backdrop: {
+      color: backgroundColor,
+      layers: [
+        { color: topRight, x: -0.26, y: 1.38, rx: 1.35, ry: 1.15, stop: 0.82, blend: "source-over" },
+        { color: topRight, x: 1.36, y: -0.38, rx: 1.25, ry: 1.55, stop: 0.78, blend: "screen" },
+        { color: bottomRight, x: 1.32, y: 1.32, rx: 1.4, ry: 1.3, stop: 0.8, blend: "screen" },
+        { color: topLeft, x: -0.32, y: -0.28, rx: 1.45, ry: 1.25, stop: 0.78, blend: "soft-light" },
+      ],
+    },
   }
 }
 
@@ -33,7 +50,7 @@ const baseStyle: VariantStyle = {
 }
 
 const futureVariantStyle: VariantStyle = {
-  frame: globularBackdrop(
+  ...globularBackdrop(
     "oklch(0.22 0.12 270)",
     "oklch(0.72 0.18 228 / 55%)",
     "oklch(0.68 0.22 306 / 48%)",
@@ -48,7 +65,7 @@ const futureVariantStyle: VariantStyle = {
 export const variantStyles = {
   Base: baseStyle,
   "Bounty Hunter": {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.22 0.12 326)",
       "oklch(0.62 0.25 326 / 62%)",
       "oklch(0.79 0.16 85 / 36%)",
@@ -58,7 +75,7 @@ export const variantStyles = {
     glow: "bg-fuchsia-400/35",
   },
   "Cheat Master": {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.19 0.09 158)",
       "oklch(0.76 0.22 135 / 54%)",
       "oklch(0.66 0.17 184 / 42%)",
@@ -68,7 +85,7 @@ export const variantStyles = {
     glow: "bg-lime-400/35",
   },
   Cube: {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.18 0.09 286)",
       "oklch(0.55 0.22 292 / 55%)",
       "oklch(0.64 0.24 326 / 38%)",
@@ -78,7 +95,7 @@ export const variantStyles = {
     glow: "bg-violet-400/35",
   },
   Galaxy: {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.15 0.08 276)",
       "oklch(0.45 0.2 276 / 52%)",
       "oklch(0.58 0.23 310 / 48%)",
@@ -88,7 +105,7 @@ export const variantStyles = {
     glow: "bg-violet-400/35",
   },
   Gem: {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.42 0.1 244)",
       "oklch(0.94 0.04 220 / 58%)",
       "oklch(0.72 0.15 220 / 45%)",
@@ -98,7 +115,7 @@ export const variantStyles = {
     glow: "bg-cyan-300/35",
   },
   Gold: {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.27 0.08 67)",
       "oklch(0.82 0.18 78 / 58%)",
       "oklch(0.92 0.13 98 / 38%)",
@@ -108,7 +125,7 @@ export const variantStyles = {
     glow: "bg-yellow-300/35",
   },
   Gummy: {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.24 0.11 8)",
       "oklch(0.7 0.22 18 / 58%)",
       "oklch(0.75 0.2 135 / 38%)",
@@ -118,7 +135,7 @@ export const variantStyles = {
     glow: "bg-rose-300/35",
   },
   Holofoil: {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.28 0.12 282)",
       "oklch(0.76 0.15 205 / 58%)",
       "oklch(0.8 0.2 135 / 44%)",
@@ -128,7 +145,7 @@ export const variantStyles = {
     glow: "bg-fuchsia-300/35",
   },
   "Loot Hacker": {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.2 0.11 265)",
       "oklch(0.55 0.22 265 / 58%)",
       "oklch(0.75 0.14 210 / 42%)",
@@ -138,7 +155,7 @@ export const variantStyles = {
     glow: "bg-cyan-400/35",
   },
   Quack: {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.23 0.14 302)",
       "oklch(0.62 0.25 320 / 55%)",
       "oklch(0.73 0.15 210 / 48%)",
@@ -148,7 +165,7 @@ export const variantStyles = {
     glow: "bg-cyan-300/35",
   },
   "Trick or Treat": {
-    frame: globularBackdrop(
+    ...globularBackdrop(
       "oklch(0.18 0.06 310)",
       "oklch(0.72 0.19 48 / 62%)",
       "oklch(0.5 0.22 305 / 48%)",
