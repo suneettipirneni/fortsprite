@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react"
-import { CheckIcon, CircleIcon, CrownIcon, FlaskRoundIcon } from "lucide-react"
+import { CheckIcon, CircleIcon, CrownIcon, FlaskRoundIcon, UserRoundIcon } from "lucide-react"
 
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -141,6 +141,17 @@ export function SpriteTile({
                           <CrownIcon aria-hidden="true" className="size-3" />
                         </span>
                       ) : null}
+                      {availabilityKnown && helpEligible && !sprite.owned && sprite.helpers.length > 0 ? (
+                        <Badge
+                          variant="captured"
+                          role="img"
+                          aria-label={`${sprite.helpers.length} ${sprite.helpers.length === 1 ? "friend has" : "friends have"} captured this Sprite`}
+                          className="pointer-events-none absolute top-1.5 right-1.5 h-6 gap-1 px-2 tabular-nums shadow-sm"
+                        >
+                          <UserRoundIcon aria-hidden="true" />
+                          {sprite.helpers.length}
+                        </Badge>
+                      ) : null}
                     </>
                   )}
                 </SpriteTracking>
@@ -176,24 +187,6 @@ export function SpriteTile({
                 >
                   {sprite.variant}
                 </p>
-                {view !== "list" && availabilityKnown && helpEligible ? (
-                  <SpriteTracking spriteId={sprite.id} fallback={<TrackingSkeleton className="mt-1 h-4 w-20" />}>
-                    {({ sprite }) => (
-                      <>
-                        {
-                        sprite.helpers.length > 0 &&
-                        !sprite.owned ? (
-                          <p className="mt-1 truncate text-base text-muted-foreground sm:text-sm">
-                            {sprite.helpers.length} can help
-                            {sprite.helpers.filter((friend) => friend.mastered).length > 0
-                              ? ` · ${sprite.helpers.filter((friend) => friend.mastered).length} mastered`
-                              : ""}
-                          </p>
-                        ) : null}
-                      </>
-                    )}
-                  </SpriteTracking>
-                ) : null}
               </div>
             </button>
           </HoverCardTrigger>

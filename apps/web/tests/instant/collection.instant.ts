@@ -196,7 +196,7 @@ test("mobile grid density changes and list rows stay compact", async ({
   const helperTile = page.locator(
     `article[data-sprite-id="${helperSprite.id}"]`,
   )
-  await expect(helperTile.getByText("1 can help · 1 mastered")).toBeVisible()
+  await expect(helperTile.getByRole("img", { name: "1 friend has captured this Sprite" })).toBeVisible()
   const smallWidth = await tileWidth()
   await page.screenshot({ path: test.info().outputPath("grid-small.png") })
 
