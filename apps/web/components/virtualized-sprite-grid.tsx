@@ -2,6 +2,7 @@
 
 import {
   useCallback,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -15,6 +16,7 @@ import type { CollectionChange } from "@/lib/collection-state"
 import type { CatalogItem } from "@workspace/contracts"
 import { CollectionTracking, TrackingSkeleton } from "@/components/collection-tracking"
 import { SpriteTile } from "@/components/collection-sprite-tile"
+import { CollectionGroupScroller } from "@/components/collection-group-scroller"
 
 export type CollectionGridSize = "small" | "medium" | "large"
 
@@ -34,6 +36,7 @@ type VirtualizedSpriteGroupsProps = SpriteGridProps & {
   groups: Array<{
     baseName: string
     items: CatalogItem[]
+    baseImagePath: string | null | undefined
   }>
 }
 
@@ -99,12 +102,14 @@ function useVirtualContainerMeasurements() {
   const [width, setWidth] = useState(0)
   const [scrollMargin, setScrollMargin] = useState(0)
   const [viewport, setViewport] = useState({ width: 0, height: 900 })
+  const [scrollPaddingStart, setScrollPaddingStart] = useState(96)
 
   const measure = useCallback(() => {
     const element = ref.current
     if (!element) return
 
     const bounds = element.getBoundingClientRect()
+    setScrollPaddingStart((document.querySelector("header")?.getBoundingClientRect().height ?? 80) + 16)
     setWidth((current) => (current === bounds.width ? current : bounds.width))
     const nextScrollMargin = bounds.top + window.scrollY
     setScrollMargin((current) =>
@@ -140,7 +145,7 @@ function useVirtualContainerMeasurements() {
     }
   }, [measure])
 
-  return { ref, width, scrollMargin, viewport }
+  return { ref, width, scrollMargin, viewport, scrollPaddingStart }
 }
 
 function SpriteTiles({
@@ -329,7 +334,8 @@ export function VirtualizedSpriteGroups({
 
   // React Compiler must not cache reads from TanStack Virtual's mutable instance.
   const hydrated = useHydrated()
-  const { ref, width, scrollMargin, viewport } = useVirtualContainerMeasurements()
+  const groupsId = useId()
+  const { ref, width, scrollMargin, viewport, scrollPaddingStart } = useVirtualContainerMeasurements()
   const columns = columnsForWidth(width, view, gridSize)
   const desktop = viewport.width >= 640
   const gridGap = desktop ? GRID_GAP : MOBILE_GRID_GAP
@@ -376,6 +382,7 @@ export function VirtualizedSpriteGroups({
     enabled: hydrated,
     estimateSize,
     gap: groupGap,
+    scrollPaddingStart,
     getItemKey,
     initialRect: { width: 0, height: 900 },
     rangeExtractor,
@@ -386,6 +393,12 @@ export function VirtualizedSpriteGroups({
     virtualizer.containerRef(element)
   }, [ref, virtualizer])
   const virtualGroups = virtualizer.getVirtualItems()
+  const scrollOffset = virtualizer.scrollOffset ?? 0
+  // A short final group cannot reach the top of a tall viewport. Keep the
+  // scrollbar at its endpoint when the document has reached its scroll limit.
+  const activeIndex = virtualizer.isAtEnd(2)
+    ? Math.max(0, groups.length - 1)
+    : virtualGroups.find((group) => group.end > scrollOffset + scrollPaddingStart + 1)?.index ?? 0
 
   if (!hydrated) {
     const { baseName, items } = groups[0] ?? {
@@ -393,69 +406,83 @@ export function VirtualizedSpriteGroups({
       items: [],
     }
     return (
-      <div
-        ref={ref}
-        data-testid="virtualized-sprite-groups"
-        data-hydrated="false"
-        data-total-groups={groups.length}
-        data-rendered-groups={groups.length > 0 ? 1 : 0}
-      >
-        <section aria-label={baseName} className="space-y-3 sm:space-y-4">
-          <SpriteGroupHeading baseName={baseName} items={items} />
-          <SpriteTiles
-            items={items}
-            columns={columns}
-            gap={gridGap}
-            view={view}
-            {...tileProps}
-          />
-        </section>
+      <div className="pr-7 sm:pr-8">
+        <div
+          ref={ref}
+          data-testid="virtualized-sprite-groups"
+          data-hydrated="false"
+          data-total-groups={groups.length}
+          data-rendered-groups={groups.length > 0 ? 1 : 0}
+        >
+          <section aria-label={baseName} className="space-y-3 sm:space-y-4">
+            <SpriteGroupHeading baseName={baseName} items={items} />
+            <SpriteTiles
+              items={items}
+              columns={columns}
+              gap={gridGap}
+              view={view}
+              {...tileProps}
+            />
+          </section>
+        </div>
       </div>
     )
   }
 
   return (
-    <div
-      ref={setContainerRef}
-      data-testid="virtualized-sprite-groups"
-      data-hydrated="true"
-      data-total-groups={groups.length}
-      data-rendered-groups={virtualGroups.length}
-      style={{
-        position: "relative",
-        width: "100%",
-      }}
-    >
-      {virtualGroups.map((virtualGroup) => {
-        const { baseName, items } = groups[virtualGroup.index] ?? {
-          baseName: "",
-          items: [],
-        }
-        return (
-          <div
-            key={virtualGroup.key}
-            ref={virtualizer.measureElement}
-            data-index={virtualGroup.index}
-            style={{
-              left: 0,
-              position: "absolute",
-              top: 0,
-              width: "100%",
-            }}
-          >
-            <section aria-label={baseName} className="space-y-3 sm:space-y-4">
-              <SpriteGroupHeading baseName={baseName} items={items} />
-              <SpriteTiles
-                items={items}
-                columns={columns}
-                gap={gridGap}
-                view={view}
-                {...tileProps}
-              />
-            </section>
-          </div>
-        )
-      })}
+    <div className="pr-7 sm:pr-8">
+      <div
+        id={groupsId}
+        ref={setContainerRef}
+        data-testid="virtualized-sprite-groups"
+        data-hydrated="true"
+        data-total-groups={groups.length}
+        data-rendered-groups={virtualGroups.length}
+        style={{
+          position: "relative",
+          width: "100%",
+        }}
+      >
+        {virtualGroups.map((virtualGroup) => {
+          const { baseName, items } = groups[virtualGroup.index] ?? {
+            baseName: "",
+            items: [],
+          }
+          return (
+            <div
+              key={virtualGroup.key}
+              ref={virtualizer.measureElement}
+              data-index={virtualGroup.index}
+              style={{
+                left: 0,
+                position: "absolute",
+                top: 0,
+                width: "100%",
+              }}
+            >
+              <section aria-label={baseName} className="space-y-3 sm:space-y-4">
+                <SpriteGroupHeading baseName={baseName} items={items} />
+                <SpriteTiles
+                  items={items}
+                  columns={columns}
+                  gap={gridGap}
+                  view={view}
+                  {...tileProps}
+                />
+              </section>
+            </div>
+          )
+        })}
+      </div>
+      <CollectionGroupScroller
+        key={groups.map((group) => group.baseName).join("\n")}
+        groups={groups}
+        activeIndex={activeIndex}
+        controls={groupsId}
+        contentTop={Math.max(0, scrollMargin - scrollOffset)}
+        visible={scrollOffset + (virtualizer.scrollRect?.height ?? 0) > scrollMargin + 80 && scrollOffset < scrollMargin + virtualizer.getTotalSize()}
+        onJump={(index) => virtualizer.scrollToIndex(index, { align: "start", behavior: "auto" })}
+      />
     </div>
   )
 }

@@ -279,13 +279,16 @@ function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: Cata
   }
 
   function renderResults(results: CatalogItem[]) {
+    // Resolve portraits from the full catalog so filtering out Base variants
+    // does not replace the group's preview with a different variant.
+    const baseImages = new Map(sprites.filter((item) => item.variant === "Base").map((item) => [item.baseName, item.imagePath]))
     const groups = new Map<string, CatalogItem[]>()
     for (const item of results) {
       const group = groups.get(item.baseName) ?? []
       group.push(item)
       groups.set(item.baseName, group)
     }
-    const groupedResults = [...groups].map(([baseName, items]) => ({ baseName, items }))
+    const groupedResults = [...groups].map(([baseName, items]) => ({ baseName, items, baseImagePath: baseImages.get(baseName) }))
     return (results.length > 0 ? (
           <div className="@container">
             {view === "grouped" ? (
