@@ -70,7 +70,7 @@ before(async () => {
   ])
   await db.insert(collectionEntries).values([
     { userId: friendId, spriteId, owned: true, mastered: true },
-    { userId: friendId, spriteId: previousSeasonSpriteId, owned: true },
+    { userId: friendId, spriteId: previousSeasonSpriteId, owned: true, mastered: true },
   ])
 })
 
@@ -108,6 +108,17 @@ test("accepted sharing exposes only current-season helpers and comparison items"
   assert.equal(helper?.profile.id, friendId)
   const comparison = await getComparison(viewerId, friendId)
   assert.deepEqual(comparison.forYou.map((item) => item.id), [spriteId])
+  assert.deepEqual(comparison.progress, { total: 1, viewerOwned: 0, friendOwned: 1, viewerMastered: 0, friendMastered: 1 })
+  const reverse = await getComparison(friendId, viewerId)
+  assert.deepEqual(reverse.progress, { total: 1, viewerOwned: 1, friendOwned: 0, viewerMastered: 1, friendMastered: 0 })
+  await db.insert(collectionEntries).values([
+    { userId: viewerId, spriteId, owned: true },
+    { userId: viewerId, spriteId: previousSeasonSpriteId, owned: true, mastered: true },
+  ])
+  const shared = await getComparison(viewerId, friendId)
+  assert.deepEqual(shared.progress, { total: 1, viewerOwned: 1, friendOwned: 1, viewerMastered: 0, friendMastered: 1 })
+  assert.deepEqual(shared.forYou, [])
+  assert.deepEqual(shared.forFriend, [])
   await changeSharing(viewerId, friendId, "remove")
   assert.deepEqual(await getHelpers(viewerId), [])
   await assert.rejects(

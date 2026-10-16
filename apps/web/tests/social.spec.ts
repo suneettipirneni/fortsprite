@@ -141,6 +141,33 @@ test("exact-username requests unlock mutual collection comparison", async ({
     page.getByRole("heading", { name: `${ours!.variant} ${ours!.baseName}` }),
   ).toBeVisible()
   await expect(page).toHaveTitle("Compare collections · FortSprite")
+  const currentSeasonId = Math.max(...snapshot.items.flatMap((item) => item.sourceSeasonId === null ? [] : [item.sourceSeasonId]))
+  const total = snapshot.items.filter((item) => item.sourceSeasonId === currentSeasonId).length
+  const percent = 100 / total
+  const percentFormat = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 })
+  const progress = page.getByRole("region", { name: "Friendly rivalry" })
+  await expect(progress).toBeVisible()
+  await expect(progress.getByText("You", { exact: true })).toBeVisible()
+  await expect(progress.getByText(fixture.actors.b.displayName, { exact: true })).toBeVisible()
+  await expect(progress.getByText(percentFormat.format(1 / total), { exact: true })).toHaveCount(2)
+  await expect(progress.getByText(`1 of ${total} captured`, { exact: true })).toHaveCount(2)
+  await expect(progress.getByRole("progressbar", { name: "Your collection completion" })).toHaveAttribute("aria-valuenow", String(percent))
+
+  // Shared captures must still count toward both totals, even when no longer in the help lists.
+  const capture = await teammate.request.put(`/api/v1/collection/${ours!.id}`, {
+    headers: { origin: fixture.baseURL },
+    data: { owned: true, mastered: false },
+  })
+  expect(capture.status()).toBe(200)
+  await page.reload()
+  await expect(progress.locator("dl > div").nth(1).getByText(percentFormat.format(2 / total), { exact: true })).toBeVisible()
+  await expect(progress.getByText(`2 of ${total} captured`, { exact: true })).toBeVisible()
+  await expect(progress.getByRole("progressbar", { name: `${fixture.actors.b.displayName}'s collection completion` })).toHaveAttribute("aria-valuenow", String((2 / total) * 100))
+  const progressBox = await progress.boundingBox()
+  const listBox = await page.getByRole("heading", { name: "Sprites for you", exact: true }).boundingBox()
+  expect(progressBox!.y + progressBox!.height).toBeLessThan(listBox!.y)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+  await page.screenshot({ path: `/tmp/fortsprite-comparison-${test.info().project.name}.png`, fullPage: true })
   await accessible(page)
 })
 

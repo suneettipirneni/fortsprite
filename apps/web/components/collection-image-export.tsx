@@ -1,30 +1,12 @@
 "use client"
 
 import type { CollectionItem } from "@workspace/contracts"
-import { CheckIcon, DownloadIcon, ImageIcon, LoaderCircleIcon, StarIcon, XIcon } from "lucide-react"
+import { CheckIcon, DownloadIcon, ImageIcon, LoaderCircleIcon, StarIcon } from "lucide-react"
 import { use, useEffect, useId, useRef, useState } from "react"
 
 import { Button } from "@workspace/ui/components/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@workspace/ui/components/dialog"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@workspace/ui/components/drawer"
 import { Switch } from "@workspace/ui/components/switch"
-import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
+import { ImageExportDialog } from "@/components/image-export-dialog"
 
 import { filterCollection, type CollectionFilters } from "@/lib/collection-filter"
 import type {
@@ -69,7 +51,6 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
   filters: CollectionFilters
   usernamePromise: Promise<string>
 }) {
-  const isMobile = useIsMobile()
   const username = use(usernamePromise)
   const [open, setOpen] = useState(false)
   const [scope, setScope] = useState<ExportScope>("filters")
@@ -260,49 +241,16 @@ export function CollectionImageExport({ items, filters, usernamePromise }: {
     </>
   )
 
-  if (isMobile) {
-    return (
-      <Drawer open={open} onOpenChange={changeOpen} handleOnly>
-        <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-        <DrawerContent className="overflow-hidden data-[vaul-drawer-direction=bottom]:max-h-[calc(100dvh-var(--safe-area-top)-1rem)]">
-          <DrawerHeader className="relative shrink-0 gap-2 pl-[max(1rem,var(--safe-area-left))] pr-[calc(max(1rem,var(--safe-area-right))+2.5rem)] text-left">
-            <DrawerTitle>Export collection image</DrawerTitle>
-            <DrawerDescription>
-              Preview your Sprites and progress, then download the PNG.
-            </DrawerDescription>
-            <DrawerClose asChild>
-              <Button variant="ghost" size="icon-sm" className="absolute top-3 right-[max(0.5rem,var(--safe-area-right))]">
-                <XIcon aria-hidden="true" />
-                <span className="sr-only">Close</span>
-              </Button>
-            </DrawerClose>
-          </DrawerHeader>
-          <div data-slot="export-scroll-content" className="min-h-0 overflow-y-auto overscroll-contain pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] pb-5">
-            {options}
-          </div>
-          <DrawerFooter className="mt-0 shrink-0 flex-row flex-wrap justify-end border-t border-border pl-[max(1rem,var(--safe-area-left))] pr-[max(1rem,var(--safe-area-right))] pb-[calc(var(--safe-area-bottom)+1rem)]">
-            {actions}
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    )
-  }
-
   return (
-    <Dialog open={open} onOpenChange={changeOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="grid-rows-[auto_minmax(0,1fr)_auto] gap-5 overflow-hidden sm:max-w-2xl">
-        <DialogHeader className="pr-7">
-          <DialogTitle>Export collection image</DialogTitle>
-          <DialogDescription>
-            Preview your Sprites and progress, then download the PNG.
-          </DialogDescription>
-        </DialogHeader>
-        <div data-slot="export-scroll-content" className="min-h-0 overflow-y-auto overscroll-contain">
-          {options}
-        </div>
-        <div className="flex flex-wrap justify-end gap-2">{actions}</div>
-      </DialogContent>
-    </Dialog>
+    <ImageExportDialog
+      open={open}
+      onOpenChange={changeOpen}
+      trigger={trigger}
+      title="Export collection image"
+      description="Preview your Sprites and progress, then download the PNG."
+      actions={actions}
+    >
+      {options}
+    </ImageExportDialog>
   )
 }

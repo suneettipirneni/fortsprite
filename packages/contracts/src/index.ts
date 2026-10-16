@@ -133,6 +133,13 @@ export interface SharingSnapshot {
 }
 export interface FriendComparison {
   friend: PublicProfile
+  progress: {
+    total: number
+    viewerOwned: number
+    friendOwned: number
+    viewerMastered: number
+    friendMastered: number
+  }
   forYou: CatalogItem[]
   forFriend: CatalogItem[]
   refreshedAt: string

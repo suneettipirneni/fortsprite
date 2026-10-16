@@ -4,6 +4,7 @@ import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { cn } from "@workspace/ui/lib/utils"
 import { PageHeader } from "@/components/page-header"
+import { ComparisonScoreboard } from "@/components/comparison-scoreboard"
 
 export function PageValueSkeleton({
   label,
@@ -157,13 +158,17 @@ export function ComparisonPageSkeleton() {
         title="Compare your collections."
         description="Current-season captured Sprites can help friends regardless of mastery. Coordinate together in Fortnite."
         action={
-          <Button asChild variant="outline">
-            <Link href="/friends">
-              Back to friends
-            </Link>
-          </Button>
+          <>
+            <Button variant="outline" disabled>Export comparison</Button>
+            <Button asChild variant="outline">
+              <Link href="/friends">
+                Back to friends
+              </Link>
+            </Button>
+          </>
         }
       />
+      <ComparisonScoreboard />
       <PageValueSkeleton label="Loading comparison details" className="h-5 w-56" />
       <div className="app-columns">
         {([

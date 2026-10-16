@@ -2,6 +2,7 @@ import { and, eq, inArray, or, sql } from "drizzle-orm"
 import { z } from "zod"
 import type {
   PublicProfile,
+  FriendComparison,
   SharingAction,
   SharingFriend,
 } from "@workspace/contracts"
@@ -317,13 +318,15 @@ export async function getComparison(
   viewerId: string,
   friendId: string,
   database = db,
-) {
+): Promise<FriendComparison> {
   const rows = await database
     .select({
       sprite: sprites,
       profile: profileColumns,
       viewerOwned: sql<boolean>`exists (select 1 from ${collectionEntries} where ${collectionEntries.userId} = ${viewerId} and ${collectionEntries.spriteId} = ${sprites.id} and ${collectionEntries.owned})`,
       friendOwned: sql<boolean>`exists (select 1 from ${collectionEntries} where ${collectionEntries.userId} = ${friendId} and ${collectionEntries.spriteId} = ${sprites.id} and ${collectionEntries.owned})`,
+      viewerMastered: sql<boolean>`exists (select 1 from ${collectionEntries} where ${collectionEntries.userId} = ${viewerId} and ${collectionEntries.spriteId} = ${sprites.id} and ${collectionEntries.owned} and ${collectionEntries.mastered})`,
+      friendMastered: sql<boolean>`exists (select 1 from ${collectionEntries} where ${collectionEntries.userId} = ${friendId} and ${collectionEntries.spriteId} = ${sprites.id} and ${collectionEntries.owned} and ${collectionEntries.mastered})`,
     })
     .from(user)
     .leftJoin(
@@ -348,6 +351,13 @@ export async function getComparison(
     )
   return {
     friend: publicProfile(first.profile),
+    progress: {
+      total: ordered.length,
+      viewerOwned: ordered.filter((row) => row.viewerOwned).length,
+      friendOwned: ordered.filter((row) => row.friendOwned).length,
+      viewerMastered: ordered.filter((row) => row.viewerMastered).length,
+      friendMastered: ordered.filter((row) => row.friendMastered).length,
+    },
     forYou: ordered.flatMap((row) =>
       !row.viewerOwned && row.friendOwned && row.sprite
         ? [catalogItem(row.sprite)]

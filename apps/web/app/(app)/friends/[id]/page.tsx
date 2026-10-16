@@ -7,8 +7,10 @@ import { ComparisonPageSkeleton } from "@/components/page-data-skeletons"
 import { RefreshDataButton } from "@/components/refresh-data-button"
 import { CatalogResults } from "@/components/catalog-results"
 import { PageHeader } from "@/components/page-header"
-import { FortSpriteApiError, getComparison } from "@/lib/api"
+import { FortSpriteApiError, getComparison, getViewer } from "@/lib/api"
 import { toCatalogResult } from "@/lib/catalog-filter"
+import { ComparisonScoreboard } from "@/components/comparison-scoreboard"
+import { ComparisonImageExport } from "@/components/comparison-image-export"
 
 export const metadata: Metadata = { title: "Compare collections" }
 
@@ -30,8 +32,8 @@ async function ComparisonContent({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const result = await getComparison(id).then(
-    (data) => ({ data, error: null }),
+  const result = await Promise.all([getComparison(id), getViewer()]).then(
+    ([comparison, viewer]) => ({ data: { comparison, viewer }, error: null }),
     (error: unknown) => ({ data: null, error }),
   )
   if (!result.data) {
@@ -66,7 +68,7 @@ async function ComparisonContent({
       </div>
     )
   }
-  const comparison = result.data
+  const { comparison, viewer } = result.data
   return (
     <div className="app-page flex flex-col gap-8">
       <PageHeader
@@ -74,13 +76,25 @@ async function ComparisonContent({
         title={<>You and {comparison.friend.displayName}</>}
         description="Current-season captured Sprites can help friends regardless of mastery. Coordinate together in Fortnite."
         action={
-          <Button asChild variant="outline">
-            <Link href="/friends">
-              Back to friends
-            </Link>
-          </Button>
+          <>
+            <ComparisonImageExport
+              key={`${id}:${comparison.refreshedAt}`}
+              input={{
+                viewerName: viewer.displayName,
+                friendName: comparison.friend.displayName,
+                progress: comparison.progress,
+                refreshedAt: comparison.refreshedAt,
+              }}
+            />
+            <Button asChild variant="outline">
+              <Link href="/friends">
+                Back to friends
+              </Link>
+            </Button>
+          </>
         }
       />
+      <ComparisonScoreboard friendName={comparison.friend.displayName} progress={comparison.progress} />
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-sm text-muted-foreground">
         {comparison.friend.fortniteDisplayName ? (
           <p className="break-words">

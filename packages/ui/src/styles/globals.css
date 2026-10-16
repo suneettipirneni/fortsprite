@@ -7,6 +7,8 @@
 @source "../**/*.{ts,tsx}";
 
 @theme inline {
+  /* Shared desktop cap for page content and navigation. */
+  --container-app: 75rem;
   --font-sans: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --color-background: var(--background);
@@ -148,7 +150,7 @@
 }
 
 @utility app-container {
-  @apply mx-auto w-full max-w-[90rem];
+  @apply mx-auto w-full max-w-app;
   padding-left: max(var(--app-gutter), var(--safe-area-left));
   padding-right: max(var(--app-gutter), var(--safe-area-right));
 }
