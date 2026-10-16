@@ -233,11 +233,19 @@ test("groups Sprite variants and replaces the previous preview", async ({ page }
     canvas.height = image.naturalHeight
     const context = canvas.getContext("2d")!
     context.drawImage(image, 0, 0)
-    const pixel = (x: number) => [...context.getImageData(x, 460, 1, 1).data]
-    return { background: pixel(75), firstGroup: pixel(84), secondGroup: pixel(756) }
+    const background = context.getImageData(75, 460, 1, 1).data
+    const artworkPixels = (x: number) => {
+      const pixels = context.getImageData(x, 430, 80, 64).data
+      let visible = 0
+      for (let index = 0; index < pixels.length; index += 4) {
+        if (pixels[index] !== background[0] || pixels[index + 1] !== background[1] || pixels[index + 2] !== background[2]) visible++
+      }
+      return visible
+    }
+    return { firstGroup: artworkPixels(84), secondGroup: artworkPixels(740) }
   })
-  expect(alignment.firstGroup).not.toEqual(alignment.background)
-  expect(alignment.secondGroup).not.toEqual(alignment.background)
+  expect(alignment.firstGroup).toBeGreaterThan(100)
+  expect(alignment.secondGroup).toBeGreaterThan(100)
 })
 
 test("exports every sprite and downloads the exact preview PNG", async ({ page }, testInfo) => {
@@ -313,9 +321,16 @@ test("keeps navigation and a tall export inside the safe area", async ({ page, i
     await page.screenshot({ path: `/tmp/fortsprite-safe-area-dialog-${testInfo.project.name}-${screen.width}.png` })
     await scroller.evaluate((node) => { node.scrollTop = node.scrollHeight })
     await expect(title).toBeInViewport()
-    await dialog.getByRole("link", { name: "Download PNG" }).scrollIntoViewIfNeeded()
-    await expect(dialog.getByRole("link", { name: "Download PNG" })).toBeInViewport()
-    const downloadBounds = (await dialog.getByRole("link", { name: "Download PNG" }).boundingBox())!
+    const download = dialog.getByRole("link", { name: "Download PNG" })
+    await expect(download).toBeVisible()
+    // WebKit can retain its original IntersectionObserver viewport height after
+    // a mobile viewport resize. Check the actual hit target and safe-area bounds.
+    await expect.poll(() => download.evaluate((link) => {
+      const bounds = link.getBoundingClientRect()
+      return link.contains(document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2))
+    })).toBe(true)
+    const downloadBounds = (await download.boundingBox())!
+    expect(downloadBounds.y).toBeGreaterThanOrEqual(screen.top + 15)
     expect(downloadBounds.y + downloadBounds.height).toBeLessThanOrEqual(screen.height - screen.bottom - 15)
     await dialog.getByRole("button", { name: "Close", exact: true }).click()
     await expect(dialog).toHaveCount(0)

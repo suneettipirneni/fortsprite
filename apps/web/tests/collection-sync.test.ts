@@ -92,6 +92,40 @@ test("capture updates immediately before the request resolves", async () => {
   assert.equal(h.pending.size, 0)
 })
 
+test("pending snapshots notify completion without replacing unchanged entries", async () => {
+  const h = harness({ air: missing, dream: captured })
+  const idle = h.sync.getPendingSnapshot()
+  const dream = h.sync.getSnapshot().get("dream")
+  assert.equal(h.sync.getPendingSnapshot(), idle)
+  let notifications = 0
+  h.sync.subscribe(() => { notifications++ })
+
+  h.sync.change("air", { field: "owned", checked: true })
+  const pending = h.sync.getPendingSnapshot()
+  assert.notEqual(pending, idle)
+  assert.deepEqual([...pending], ["air"])
+  assert.equal(h.sync.getSnapshot().get("dream"), dream)
+
+  await h.succeed(0)
+  assert.deepEqual([...h.sync.getPendingSnapshot()], [])
+  assert.equal(h.sync.getSnapshot().get("dream"), dream)
+  assert.ok(notifications > 1)
+  const completed = h.sync.getPendingSnapshot()
+  h.sync.reconcile([...h.sync.getSnapshot().values()])
+  assert.equal(h.sync.getPendingSnapshot(), completed)
+})
+
+test("pending failure clears only the failed Sprite's saving state", async () => {
+  const h = harness({ air: missing, dream: captured })
+  h.sync.change("air", { field: "owned", checked: true })
+  h.sync.change("dream", { field: "mastered", checked: true })
+  await h.fail(0)
+  assert.deepEqual([...h.sync.getPendingSnapshot()], ["dream"])
+  assert.deepEqual(h.current.get("air"), missing)
+  await h.succeed(1)
+  assert.equal(h.sync.getPendingSnapshot().size, 0)
+})
+
 test("capture then mastery serializes and coalesces newer desired state", async () => {
   const h = harness()
   h.sync.change("air", { field: "owned", checked: true })

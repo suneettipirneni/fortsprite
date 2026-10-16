@@ -2,14 +2,13 @@
 
 import {
   useCallback,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
   useSyncExternalStore,
 } from "react"
-import { useWindowVirtualizer } from "@tanstack/react-virtual"
+import { useWindowVirtualizer, type Range } from "@tanstack/react-virtual"
 import { Badge } from "@workspace/ui/components/badge"
 
 import type { CollectionChange } from "@/lib/collection-state"
@@ -22,7 +21,6 @@ export type CollectionGridSize = "small" | "medium" | "large"
 type SpriteGridProps = {
   view: "list" | "grid"
   gridSize: CollectionGridSize
-  pendingIds: Set<string>
   availabilityKnown: boolean
   currentSeasonId: number | null
   onChange: (sprite: CatalogItem, change: CollectionChange) => void
@@ -82,19 +80,25 @@ function columnsForWidth(
 }
 
 function estimatedRowHeight(
+  width: number,
+  columns: number,
+  gap: number,
   view: "list" | "grid",
-  gridSize: CollectionGridSize,
+  desktop: boolean,
 ) {
-  if (view === "list") return 104
-  if (gridSize === "small") return 300
-  if (gridSize === "medium") return 360
-  return 480
+  if (view === "list") return desktop ? 80 : 64
+
+  // Match SpriteTile's 4:3 portrait plus its caption and controls. Estimating
+  // every card at 360px made the scroll range shrink as 240px cards mounted.
+  const tileWidth = Math.max(0, width - (columns - 1) * gap) / columns
+  return tileWidth * 3 / 4 + (desktop ? 113 : 109)
 }
 
 function useVirtualContainerMeasurements() {
   const ref = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
   const [scrollMargin, setScrollMargin] = useState(0)
+  const [viewport, setViewport] = useState({ width: 0, height: 900 })
 
   const measure = useCallback(() => {
     const element = ref.current
@@ -106,23 +110,37 @@ function useVirtualContainerMeasurements() {
     setScrollMargin((current) =>
       current === nextScrollMargin ? current : nextScrollMargin,
     )
+    setViewport((current) => current.width === window.innerWidth && current.height === window.innerHeight
+      ? current
+      : { width: window.innerWidth, height: window.innerHeight })
   }, [])
 
-  useLayoutEffect(measure)
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = ref.current
     if (!element) return
 
-    const observer = new ResizeObserver(measure)
-    observer.observe(element)
-    window.addEventListener("resize", measure)
+    measure()
+    let frame = 0
+    const scheduleMeasure = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(measure)
+    }
+    const observer = new ResizeObserver(scheduleMeasure)
+    // Toolbar wrapping and streamed content can move the grid without resizing
+    // it. Observe its layout ancestors instead of forcing layout on every scroll
+    // render just to rediscover the same document offset.
+    for (let ancestor: Element | null = element; ancestor; ancestor = ancestor.parentElement) {
+      observer.observe(ancestor)
+    }
+    window.addEventListener("resize", scheduleMeasure)
     return () => {
       observer.disconnect()
-      window.removeEventListener("resize", measure)
+      cancelAnimationFrame(frame)
+      window.removeEventListener("resize", scheduleMeasure)
     }
   }, [measure])
 
-  return { ref, width, scrollMargin }
+  return { ref, width, scrollMargin, viewport }
 }
 
 function SpriteTiles({
@@ -130,7 +148,6 @@ function SpriteTiles({
   columns,
   gap,
   view,
-  pendingIds,
   availabilityKnown,
   currentSeasonId,
   onChange,
@@ -152,7 +169,6 @@ function SpriteTiles({
           key={sprite.id}
           sprite={sprite}
           view={view}
-          pending={pendingIds.has(sprite.id)}
           availabilityKnown={availabilityKnown}
           currentSeasonId={currentSeasonId}
           onChange={(change) => onChange(sprite, change)}
@@ -201,9 +217,11 @@ export function VirtualizedSpriteGrid({
 
   // React Compiler must not cache reads from TanStack Virtual's mutable instance.
   const hydrated = useHydrated()
-  const { ref, width, scrollMargin } = useVirtualContainerMeasurements()
+  const { ref, width, scrollMargin, viewport } = useVirtualContainerMeasurements()
   const columns = columnsForWidth(width, view, gridSize)
-  const gap = width >= 640 ? GRID_GAP : MOBILE_GRID_GAP
+  const desktop = viewport.width >= 640
+  const gap = desktop ? GRID_GAP : MOBILE_GRID_GAP
+  const rowHeight = estimatedRowHeight(width, columns, gap, view, desktop)
   const rows = useMemo(() => {
     const nextRows: CatalogItem[][] = []
     for (let index = 0; index < items.length; index += columns) {
@@ -212,25 +230,32 @@ export function VirtualizedSpriteGrid({
     return nextRows
   }, [columns, items])
   const getItemKey = useCallback(
-    (index: number) => rows[index]?.map((sprite) => sprite.id).join(":") ?? index,
-    [rows],
+    (index: number) => `${view}:${width}:${desktop}:${rows[index]?.map((sprite) => sprite.id).join(":") ?? index}`,
+    [desktop, rows, view, width],
   )
   const estimateSize = useCallback(
-    () => estimatedRowHeight(view, gridSize),
-    [gridSize, view],
+    () => rowHeight,
+    [rowHeight],
   )
   // This component opts out of compilation with "use no memo" above.
   // oxlint-disable-next-line react/incompatible-library -- TanStack Virtual requires fresh reads from its mutable instance.
   const virtualizer = useWindowVirtualizer({
     count: rows.length,
+    directDomUpdates: true,
+    useAnimationFrameWithResizeObserver: true,
     enabled: hydrated,
     estimateSize,
     gap,
     getItemKey,
     initialRect: { width: 0, height: 900 },
-    overscan: 3,
+    // Keep two screens ready in either direction, including compact list rows.
+    overscan: Math.max(3, Math.ceil(viewport.height * 2 / (rowHeight + gap))),
     scrollMargin,
   })
+  const setContainerRef = useCallback((element: HTMLDivElement | null) => {
+    ref.current = element
+    virtualizer.containerRef(element)
+  }, [ref, virtualizer])
   const virtualRows = virtualizer.getVirtualItems()
 
   if (!hydrated) {
@@ -256,7 +281,7 @@ export function VirtualizedSpriteGrid({
 
   return (
     <div
-      ref={ref}
+      ref={setContainerRef}
       data-testid="virtualized-sprite-grid"
       data-hydrated="true"
       data-total-items={items.length}
@@ -265,7 +290,6 @@ export function VirtualizedSpriteGrid({
         0,
       )}
       style={{
-        height: virtualizer.getTotalSize(),
         position: "relative",
         width: "100%",
       }}
@@ -279,7 +303,6 @@ export function VirtualizedSpriteGrid({
             left: 0,
             position: "absolute",
             top: 0,
-            transform: `translateY(${virtualRow.start - virtualizer.options.scrollMargin}px)`,
             width: "100%",
           }}
         >
@@ -306,37 +329,62 @@ export function VirtualizedSpriteGroups({
 
   // React Compiler must not cache reads from TanStack Virtual's mutable instance.
   const hydrated = useHydrated()
-  const { ref, width, scrollMargin } = useVirtualContainerMeasurements()
+  const { ref, width, scrollMargin, viewport } = useVirtualContainerMeasurements()
   const columns = columnsForWidth(width, view, gridSize)
-  const gridGap = width >= 640 ? GRID_GAP : MOBILE_GRID_GAP
-  const groupGap = width >= 640 ? GROUP_GAP : MOBILE_GROUP_GAP
+  const desktop = viewport.width >= 640
+  const gridGap = desktop ? GRID_GAP : MOBILE_GRID_GAP
+  const groupGap = desktop ? GROUP_GAP : MOBILE_GROUP_GAP
+  const rowHeight = estimatedRowHeight(width, columns, gridGap, view, desktop)
+  const headingHeight = 41 + (desktop ? 16 : 12)
   const getItemKey = useCallback(
-    (index: number) => groups[index]?.baseName ?? index,
-    [groups],
+    (index: number) => `${view}:${width}:${desktop}:${groups[index]?.baseName}:${groups[index]?.items.length}`,
+    [desktop, groups, view, width],
   )
   const estimateSize = useCallback(
     (index: number) => {
       const itemCount = groups[index]?.items.length ?? 1
       return (
-        72 +
-        Math.ceil(itemCount / columns) * estimatedRowHeight(view, gridSize) +
+        headingHeight +
+        Math.ceil(itemCount / columns) * rowHeight +
         Math.max(0, Math.ceil(itemCount / columns) - 1) * gridGap
       )
     },
-    [columns, gridGap, gridSize, groups, view],
+    [columns, gridGap, headingHeight, groups, rowHeight],
   )
+  const rangeExtractor = useCallback(({ startIndex, endIndex }: Range) => {
+    // A group can span several screens. Buffer by distance instead of mounting
+    // a fixed number of potentially very large groups on every scroll.
+    let start = startIndex
+    let end = endIndex
+    const buffer = viewport.height * 2
+    for (let distance = 0; start > 0 && distance < buffer;) {
+      start--
+      distance += estimateSize(start) + groupGap
+    }
+    for (let distance = 0; end < groups.length - 1 && distance < buffer;) {
+      end++
+      distance += estimateSize(end) + groupGap
+    }
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index)
+  }, [estimateSize, groupGap, groups.length, viewport.height])
   // This component opts out of compilation with "use no memo" above.
   // oxlint-disable-next-line react/incompatible-library -- TanStack Virtual requires fresh reads from its mutable instance.
   const virtualizer = useWindowVirtualizer({
     count: groups.length,
+    directDomUpdates: true,
+    useAnimationFrameWithResizeObserver: true,
     enabled: hydrated,
     estimateSize,
     gap: groupGap,
     getItemKey,
     initialRect: { width: 0, height: 900 },
-    overscan: 1,
+    rangeExtractor,
     scrollMargin,
   })
+  const setContainerRef = useCallback((element: HTMLDivElement | null) => {
+    ref.current = element
+    virtualizer.containerRef(element)
+  }, [ref, virtualizer])
   const virtualGroups = virtualizer.getVirtualItems()
 
   if (!hydrated) {
@@ -368,13 +416,12 @@ export function VirtualizedSpriteGroups({
 
   return (
     <div
-      ref={ref}
+      ref={setContainerRef}
       data-testid="virtualized-sprite-groups"
       data-hydrated="true"
       data-total-groups={groups.length}
       data-rendered-groups={virtualGroups.length}
       style={{
-        height: virtualizer.getTotalSize(),
         position: "relative",
         width: "100%",
       }}
@@ -393,7 +440,6 @@ export function VirtualizedSpriteGroups({
               left: 0,
               position: "absolute",
               top: 0,
-              transform: `translateY(${virtualGroup.start - virtualizer.options.scrollMargin}px)`,
               width: "100%",
             }}
           >

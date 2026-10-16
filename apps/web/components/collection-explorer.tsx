@@ -125,7 +125,7 @@ export function CollectionExplorer({ catalog, collection, usernamePromise }: {
 }
 
 function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: CatalogItem[]; usernamePromise: Promise<string> }) {
-  const { sync, pendingIds, notice, clearNotice } = useCollectionControls()
+  const { sync, notice, clearNotice } = useCollectionControls()
   const sprites = catalog
   const currentSeasonId = latestSeasonId(sprites)
   const seasonOptions = summarizeSeasons(sprites)
@@ -273,7 +273,6 @@ function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: Cata
   const gridProps = {
     view: view === "list" ? "list" as const : "grid" as const,
     gridSize,
-    pendingIds,
     availabilityKnown: true,
     currentSeasonId,
     onChange: updateSprite,

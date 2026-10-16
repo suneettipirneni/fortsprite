@@ -13,9 +13,13 @@ export default function SignInPage({
   searchParams: Promise<{ error?: string }>
 }) {
   return (
-    <main className="locker-stage isolate min-h-dvh">
+    <main className="locker-stage relative isolate min-h-dvh">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 grid lg:grid-cols-2">
+        <div className="bg-background/28 backdrop-blur-sm" />
+        <div className="hidden bg-sidebar/38 backdrop-blur-sm lg:block" />
+      </div>
       <div className="mx-auto grid min-h-dvh w-full max-w-app lg:grid-cols-2">
-        <section className="auth-safe-area flex items-center justify-center bg-background/28 px-6 backdrop-blur-sm sm:p-10">
+        <section className="auth-safe-area flex items-center justify-center px-6 sm:p-10">
           <div className="flex w-full max-w-xs flex-col gap-7">
             <Link
               href="/"
@@ -42,7 +46,7 @@ export default function SignInPage({
             </p>
           </div>
         </section>
-        <aside className="relative hidden border-l border-white/8 bg-sidebar/38 p-12 text-sidebar-foreground backdrop-blur-sm lg:flex lg:items-center">
+        <aside className="relative hidden border-l border-white/8 p-12 text-sidebar-foreground lg:flex lg:items-center">
           <p className="absolute top-12 left-12 font-mono text-sm uppercase tracking-wide text-sidebar-foreground/55">
             Squad intelligence
           </p>

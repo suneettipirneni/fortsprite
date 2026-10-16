@@ -146,15 +146,16 @@ function drawStatusIcon(
   context.lineJoin = "round"
   context.beginPath()
   if (mastered) {
-    for (let point = 0; point < 10; point++) {
-      const angle = -Math.PI / 2 + point * Math.PI / 5
-      const radius = point % 2 === 0 ? 7 : 3.3
-      const px = x + Math.cos(angle) * radius
-      const py = y + Math.sin(angle) * radius
-      if (point === 0) context.moveTo(px, py)
-      else context.lineTo(px, py)
-    }
+    context.moveTo(x - 7, y - 4)
+    context.lineTo(x - 3, y - 1)
+    context.lineTo(x, y - 6)
+    context.lineTo(x + 3, y - 1)
+    context.lineTo(x + 7, y - 4)
+    context.lineTo(x + 5, y + 4)
+    context.lineTo(x - 5, y + 4)
     context.closePath()
+    context.moveTo(x - 5, y + 7)
+    context.lineTo(x + 5, y + 7)
   } else {
     context.moveTo(x - 5, y)
     context.lineTo(x - 1.3, y + 3.7)

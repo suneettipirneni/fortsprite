@@ -37,7 +37,7 @@ export function ImageExportDialog({ open, onOpenChange, trigger, title, descript
     return (
       <Drawer open={open} onOpenChange={onOpenChange} handleOnly>
         <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-        <DrawerContent className="overflow-hidden data-[vaul-drawer-direction=bottom]:max-h-[calc(100dvh-var(--safe-area-top)-1rem)]">
+        <DrawerContent className="overflow-clip data-[vaul-drawer-direction=bottom]:max-h-[calc(100dvh-var(--safe-area-top)-1rem)]">
           <DrawerHeader className="relative shrink-0 gap-2 pl-[max(1rem,var(--safe-area-left))] pr-[calc(max(1rem,var(--safe-area-right))+2.5rem)] text-left">
             <DrawerTitle>{title}</DrawerTitle>
             <DrawerDescription>
@@ -64,7 +64,7 @@ export function ImageExportDialog({ open, onOpenChange, trigger, title, descript
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="grid-rows-[auto_minmax(0,1fr)_auto] gap-5 overflow-hidden sm:max-w-2xl">
+      <DialogContent className="grid-rows-[auto_minmax(0,1fr)_auto] gap-5 overflow-clip sm:max-w-2xl">
         <DialogHeader className="pr-7">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>

@@ -1,7 +1,6 @@
 "use client"
 
-import Image, { type StaticImageData } from "next/image"
-import { useState } from "react"
+import Image from "next/image"
 
 import { cn } from "@workspace/ui/lib/utils"
 
@@ -16,48 +15,6 @@ type SpritePortraitProps = {
   className?: string
 }
 
-function SpriteArtwork({
-  src,
-  alt,
-  sizes,
-}: {
-  src: string | StaticImageData
-  alt: string
-  sizes: string
-}) {
-  const [loaded, setLoaded] = useState(false)
-  const preview = typeof src === "string" ? undefined : src.blurDataURL
-
-  return (
-    <>
-      {preview && (
-        <div
-          aria-hidden="true"
-          className={cn(
-            "pointer-events-none absolute inset-2 bg-contain bg-center bg-no-repeat blur-sm transition-opacity duration-200 motion-reduce:transition-none",
-            loaded ? "opacity-0" : "opacity-100",
-          )}
-          style={{ backgroundImage: `url("${preview}")` }}
-        />
-      )}
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        loading="lazy"
-        sizes={sizes}
-        className={cn(
-          "object-contain p-2 transition-opacity duration-200 motion-reduce:transition-none",
-          preview && !loaded ? "opacity-0" : "opacity-100",
-        )}
-        onLoad={(event) => {
-          if (event.currentTarget.naturalWidth > 0) setLoaded(true)
-        }}
-      />
-    </>
-  )
-}
-
 export function SpritePortrait({
   variant,
   label,
@@ -68,6 +25,7 @@ export function SpritePortrait({
   const classes = variantStyle(variant)
 
   if (src) {
+    const artwork = spriteArtwork[src] ?? src
     return (
       <div
         className={cn(
@@ -76,11 +34,16 @@ export function SpritePortrait({
         )}
         style={classes.frame}
       >
-        <SpriteArtwork
+        <Image
           key={src}
-          src={spriteArtwork[src] ?? src}
+          src={artwork}
           alt={`${label} Sprite`}
+          fill
+          loading="lazy"
+          placeholder={typeof artwork !== "string" && artwork.blurDataURL ? "blur" : "empty"}
           sizes={sizes}
+          className="p-2"
+          style={{ objectFit: "contain" }}
         />
       </div>
     )

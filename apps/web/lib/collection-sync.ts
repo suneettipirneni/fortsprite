@@ -22,7 +22,7 @@ type CollectionSyncOptions = {
     id: string,
     state: CollectionState,
   ) => Promise<CollectionMutationResponse>
-  onPending: (id: string, pending: boolean) => void
+  onPending?: (id: string, pending: boolean) => void
   onSaved: (entry: CollectionEntry) => void
   onError: (id: string, error: unknown) => void
 }
@@ -48,10 +48,17 @@ export function createCollectionSync(options: CollectionSyncOptions) {
 
   const listeners = new Set<() => void>()
   let snapshot = new Map<string, CollectionEntry>()
+  let pendingSnapshot = new Set<string>()
 
   function publish() {
     let nextSnapshot: Map<string, CollectionEntry> | undefined
+    let nextPending: Set<string> | undefined
     for (const [id, lane] of lanes) {
+      if (pendingSnapshot.has(id) !== lane.running) {
+        nextPending ??= new Set(pendingSnapshot)
+        if (lane.running) nextPending.add(id)
+        else nextPending.delete(id)
+      }
       const current = snapshot.get(id)
       if (
         current &&
@@ -73,9 +80,10 @@ export function createCollectionSync(options: CollectionSyncOptions) {
       nextSnapshot ??= new Map(snapshot)
       nextSnapshot.delete(id)
     }
-    if (!nextSnapshot) return
+    if (!nextSnapshot && !nextPending) return
 
-    snapshot = nextSnapshot
+    if (nextSnapshot) snapshot = nextSnapshot
+    if (nextPending) pendingSnapshot = nextPending
     for (const listener of listeners) listener()
   }
   publish()
@@ -91,9 +99,14 @@ export function createCollectionSync(options: CollectionSyncOptions) {
     return snapshot
   }
 
+  function getPendingSnapshot() {
+    return pendingSnapshot
+  }
+
   async function flush(id: string, lane: SyncLane) {
     lane.running = true
-    options.onPending(id, true)
+    publish()
+    options.onPending?.(id, true)
 
     try {
       while (true) {
@@ -123,7 +136,8 @@ export function createCollectionSync(options: CollectionSyncOptions) {
       }
     } finally {
       lane.running = false
-      options.onPending(id, false)
+      publish()
+      options.onPending?.(id, false)
     }
   }
 
@@ -167,5 +181,5 @@ export function createCollectionSync(options: CollectionSyncOptions) {
     publish()
   }
 
-  return { change, reconcile, subscribe, getSnapshot }
+  return { change, reconcile, subscribe, getSnapshot, getPendingSnapshot }
 }
