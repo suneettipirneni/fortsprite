@@ -34,7 +34,7 @@
   width: 248px;
   max-width: calc(100vw - 4rem - var(--safe-area-right));
   height: 196px;
-  color: var(--foreground);
+  color: var(--primary-foreground);
   pointer-events: none;
   perspective: 600px;
   transform: translateY(-50%);
@@ -50,9 +50,9 @@
   width: 100%;
   min-height: 78px;
   padding: 10px;
-  border: 1px solid rgb(199 224 244 / 16%);
+  border: 1px solid color-mix(in oklch, var(--primary-foreground) 22%, var(--primary));
   border-radius: 12px;
-  background: var(--background);
+  background: var(--primary);
   opacity: 0.72;
   transform: translateY(calc(-50% + var(--slot) * 58px)) rotateX(calc(var(--slot) * -14deg)) scale(calc(1 - var(--distance) * 0.045));
   backface-visibility: hidden;
@@ -60,7 +60,7 @@
 }
 
 .previewCard[data-position="current"] {
-  border-color: color-mix(in oklch, var(--primary) 35%, transparent);
+  border-color: color-mix(in oklch, var(--primary-foreground) 35%, var(--primary));
   opacity: 1;
 }
 
@@ -81,10 +81,11 @@
   right: -6px;
   width: 10px;
   height: 10px;
-  border-top: 1px solid rgb(199 224 244 / 20%);
-  border-right: 1px solid rgb(199 224 244 / 20%);
+  border-top: 1px solid;
+  border-right: 1px solid;
+  border-color: inherit;
   border-radius: 0 3px 0 0;
-  background: var(--background);
+  background: var(--primary);
   transform: rotate(45deg);
   content: "";
 }
@@ -95,7 +96,7 @@
   justify-content: space-between;
   gap: 8px;
   margin-top: 4px;
-  color: var(--muted-foreground);
+  color: color-mix(in oklch, var(--primary-foreground) 80%, var(--primary));
   font-size: 11px;
   line-height: 16px;
 }
@@ -106,7 +107,7 @@
 }
 
 .position strong {
-  color: var(--foreground);
+  color: var(--primary-foreground);
   font-weight: 500;
 }
 
@@ -132,6 +133,10 @@
 @media (forced-colors: active) {
   .tick { background: GrayText; }
   .tick[data-active="true"] { background: Highlight; }
-  .previewCard { border-color: CanvasText; background: Canvas; color: CanvasText; }
+  .previewCard, .previewCard[data-position="current"], .previewCard[data-position="current"]::after {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
   .previewMeta, .position strong { color: CanvasText; }
 }
