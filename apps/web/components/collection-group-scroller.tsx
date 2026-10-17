@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useRef, useState, type CSSProperties } from "react"
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react"
 import { SpritePortrait } from "@/components/sprite-portrait"
 import styles from "./collection-group-scroller.module.css"
 
@@ -8,7 +8,6 @@ type CollectionGroupScrollerProps = {
   groups: { baseName: string; items: unknown[]; baseImagePath: string | null | undefined }[]
   activeIndex: number
   controls: string
-  contentTop: number
   visible: boolean
   onJump: (index: number) => void
 }
@@ -18,53 +17,102 @@ export function CollectionGroupScroller({
   groups,
   activeIndex,
   controls,
-  contentTop,
   visible,
   onJump,
 }: CollectionGroupScrollerProps) {
   const hintId = useId()
   const pointerId = useRef<number | null>(null)
   const lastTarget = useRef<number | null>(null)
-  const [dragIndex, setDragIndex] = useState<number | null>(null)
-  const [dragBounds, setDragBounds] = useState<{ top: number; height: number } | null>(null)
+  const pendingTarget = useRef<number | null>(null)
+  const pendingProgress = useRef<number | null>(null)
+  const frame = useRef<number | null>(null)
+  const boundsRef = useRef<{ top: number; height: number } | null>(null)
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null)
+  const [previewBounds, setPreviewBounds] = useState<{ top: number; height: number; touch: boolean } | null>(null)
   const [focused, setFocused] = useState(false)
-  const index = Math.min(dragIndex ?? activeIndex, groups.length - 1)
-  const dragging = dragIndex !== null
+  const [hovering, setHovering] = useState(false)
+  const [pointerProgress, setPointerProgress] = useState<number | null>(null)
+  const index = Math.min(previewIndex ?? activeIndex, groups.length - 1)
+  const dragging = previewBounds?.touch === true
   const progress = index / (groups.length - 1)
   const tickCount = Math.min(groups.length, 17)
+  const activeTick = Math.round(progress * (tickCount - 1))
+  const tickProgress = activeTick / (tickCount - 1)
+  const wavePosition = (pointerProgress ?? progress) * (tickCount - 1)
   const group = groups[index]
 
-  if (groups.length < 2 || (!visible && !dragging && !focused)) return null
+  useEffect(() => () => {
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
+  }, [])
 
-  function scrub(element: HTMLDivElement, clientY: number) {
-    const bounds = element.getBoundingClientRect()
-    const fraction = Math.max(0, Math.min(1, (clientY - bounds.top - 20) / Math.max(1, bounds.height - 40)))
-    const next = Math.round(fraction * (groups.length - 1))
-    setDragIndex(next)
-    if (lastTarget.current !== next) {
-      lastTarget.current = next
-      onJump(next)
-    }
+  if (groups.length < 2 || (!visible && !dragging && !hovering && !focused)) return null
+
+  function flushTarget() {
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
+    frame.current = null
+    if (pendingProgress.current !== null) setPointerProgress(pendingProgress.current)
+    pendingProgress.current = null
+    const next = pendingTarget.current
+    pendingTarget.current = null
+    if (next === null || next === lastTarget.current) return
+    lastTarget.current = next
+    setPreviewIndex(next)
   }
 
-  function endDrag() {
+  function scrub(clientY: number) {
+    // Cache geometry for the hover or touch gesture so preview updates never
+    // force layout or shift the selection when the page jumps.
+    const bounds = boundsRef.current
+    if (!bounds) return
+    const fraction = Math.max(0, Math.min(1, (clientY - bounds.top - 20) / Math.max(1, bounds.height - 40)))
+    pendingProgress.current = fraction
+    const position = fraction * (groups.length - 1)
+    const previous = pendingTarget.current ?? lastTarget.current
+    // Retain the selection slightly past the rounding boundary. Tiny finger
+    // tremors otherwise alternate between groups several screens apart.
+    const next = previous !== null && Math.abs(position - previous) < 0.7
+      ? previous
+      : Math.round(position)
+    pendingTarget.current = next
+    // Coalesce high-frequency pointer events into one preview update per frame.
+    if (frame.current === null) frame.current = requestAnimationFrame(flushTarget)
+  }
+
+  function endPreview() {
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
+    frame.current = null
+    pendingTarget.current = null
     pointerId.current = null
+    pendingProgress.current = null
+    setPointerProgress(null)
+    setHovering(false)
     lastTarget.current = null
-    setDragIndex(null)
-    setDragBounds(null)
+    boundsRef.current = null
+    setPreviewIndex(null)
+    setPreviewBounds(null)
+  }
+
+  function hover(element: HTMLDivElement, clientY: number) {
+    if (!boundsRef.current) {
+      const { top, height } = element.getBoundingClientRect()
+      boundsRef.current = { top, height }
+      setPreviewBounds({ top, height, touch: false })
+    }
+    setHovering(true)
+    scrub(clientY)
   }
 
   return (
     <div
       className="fixed right-[max(0px,var(--safe-area-right))] z-30 flex w-11 items-center lg:right-[max(0.25rem,var(--safe-area-right))]"
       style={{
-        top: dragBounds?.top ?? `max(calc(var(--safe-area-top) + var(--app-header-content-height) + 1.5rem), ${contentTop + 16}px)`,
-        bottom: dragBounds ? undefined : "calc(var(--mobile-tab-clearance) + var(--safe-area-bottom) + 1.5rem)",
-        height: dragBounds?.height,
+        top: previewBounds?.top ?? "calc(var(--safe-area-top) + var(--app-header-content-height) + 1.5rem)",
+        bottom: previewBounds ? undefined : "calc(var(--mobile-tab-clearance) + var(--safe-area-bottom) + 1.5rem)",
+        height: previewBounds?.height,
         pointerEvents: "none",
       }}
     >
-      <p id={hintId} className="sr-only">Hold and drag to jump between variant groups. Use arrow keys, Home, or End with a keyboard.</p>
+      <p id={hintId} className="sr-only">Hover to preview a variant group, then click to jump. On touch screens, drag and lift your finger to jump. Use arrow keys, Home, or End with a keyboard.</p>
       <div
         role="scrollbar"
         aria-label="Jump to variant group"
@@ -77,31 +125,53 @@ export function CollectionGroupScroller({
         aria-valuetext={`${groups[index]?.baseName}, group ${index + 1} of ${groups.length}`}
         tabIndex={0}
         data-dragging={dragging}
+        data-hovering={hovering}
         className={`${styles.rail} relative h-full max-h-80 w-11 touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring`}
-        style={{ pointerEvents: "auto", cursor: dragging ? "grabbing" : "grab" }}
+        style={{ pointerEvents: "auto", cursor: dragging ? "grabbing" : "pointer" }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
+        onPointerEnter={(event) => {
+          if (event.pointerType === "mouse" && pointerId.current === null) hover(event.currentTarget, event.clientY)
+        }}
+        onPointerLeave={(event) => {
+          if (event.pointerType === "mouse" && pointerId.current === null) endPreview()
+        }}
+        onClick={(event) => {
+          if (!hovering) return
+          scrub(event.clientY)
+          flushTarget()
+          if (lastTarget.current !== null) onJump(lastTarget.current)
+        }}
         onPointerDown={(event) => {
           if (!event.isPrimary || event.button !== 0) return
           event.preventDefault()
-          // Keep the rail under the pointer even as the first jump scrolls
-          // the collection toolbar out of the viewport.
+          if (event.pointerType === "mouse") return
+          setHovering(false)
+          // Freeze the geometry for the gesture, including viewport changes
+          // caused by mobile browser chrome appearing or disappearing.
           const bounds = event.currentTarget.getBoundingClientRect()
-          setDragBounds({ top: bounds.top, height: bounds.height })
+          boundsRef.current = { top: bounds.top, height: bounds.height }
+          setPreviewBounds({ top: bounds.top, height: bounds.height, touch: true })
           pointerId.current = event.pointerId
           event.currentTarget.setPointerCapture(event.pointerId)
-          scrub(event.currentTarget, event.clientY)
+          scrub(event.clientY)
         }}
         onPointerMove={(event) => {
-          if (pointerId.current === event.pointerId) scrub(event.currentTarget, event.clientY)
+          if (event.pointerType === "mouse" && pointerId.current === null) hover(event.currentTarget, event.clientY)
+          else if (pointerId.current === event.pointerId) scrub(event.clientY)
         }}
         onPointerUp={(event) => {
           if (pointerId.current !== event.pointerId) return
+          // A quick release can arrive before the queued frame. Commit the
+          // final position now so it cannot be lost or replayed after release.
+          scrub(event.clientY)
+          flushTarget()
+          if (lastTarget.current !== null) onJump(lastTarget.current)
           event.currentTarget.releasePointerCapture(event.pointerId)
-          endDrag()
+          endPreview()
         }}
-        onPointerCancel={endDrag}
-        onLostPointerCapture={endDrag}
+        onPointerCancel={endPreview}
+        onLostPointerCapture={endPreview}
         onKeyDown={(event) => {
           const targets: Record<string, number> = {
             ArrowDown: index + 1,
@@ -116,20 +186,28 @@ export function CollectionGroupScroller({
           const target = targets[event.key]
           if (target === undefined) return
           event.preventDefault()
+          endPreview()
           onJump(Math.max(0, Math.min(groups.length - 1, target)))
         }}
       >
         <span aria-hidden="true" className={styles.track}>
           {Array.from({ length: tickCount }, (_, tick) => (
-            <span key={tick} className={styles.tick} data-active={tick === Math.round(progress * (tickCount - 1))} />
+            <span
+              key={tick}
+              className={styles.tick}
+              data-active={tick === activeTick}
+              style={{ "--tick-scale": 1 + 0.85 * Math.exp(-0.5 * ((tick - wavePosition) / 1.1) ** 2) } as CSSProperties}
+            />
           ))}
         </span>
-        {(dragging || focused) && group && (
+        {(dragging || hovering || focused) && group && (
           <div
             aria-hidden="true"
             data-testid="group-scroll-preview"
             className={styles.preview}
-            style={{ top: `clamp(100px, calc(${progress * 100}% + ${20 - progress * 40}px), calc(100% - 100px))` }}
+            // Track insets are 20px and ticks are 3px tall. Align to the
+            // highlighted tick's center, including the first and last ticks.
+            style={{ top: `calc(${tickProgress * 100}% + ${21.5 - tickProgress * 43}px)` }}
           >
             {groups.slice(Math.max(0, index - 2), index + 3).map((previewGroup, offset) => {
               const groupIndex = Math.max(0, index - 2) + offset
@@ -153,7 +231,7 @@ export function CollectionGroupScroller({
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-2 text-sm leading-snug font-semibold">{previewGroup.baseName}</p>
                     <div className={styles.previewMeta}>
-                      <span>{previewGroup.items.length} {previewGroup.items.length === 1 ? "variant" : "variants"}</span>
+                      <span>{slot === 0 && (dragging || hovering) ? (dragging ? "Release to jump" : "Click to jump") : `${previewGroup.items.length} ${previewGroup.items.length === 1 ? "variant" : "variants"}`}</span>
                       <span className={styles.position}><strong>{groupIndex + 1}</strong> / {groups.length}</span>
                     </div>
                   </div>

@@ -338,6 +338,8 @@ export function VirtualizedSpriteGroups({
   // React Compiler must not cache reads from TanStack Virtual's mutable instance.
   const hydrated = useHydrated()
   const groupsId = useId()
+  const [jump, setJump] = useState<{ index: number; groups: typeof groups } | null>(null)
+  const jumpIndex = jump?.groups === groups ? jump.index : null
   const { ref, width, scrollMargin, viewport, scrollPaddingStart } = useVirtualContainerMeasurements()
   const columns = columnsForWidth(width, view, gridSize)
   const desktop = viewport.width >= 640
@@ -374,8 +376,22 @@ export function VirtualizedSpriteGroups({
       end++
       distance += estimateSize(end) + groupGap
     }
-    return Array.from({ length: end - start + 1 }, (_, index) => start + index)
-  }, [estimateSize, groupGap, groups.length, viewport.height])
+    const indexes = new Set(Array.from({ length: end - start + 1 }, (_, index) => start + index))
+    if (jumpIndex !== null) {
+      // Mount and measure the destination before moving the window. Scrolling
+      // first exposes an empty viewport while React builds the new cards.
+      indexes.add(jumpIndex)
+      for (let index = jumpIndex - 1, distance = 0; index >= 0 && distance < buffer; index--) {
+        indexes.add(index)
+        distance += estimateSize(index) + groupGap
+      }
+      for (let index = jumpIndex + 1, distance = 0; index < groups.length && distance < buffer; index++) {
+        indexes.add(index)
+        distance += estimateSize(index) + groupGap
+      }
+    }
+    return [...indexes].sort((a, b) => a - b)
+  }, [estimateSize, groupGap, groups.length, jumpIndex, viewport.height])
   // This component opts out of compilation with "use no memo" above.
   // oxlint-disable-next-line react/incompatible-library -- TanStack Virtual requires fresh reads from its mutable instance.
   const virtualizer = useWindowVirtualizer({
@@ -396,6 +412,18 @@ export function VirtualizedSpriteGroups({
     virtualizer.containerRef(element)
   }, [ref, virtualizer])
   const virtualGroups = virtualizer.getVirtualItems()
+  useLayoutEffect(() => {
+    if (jumpIndex !== null) virtualizer.scrollToIndex(jumpIndex, { align: "start", behavior: "auto" })
+  }, [jump, jumpIndex, virtualizer])
+  const rangeStart = virtualizer.range?.startIndex
+  const rangeEnd = virtualizer.range?.endIndex
+  useLayoutEffect(() => {
+    // Release the extra mounted range once normal window virtualization owns
+    // the destination. Ordinary scrolling must not retain a distant group.
+    if (jumpIndex !== null && rangeStart !== undefined && rangeEnd !== undefined && jumpIndex >= rangeStart && jumpIndex <= rangeEnd) {
+      setJump(null)
+    }
+  }, [jumpIndex, rangeEnd, rangeStart])
   const scrollOffset = virtualizer.scrollOffset ?? 0
   // A short final group cannot reach the top of a tall viewport. Keep the
   // scrollbar at its endpoint when the document has reached its scroll limit.
@@ -482,9 +510,8 @@ export function VirtualizedSpriteGroups({
         groups={groups}
         activeIndex={activeIndex}
         controls={groupsId}
-        contentTop={Math.max(0, scrollMargin - scrollOffset)}
         visible={scrollOffset + (virtualizer.scrollRect?.height ?? 0) > scrollMargin + 80 && scrollOffset < scrollMargin + virtualizer.getTotalSize()}
-        onJump={(index) => virtualizer.scrollToIndex(index, { align: "start", behavior: "auto" })}
+        onJump={(index) => setJump({ index, groups })}
       />
     </div>
   )
