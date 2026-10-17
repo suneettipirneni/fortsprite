@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useRef, useState, type CSSProperties } from "react"
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react"
 import { SpritePortrait } from "@/components/sprite-portrait"
 import styles from "./collection-group-scroller.module.css"
 
@@ -25,6 +25,9 @@ export function CollectionGroupScroller({
   const hintId = useId()
   const pointerId = useRef<number | null>(null)
   const lastTarget = useRef<number | null>(null)
+  const pendingTarget = useRef<number | null>(null)
+  const frame = useRef<number | null>(null)
+  const boundsRef = useRef<{ top: number; height: number } | null>(null)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [dragBounds, setDragBounds] = useState<{ top: number; height: number } | null>(null)
   const [focused, setFocused] = useState(false)
@@ -34,22 +37,48 @@ export function CollectionGroupScroller({
   const tickCount = Math.min(groups.length, 17)
   const group = groups[index]
 
+  useEffect(() => () => {
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
+  }, [])
+
   if (groups.length < 2 || (!visible && !dragging && !focused)) return null
 
-  function scrub(element: HTMLDivElement, clientY: number) {
-    const bounds = element.getBoundingClientRect()
-    const fraction = Math.max(0, Math.min(1, (clientY - bounds.top - 20) / Math.max(1, bounds.height - 40)))
-    const next = Math.round(fraction * (groups.length - 1))
+  function flushTarget() {
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
+    frame.current = null
+    const next = pendingTarget.current
+    pendingTarget.current = null
+    if (next === null || next === lastTarget.current) return
+    lastTarget.current = next
     setDragIndex(next)
-    if (lastTarget.current !== next) {
-      lastTarget.current = next
-      onJump(next)
-    }
+    onJump(next)
+  }
+
+  function scrub(clientY: number) {
+    // Measure once at pointer-down; reading layout after each virtualized jump
+    // forces the browser to finish laying out the newly mounted groups.
+    const bounds = boundsRef.current
+    if (!bounds) return
+    const fraction = Math.max(0, Math.min(1, (clientY - bounds.top - 20) / Math.max(1, bounds.height - 40)))
+    const position = fraction * (groups.length - 1)
+    const previous = pendingTarget.current ?? lastTarget.current
+    // Retain the selection slightly past the rounding boundary. Tiny finger
+    // tremors otherwise alternate between groups several screens apart.
+    const next = previous !== null && Math.abs(position - previous) < 0.7
+      ? previous
+      : Math.round(position)
+    pendingTarget.current = next
+    // High-frequency touch events only need one virtualized jump per frame.
+    if (frame.current === null) frame.current = requestAnimationFrame(flushTarget)
   }
 
   function endDrag() {
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
+    frame.current = null
+    pendingTarget.current = null
     pointerId.current = null
     lastTarget.current = null
+    boundsRef.current = null
     setDragIndex(null)
     setDragBounds(null)
   }
@@ -84,19 +113,24 @@ export function CollectionGroupScroller({
         onPointerDown={(event) => {
           if (!event.isPrimary || event.button !== 0) return
           event.preventDefault()
-          // Keep the rail under the pointer even as the first jump scrolls
-          // the collection toolbar out of the viewport.
+          // Freeze the geometry for the gesture, including viewport changes
+          // caused by mobile browser chrome appearing or disappearing.
           const bounds = event.currentTarget.getBoundingClientRect()
+          boundsRef.current = { top: bounds.top, height: bounds.height }
           setDragBounds({ top: bounds.top, height: bounds.height })
           pointerId.current = event.pointerId
           event.currentTarget.setPointerCapture(event.pointerId)
-          scrub(event.currentTarget, event.clientY)
+          scrub(event.clientY)
         }}
         onPointerMove={(event) => {
-          if (pointerId.current === event.pointerId) scrub(event.currentTarget, event.clientY)
+          if (pointerId.current === event.pointerId) scrub(event.clientY)
         }}
         onPointerUp={(event) => {
           if (pointerId.current !== event.pointerId) return
+          // A quick release can arrive before the queued frame. Commit the
+          // final position now so it cannot be lost or replayed after release.
+          scrub(event.clientY)
+          flushTarget()
           event.currentTarget.releasePointerCapture(event.pointerId)
           endDrag()
         }}

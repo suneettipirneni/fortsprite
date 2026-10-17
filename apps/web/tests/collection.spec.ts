@@ -653,6 +653,8 @@ test("collection view preference persists across reloads", async ({ page }) => {
 })
 
 test("variant group scrollbar scrubs through virtual groups and supports keyboard navigation", async ({ page }, testInfo) => {
+  await expect(page).toHaveURL(/\/collection$/)
+  await expect(page).toHaveTitle(/FortSprite/)
   const collection = await snapshot(page)
   const names = [...new Set(collection.items.toSorted((a, b) => a.displayOrder - b.displayOrder).map((item) => item.baseName))]
   const groups = page.getByTestId("virtualized-sprite-groups")
@@ -687,7 +689,7 @@ test("variant group scrollbar scrubs through virtual groups and supports keyboar
   const incoming = await preview.locator('[data-position="next"]').elementHandle()
   await page.mouse.move(x - 65, yFor(middle + 1))
   await expect.poll(() => incoming!.getAttribute("data-position")).toBe("current")
-  await expect.poll(() => incoming!.evaluate((element) => element.getAnimations().length)).toBeGreaterThan(0)
+  expect(await incoming!.evaluate((element) => getComputedStyle(element).transitionDuration)).toBe("0s")
   await assertGroup(middle + 1)
   await page.mouse.move(x - 65, yFor(middle))
   await assertGroup(middle)
@@ -722,6 +724,91 @@ test("variant group scrollbar scrubs through virtual groups and supports keyboar
   await page.screenshot({ path: `/tmp/fortsprite-group-scroller-${testInfo.project.name}-idle.png`, animations: "disabled", scale: "css" })
   const results = await new AxeBuilder({ page }).analyze()
   expect(results.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical")).toEqual([])
+})
+
+test("variant group scrollbar stays still while dragging and tolerates finger jitter", async ({ page }) => {
+  const groups = page.getByTestId("virtualized-sprite-groups")
+  await groups.evaluate((element) => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 250))
+  const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
+  await expect(scrollbar).toBeVisible()
+  const bounds = (await scrollbar.boundingBox())!
+
+  const count = Number(await scrollbar.getAttribute("aria-valuemax"))
+  const step = (bounds.height - 40) / (count - 1)
+  const x = bounds.x + bounds.width / 2
+  const y = (index: number) => bounds.y + 20 + step * index
+  await page.mouse.move(x, y(10))
+  await page.mouse.down()
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", "11")
+  const draggingBounds = (await scrollbar.boundingBox())!
+  expect(Math.abs(draggingBounds.y - bounds.y)).toBeLessThan(1)
+  expect(Math.abs(draggingBounds.height - bounds.height)).toBeLessThan(1)
+  // Small movements around the rounding boundary must not thrash between
+  // groups that can each span several screens.
+  for (const index of [10.55, 10.45, 10.58, 10.42]) {
+    await page.mouse.move(x, y(index))
+    await expect(scrollbar).toHaveAttribute("aria-valuenow", "11")
+  }
+  await page.mouse.move(x, y(10.85))
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", "12")
+  for (const index of [10.45, 10.55, 10.42, 10.58]) {
+    await page.mouse.move(x, y(index))
+    await expect(scrollbar).toHaveAttribute("aria-valuenow", "12")
+  }
+  await page.mouse.move(x, y(10.15))
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", "11")
+  await page.mouse.up()
+  await expect(scrollbar).toHaveAttribute("data-dragging", "false")
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", "11")
+})
+
+test("variant group scrollbar commits a fast release and discards cancelled movement", async ({ page }) => {
+  const collection = await snapshot(page)
+  const names = [...new Set(collection.items.toSorted((a, b) => a.displayOrder - b.displayOrder).map((item) => item.baseName))]
+  await page.getByTestId("virtualized-sprite-groups").evaluate((element) => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
+  const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+  const bounds = (await scrollbar.boundingBox())!
+  const x = bounds.x + bounds.width / 2
+  await page.mouse.move(x, bounds.y + 20)
+  await page.mouse.down()
+  await expect(scrollbar).toHaveAttribute("data-dragging", "true")
+  // Deliver a burst inside one browser task, then lift before the next frame.
+  // The last position must win without scrolling through all intermediates.
+  const jumps = await scrollbar.evaluate((element, { x, y, height, count }) => {
+    const original = window.scrollTo
+    let calls = 0
+    window.scrollTo = ((...args: Parameters<typeof window.scrollTo>) => {
+      calls++
+      original.apply(window, args)
+    }) as typeof window.scrollTo
+    try {
+      for (const index of [5, 20, 35, 12]) {
+        element.dispatchEvent(new PointerEvent("pointermove", { bubbles: true, pointerId: 1, isPrimary: true, clientX: x, clientY: y + 20 + (height - 40) * index / (count - 1) }))
+      }
+      element.dispatchEvent(new PointerEvent("pointerup", { bubbles: true, pointerId: 1, isPrimary: true, clientX: x, clientY: y + 20 + (height - 40) * 12 / (count - 1) }))
+      return calls
+    } finally {
+      window.scrollTo = original
+    }
+  }, { x, y: bounds.y, height: bounds.height, count: names.length })
+  expect(jumps).toBe(1)
+  await page.mouse.up()
+  await expect(scrollbar).toHaveAttribute("data-dragging", "false")
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", "13")
+  await expect(page.getByRole("heading", { level: 2, name: names[12]!, exact: true })).toBeInViewport()
+
+  await page.mouse.down()
+  await expect(scrollbar).toHaveAttribute("data-dragging", "true")
+  const selected = await scrollbar.getAttribute("aria-valuenow")
+  await scrollbar.evaluate(async (element, { x, y }) => {
+    element.dispatchEvent(new PointerEvent("pointermove", { bubbles: true, pointerId: 1, isPrimary: true, clientX: x, clientY: y }))
+    element.dispatchEvent(new PointerEvent("pointercancel", { bubbles: true, pointerId: 1, isPrimary: true }))
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+  }, { x, y: bounds.y + bounds.height - 20 })
+  await page.mouse.up()
+  await expect(scrollbar).toHaveAttribute("data-dragging", "false")
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", selected!)
 })
 
 test("variant group scrollbar follows filters and hides outside grouped view", async ({ page }) => {

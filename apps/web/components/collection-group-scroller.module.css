@@ -65,6 +65,12 @@
   opacity: 0;
 }
 
+.rail[data-dragging="true"] .previewCard {
+  /* Scrubbing can cross several groups before a transition finishes. Keep
+     the preview attached to the selection instead of chasing old targets. */
+  transition: none;
+}
+
 @starting-style {
   .previewCard {
     opacity: 0;
