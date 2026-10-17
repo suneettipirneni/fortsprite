@@ -689,7 +689,7 @@ test("variant group scrollbar scrubs through virtual groups and supports keyboar
   const incoming = await preview.locator('[data-position="next"]').elementHandle()
   await page.mouse.move(x - 65, yFor(middle + 1))
   await expect.poll(() => incoming!.getAttribute("data-position")).toBe("current")
-  expect(await incoming!.evaluate((element) => getComputedStyle(element).transitionDuration)).toBe("0.16s, 0.12s, 0.12s")
+  expect(await incoming!.evaluate((element) => getComputedStyle(element).transitionDuration)).toBe("0.22s, 0.16s, 0.16s")
   await assertGroup(middle + 1)
   await page.mouse.move(x - 65, yFor(middle))
   await assertGroup(middle)
