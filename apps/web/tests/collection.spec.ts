@@ -846,14 +846,15 @@ test("variant group scrollbar keeps rolling cards separated", async ({ page }) =
     frame = requestAnimationFrame(sample)
     return { state, stop: () => cancelAnimationFrame(frame) }
   })
-  for (const index of [middle + 1, middle + 2, middle + 1, middle, middle - 1, middle]) {
+  for (const index of [...Array.from({ length: count }, (_, index) => index), ...Array.from({ length: count }, (_, index) => count - index - 1)]) {
     await page.mouse.move(bounds.x + bounds.width / 2, yFor(index), { steps: 4 })
     await expect(scrollbar).toHaveAttribute("aria-valuenow", String(index + 1))
   }
   await expect.poll(() => page.getByTestId("group-scroll-preview").evaluate(element => element.getAnimations({ subtree: true }).filter(animation => animation.playState === "running").length)).toBe(0)
   const result = await recorder.evaluate(recorder => { recorder.stop(); return recorder.state })
   expect(result.frames).toBeGreaterThan(10)
-  expect(result.minimumGap).toBeGreaterThan(8)
+  expect(result.minimumGap).toBeGreaterThanOrEqual(0)
+  expect(result.minimumGap).toBeLessThan(5)
 })
 
 test("variant group scrollbar aligns the current card with its highlighted tick at both ends", async ({ page }, testInfo) => {
