@@ -24,45 +24,48 @@ export function CollectionGroupScroller({
 }: CollectionGroupScrollerProps) {
   const hintId = useId()
   const pointerId = useRef<number | null>(null)
-  const touchDrag = useRef(false)
   const lastTarget = useRef<number | null>(null)
   const pendingTarget = useRef<number | null>(null)
+  const pendingProgress = useRef<number | null>(null)
   const frame = useRef<number | null>(null)
   const boundsRef = useRef<{ top: number; height: number } | null>(null)
-  const [dragIndex, setDragIndex] = useState<number | null>(null)
-  const [dragBounds, setDragBounds] = useState<{ top: number; height: number; touch: boolean } | null>(null)
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null)
+  const [previewBounds, setPreviewBounds] = useState<{ top: number; height: number; touch: boolean } | null>(null)
   const [focused, setFocused] = useState(false)
-  const index = Math.min(dragIndex ?? activeIndex, groups.length - 1)
-  const dragging = dragIndex !== null
+  const [hovering, setHovering] = useState(false)
+  const [pointerProgress, setPointerProgress] = useState<number | null>(null)
+  const index = Math.min(previewIndex ?? activeIndex, groups.length - 1)
+  const dragging = previewBounds?.touch === true
   const progress = index / (groups.length - 1)
   const tickCount = Math.min(groups.length, 17)
+  const wavePosition = (pointerProgress ?? progress) * (tickCount - 1)
   const group = groups[index]
 
   useEffect(() => () => {
     if (frame.current !== null) cancelAnimationFrame(frame.current)
   }, [])
 
-  if (groups.length < 2 || (!visible && !dragging && !focused)) return null
+  if (groups.length < 2 || (!visible && !dragging && !hovering && !focused)) return null
 
   function flushTarget() {
     if (frame.current !== null) cancelAnimationFrame(frame.current)
     frame.current = null
+    if (pendingProgress.current !== null) setPointerProgress(pendingProgress.current)
+    pendingProgress.current = null
     const next = pendingTarget.current
     pendingTarget.current = null
     if (next === null || next === lastTarget.current) return
     lastTarget.current = next
-    setDragIndex(next)
-    // On touch, keep expensive virtualized page jumps out of the gesture.
-    // The lightweight preview tracks the finger; release commits the choice.
-    if (!touchDrag.current) onJump(next)
+    setPreviewIndex(next)
   }
 
   function scrub(clientY: number) {
-    // Measure once at pointer-down; reading layout after each virtualized jump
-    // forces the browser to finish laying out the newly mounted groups.
+    // Cache geometry for the hover or touch gesture so preview updates never
+    // force layout or shift the selection when the page jumps.
     const bounds = boundsRef.current
     if (!bounds) return
     const fraction = Math.max(0, Math.min(1, (clientY - bounds.top - 20) / Math.max(1, bounds.height - 40)))
+    pendingProgress.current = fraction
     const position = fraction * (groups.length - 1)
     const previous = pendingTarget.current ?? lastTarget.current
     // Retain the selection slightly past the rounding boundary. Tiny finger
@@ -75,29 +78,41 @@ export function CollectionGroupScroller({
     if (frame.current === null) frame.current = requestAnimationFrame(flushTarget)
   }
 
-  function endDrag() {
+  function endPreview() {
     if (frame.current !== null) cancelAnimationFrame(frame.current)
     frame.current = null
     pendingTarget.current = null
     pointerId.current = null
-    touchDrag.current = false
+    pendingProgress.current = null
+    setPointerProgress(null)
+    setHovering(false)
     lastTarget.current = null
     boundsRef.current = null
-    setDragIndex(null)
-    setDragBounds(null)
+    setPreviewIndex(null)
+    setPreviewBounds(null)
+  }
+
+  function hover(element: HTMLDivElement, clientY: number) {
+    if (!boundsRef.current) {
+      const { top, height } = element.getBoundingClientRect()
+      boundsRef.current = { top, height }
+      setPreviewBounds({ top, height, touch: false })
+    }
+    setHovering(true)
+    scrub(clientY)
   }
 
   return (
     <div
       className="fixed right-[max(0px,var(--safe-area-right))] z-30 flex w-11 items-center lg:right-[max(0.25rem,var(--safe-area-right))]"
       style={{
-        top: dragBounds?.top ?? `max(calc(var(--safe-area-top) + var(--app-header-content-height) + 1.5rem), ${contentTop + 16}px)`,
-        bottom: dragBounds ? undefined : "calc(var(--mobile-tab-clearance) + var(--safe-area-bottom) + 1.5rem)",
-        height: dragBounds?.height,
+        top: previewBounds?.top ?? `max(calc(var(--safe-area-top) + var(--app-header-content-height) + 1.5rem), ${contentTop + 16}px)`,
+        bottom: previewBounds ? undefined : "calc(var(--mobile-tab-clearance) + var(--safe-area-bottom) + 1.5rem)",
+        height: previewBounds?.height,
         pointerEvents: "none",
       }}
     >
-      <p id={hintId} className="sr-only">Drag to choose a variant group. On touch screens, lift your finger to jump. Use arrow keys, Home, or End with a keyboard.</p>
+      <p id={hintId} className="sr-only">Hover to preview a variant group, then click to jump. On touch screens, drag and lift your finger to jump. Use arrow keys, Home, or End with a keyboard.</p>
       <div
         role="scrollbar"
         aria-label="Jump to variant group"
@@ -110,25 +125,40 @@ export function CollectionGroupScroller({
         aria-valuetext={`${groups[index]?.baseName}, group ${index + 1} of ${groups.length}`}
         tabIndex={0}
         data-dragging={dragging}
+        data-hovering={hovering}
         className={`${styles.rail} relative h-full max-h-80 w-11 touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring`}
-        style={{ pointerEvents: "auto", cursor: dragging ? "grabbing" : "grab" }}
+        style={{ pointerEvents: "auto", cursor: dragging ? "grabbing" : "pointer" }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
+        onPointerEnter={(event) => {
+          if (event.pointerType === "mouse" && pointerId.current === null) hover(event.currentTarget, event.clientY)
+        }}
+        onPointerLeave={(event) => {
+          if (event.pointerType === "mouse" && pointerId.current === null) endPreview()
+        }}
+        onClick={(event) => {
+          if (!hovering) return
+          scrub(event.clientY)
+          flushTarget()
+          if (lastTarget.current !== null) onJump(lastTarget.current)
+        }}
         onPointerDown={(event) => {
           if (!event.isPrimary || event.button !== 0) return
           event.preventDefault()
+          if (event.pointerType === "mouse") return
+          setHovering(false)
           // Freeze the geometry for the gesture, including viewport changes
           // caused by mobile browser chrome appearing or disappearing.
           const bounds = event.currentTarget.getBoundingClientRect()
           boundsRef.current = { top: bounds.top, height: bounds.height }
-          setDragBounds({ top: bounds.top, height: bounds.height, touch: event.pointerType === "touch" })
+          setPreviewBounds({ top: bounds.top, height: bounds.height, touch: true })
           pointerId.current = event.pointerId
-          touchDrag.current = event.pointerType === "touch"
           event.currentTarget.setPointerCapture(event.pointerId)
           scrub(event.clientY)
         }}
         onPointerMove={(event) => {
-          if (pointerId.current === event.pointerId) scrub(event.clientY)
+          if (event.pointerType === "mouse" && pointerId.current === null) hover(event.currentTarget, event.clientY)
+          else if (pointerId.current === event.pointerId) scrub(event.clientY)
         }}
         onPointerUp={(event) => {
           if (pointerId.current !== event.pointerId) return
@@ -136,12 +166,12 @@ export function CollectionGroupScroller({
           // final position now so it cannot be lost or replayed after release.
           scrub(event.clientY)
           flushTarget()
-          if (touchDrag.current && lastTarget.current !== null) onJump(lastTarget.current)
+          if (lastTarget.current !== null) onJump(lastTarget.current)
           event.currentTarget.releasePointerCapture(event.pointerId)
-          endDrag()
+          endPreview()
         }}
-        onPointerCancel={endDrag}
-        onLostPointerCapture={endDrag}
+        onPointerCancel={endPreview}
+        onLostPointerCapture={endPreview}
         onKeyDown={(event) => {
           const targets: Record<string, number> = {
             ArrowDown: index + 1,
@@ -156,15 +186,21 @@ export function CollectionGroupScroller({
           const target = targets[event.key]
           if (target === undefined) return
           event.preventDefault()
+          endPreview()
           onJump(Math.max(0, Math.min(groups.length - 1, target)))
         }}
       >
         <span aria-hidden="true" className={styles.track}>
           {Array.from({ length: tickCount }, (_, tick) => (
-            <span key={tick} className={styles.tick} data-active={tick === Math.round(progress * (tickCount - 1))} />
+            <span
+              key={tick}
+              className={styles.tick}
+              data-active={tick === Math.round(progress * (tickCount - 1))}
+              style={{ "--tick-scale": 1 + 0.85 * Math.exp(-0.5 * ((tick - wavePosition) / 1.1) ** 2) } as CSSProperties}
+            />
           ))}
         </span>
-        {(dragging || focused) && group && (
+        {(dragging || hovering || focused) && group && (
           <div
             aria-hidden="true"
             data-testid="group-scroll-preview"
@@ -193,7 +229,7 @@ export function CollectionGroupScroller({
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-2 text-sm leading-snug font-semibold">{previewGroup.baseName}</p>
                     <div className={styles.previewMeta}>
-                      <span>{slot === 0 && dragBounds?.touch ? "Release to jump" : `${previewGroup.items.length} ${previewGroup.items.length === 1 ? "variant" : "variants"}`}</span>
+                      <span>{slot === 0 && (dragging || hovering) ? (dragging ? "Release to jump" : "Click to jump") : `${previewGroup.items.length} ${previewGroup.items.length === 1 ? "variant" : "variants"}`}</span>
                       <span className={styles.position}><strong>{groupIndex + 1}</strong> / {groups.length}</span>
                     </div>
                   </div>
