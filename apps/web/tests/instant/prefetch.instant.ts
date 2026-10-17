@@ -1,4 +1,6 @@
 import { readFileSync } from "node:fs"
+import { execFileSync } from "node:child_process"
+import { resolve } from "node:path"
 import { instant } from "@next/playwright"
 import { expect, test, type BrowserContext, type Page } from "@playwright/test"
 import type { CollectionSnapshot, ViewerResponse } from "@workspace/contracts"
@@ -47,19 +49,13 @@ function collectedCount(page: Page) {
     .locator("..").getByRole("definition")
 }
 
-async function waitForPrefetch(page: Page, path: string) {
-  const response = await page.waitForResponse((response) => {
-    const headers = response.request().headers()
-    return new URL(response.url()).pathname === path &&
-      headers.rsc === "1" &&
-      !headers["next-router-segment-prefetch"] &&
-      headers["next-router-prefetch"] !== "1" &&
-      headers["next-router-prefetch"] !== "3"
-  })
-  expect(response.status()).toBe(200)
-}
-
 test.beforeEach(async ({ page, baseURL }, testInfo) => {
+  // Fresh actors isolate private caches, mutations, and per-user rate budgets.
+  // The suite has one worker; the seeder removes the previous temporary actors.
+  execFileSync(process.execPath, [
+    resolve(__dirname, "../../../api/node_modules/tsx/dist/cli.mjs"),
+    resolve(__dirname, "../../../api/tests/seed-browser.ts"),
+  ], { env: { ...process.env, NODE_ENV: "test" }, stdio: "pipe" })
   await authenticate(
     page.context(),
     readFixture().actors.a,
@@ -68,26 +64,25 @@ test.beforeEach(async ({ page, baseURL }, testInfo) => {
   )
 })
 
-test("primary routes prefetch collection progress before navigation", async ({
-  page,
-  isMobile,
-}) => {
-  const prefetched = Promise.all(
-    ["/", "/collection", "/matches", "/friends"].map((path) =>
-      waitForPrefetch(page, path),
-    ),
-  )
-  const accountPrefetch = waitForPrefetch(page, "/account")
-  await page.goto("/account")
-  await expect(page.getByLabel("FortSprite display name", { exact: true }))
-    .toBeVisible()
-  const nav = navigation(page, isMobile)
-  await prefetched
+// Each navigation gets a fresh page: previous destinations cannot warm its cache.
+for (const href of ["/", "/collection", "/matches", "/friends", "/account"]) {
+  test(`primary link to ${href} has its prefetched content ready`, async ({
+    page,
+    isMobile,
+  }, testInfo) => {
+    const source = href === "/account" ? "/collection" : "/account"
+    await page.goto(source)
+    const nav = navigation(page, isMobile)
+    await expect(nav).toBeVisible()
+    if (source === "/account")
+      await expect(page.getByLabel("FortSprite display name", { exact: true })).toBeEnabled()
+    else
+      await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
 
-  for (const href of ["/", "/collection", "/matches", "/friends"]) {
     await instant(page, async () => {
       await nav.locator(`a[href="${href}"]`).click()
-      await expect(page).toHaveURL(new RegExp(`${href}$`))
+      await expect(page).toHaveURL(new URL(href, testInfo.project.use.baseURL).href)
+      await expect(nav).toBeVisible()
       if (href === "/") {
         await expect(page.getByRole("heading", { level: 1 })).toContainText("Good hunting,")
         await expect(collectedCount(page)).toBeVisible()
@@ -105,27 +100,31 @@ test("primary routes prefetch collection progress before navigation", async ({
           .toHaveText("Find your next capture.")
         await expect(page.getByRole("textbox", { name: /Search .* missing Sprites/ })).toBeEnabled()
         await expect(page.getByRole("status", { name: "Loading missing count" })).toHaveCount(0)
-      } else {
+      } else if (href === "/friends") {
         await expect(page.getByRole("heading", { level: 1 }))
           .toHaveText("Collect with your squad.")
         await expect(page.getByRole("textbox", { name: "Search friends" }))
           .toBeEnabled()
+      } else {
+        await expect(page.getByRole("heading", { level: 1 })).toHaveText("Make your profile yours.")
+        await expect(page.getByRole("textbox", { name: "FortSprite display name" })).toBeEnabled()
+        // Credentials must stay fresh and load only after navigation.
+        await expect(page.getByRole("status", { name: "Loading passkeys" })).toBeVisible()
+        await expect(page.getByRole("textbox", { name: "Passkey name" })).toBeDisabled()
       }
+      const screenshot = testInfo.outputPath("prefetched-page.png")
+      await page.screenshot({ path: screenshot })
+      await testInfo.attach("prefetched-page", {
+        path: screenshot,
+        contentType: "image/png",
+      })
     })
-    if (href === "/") await expect(collectedCount(page)).toHaveText(/^\d+$/)
-    else if (href === "/collection")
-      await expect(page.getByRole("main").getByTestId("collection-content")).toBeVisible()
-    else if (href === "/matches")
-      await expect(page.getByRole("term").filter({ hasText: /^Missing$/ })).toBeVisible()
-    else await expect(page.getByRole("textbox", { name: "Search friends" })).toBeVisible()
-  }
-  await accountPrefetch
-  await instant(page, async () => {
-    await nav.locator('a[href="/account"]').click()
-    await expect(page.getByRole("textbox", { name: "FortSprite display name" })).toBeEnabled()
-    await expect(page.getByRole("textbox", { name: "Passkey name" })).toBeEnabled()
+    if (href === "/account") {
+      await expect(page.getByRole("textbox", { name: "Passkey name" })).toBeEnabled()
+      await expect(page.getByRole("status", { name: "Loading passkeys" })).toHaveCount(0)
+    }
   })
-})
+}
 
 test("a collection action invalidates a prefetched overview", async ({
   page,
@@ -135,11 +134,11 @@ test("a collection action invalidates a prefetched overview", async ({
   const response = await page.request.get("/api/v1/collection")
   expect(response.status()).toBe(200)
   const original: CollectionSnapshot = await response.json()
-  const prefetched = waitForPrefetch(page, "/collection")
+
   await page.goto("/")
   await expect(collectedCount(page)).toHaveText(String(original.progress.owned))
   const nav = navigation(page, isMobile)
-  await prefetched
+
   await instant(page, async () => {
     await nav.locator('a[href="/collection"]').click()
     await expect(page.getByRole("main").getByTestId("collection-shell")).toBeVisible()
@@ -181,10 +180,10 @@ test("a profile action refreshes a previously prefetched greeting", async ({
   const response = await page.request.get("/api/v1/me")
   expect(response.status()).toBe(200)
   const { viewer }: ViewerResponse = await response.json()
-  const prefetched = waitForPrefetch(page, "/")
+
   await page.goto("/account")
   const nav = navigation(page, isMobile)
-  await prefetched
+
   await instant(page, async () => {
     await nav.locator('a[href="/"]').click()
     await expect(page.getByRole("heading", { level: 1 }))
@@ -251,11 +250,11 @@ test("private prefetch keeps two signed-in users separate", async ({
       const response = await actorPage.request.get("/api/v1/collection")
       expect(response.status()).toBe(200)
       const snapshot: CollectionSnapshot = await response.json()
-      const prefetched = waitForPrefetch(actorPage, "/")
+
       await actorPage.goto("/account")
       await expect(actorPage.getByLabel("FortSprite display name", { exact: true }))
         .toHaveValue(actor.displayName)
-      await prefetched
+
       await instant(actorPage, async () => {
         await navigation(actorPage, mobile).locator('a[href="/"]').click()
         await expect(actorPage.getByRole("heading", { level: 1 }))
@@ -294,9 +293,9 @@ test("tracking changed in another tab refreshes a prefetched collection", async 
   }
   try {
     await update(false, false)
-    const prefetched = waitForPrefetch(page, "/collection")
+
     await page.goto("/account")
-    await prefetched
+
     await secondTab.goto("/collection")
     const secondTile = secondTab.locator(`article[data-sprite-id="${sprite.id}"]`)
     await expect(secondTile.getByRole("button", { name: /^Captured / }))

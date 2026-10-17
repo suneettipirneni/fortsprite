@@ -9,6 +9,20 @@
 - LIVENESS: Local build and start happen in one launcher invocation; no remote SHA probe is needed. An occupied port is an error rather than permission to reuse another server.
 - WALLS: A test PostgreSQL database and installed Playwright Chromium are prerequisites. `PLAYWRIGHT_BROWSERS_PATH` may identify the machine's existing Chromium install. Run focused tests when iterating: repeated full runs in a short window can hit the API's IP rate limit.
 
-The locked tests assert that prefetched data is visible immediately on all five primary tabs. A cold collection navigation instead checks that its progress skeleton has the same height as the loaded stats. Mutation tests check that the active tab sees its own saved changes and that another open tab refreshes after an in-app collection action. Hard navigation reloads without the lock before checking streamed content, because its locked document cannot resume streaming after release.
+The locked tests assert that prefetched data is visible immediately on all five primary tabs, with a separate fresh-page test per destination and viewport. Account credentials remain uncached: its profile is ready under the lock, while its passkey skeleton stays visible until the lock releases. Tests use the public `instant()` API rather than internal prefetch request headers. A cold collection navigation instead checks that its progress skeleton has the same height as the loaded stats. Mutation tests check that the active tab sees its own saved changes and that another open tab refreshes after an in-app collection action. Hard navigation reloads without the lock before checking streamed content, because its locked document cannot resume streaming after release.
 
 When first validating a change, confirm both navigation types reach the same selectors without the lock using a temporary baseline test. Record the locked failure before moving the static shell, then restore only the old boundary to show the regression test fails and reapply the fix to show it passes. Remove temporary baseline tests before shipping. A build or selector failure is not evidence that navigation was blocked.
+
+## Primary-link contracts
+
+All five primary tabs retain their existing viewport-triggered `prefetch={true}` policy; this pass adds no server-invoking links or cache lifetimes.
+
+- `/account` → Overview (`/`): greeting, collected count, and completion progress ready before the click.
+- `/account` → Collection (`/collection`): collection content, first Sprite image, and captured/mastered progress ready before the click.
+- `/account` → Friends can help (`/matches`): heading, missing count, and search ready before the click.
+- `/account` → Friends (`/friends`): heading and friend search ready before the click.
+- `/collection` → Account (`/account`): heading and editable profile ready before the click; fresh passkey data waits for navigation. `getCredentials()` calls `connection()` before API rate-limit bookkeeping can execute during prefetch.
+
+Prefetching remains best-effort; these tests check available content, not latency guarantees. Account's disabled passkey input and loading status under the lock, followed by an enabled input after release, also prove the testing lock is engaged.
+
+For focused prefetch validation, run `prefetch.instant.ts` on both configured projects. Its serial `beforeEach` reseeds the temporary actors so private caches, mutations, and per-user rate budgets cannot leak between tests. Production rate limits stay enabled. Do not run this fixture concurrently with another suite.

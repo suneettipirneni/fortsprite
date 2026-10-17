@@ -62,6 +62,8 @@ export async function getViewer(): Promise<ViewerResponse["viewer"]> {
 
 export async function getCredentials(): Promise<CredentialsResponse> {
   // Better Auth's credential mutations do not invalidate Next's private cache.
+  // Keep this fresh read (including API rate-limit bookkeeping) out of prefetches.
+  await connection()
   return getJson<CredentialsResponse>("/api/v1/credentials")
 }
 
