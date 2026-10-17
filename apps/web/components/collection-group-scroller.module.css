@@ -34,7 +34,7 @@
   width: 248px;
   max-width: calc(100vw - 4rem - var(--safe-area-right));
   height: 196px;
-  color: var(--primary-foreground);
+  color: var(--foreground);
   pointer-events: none;
   perspective: 600px;
   transform: translateY(-50%);
@@ -50,9 +50,9 @@
   width: 100%;
   min-height: 78px;
   padding: 10px;
-  border: 1px solid color-mix(in oklch, var(--primary-foreground) 22%, var(--primary));
+  border: 1px solid rgb(199 224 244 / 20%);
   border-radius: 12px;
-  background: var(--primary);
+  background: var(--background);
   opacity: 0.72;
   transform: translateY(calc(-50% + var(--slot) * 58px)) rotateX(calc(var(--slot) * -14deg)) scale(calc(1 - var(--distance) * 0.045));
   backface-visibility: hidden;
@@ -60,7 +60,6 @@
 }
 
 .previewCard[data-position="current"] {
-  border-color: color-mix(in oklch, var(--primary-foreground) 35%, var(--primary));
   opacity: 1;
 }
 
@@ -85,7 +84,7 @@
   border-right: 1px solid;
   border-color: inherit;
   border-radius: 0 3px 0 0;
-  background: var(--primary);
+  background: var(--background);
   transform: rotate(45deg);
   content: "";
 }
@@ -96,7 +95,7 @@
   justify-content: space-between;
   gap: 8px;
   margin-top: 4px;
-  color: color-mix(in oklch, var(--primary-foreground) 80%, var(--primary));
+  color: var(--muted-foreground);
   font-size: 11px;
   line-height: 16px;
 }
@@ -107,7 +106,7 @@
 }
 
 .position strong {
-  color: var(--primary-foreground);
+  color: var(--foreground);
   font-weight: 500;
 }
 

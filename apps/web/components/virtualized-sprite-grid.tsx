@@ -510,7 +510,6 @@ export function VirtualizedSpriteGroups({
         groups={groups}
         activeIndex={activeIndex}
         controls={groupsId}
-        contentTop={Math.max(0, scrollMargin - scrollOffset)}
         visible={scrollOffset + (virtualizer.scrollRect?.height ?? 0) > scrollMargin + 80 && scrollOffset < scrollMargin + virtualizer.getTotalSize()}
         onJump={(index) => setJump({ index, groups })}
       />

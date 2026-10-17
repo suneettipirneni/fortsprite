@@ -821,6 +821,57 @@ test("variant group scrollbar tick widths form a moving wave", async ({ page }) 
   await expect.poll(() => width(middle + 3)).toBeLessThan(13)
 })
 
+test("variant group scrollbar aligns the current card with its highlighted tick at both ends", async ({ page }, testInfo) => {
+  await page.getByTestId("virtualized-sprite-groups").evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
+  const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+  const bounds = (await scrollbar.boundingBox())!
+  const count = Number(await scrollbar.getAttribute("aria-valuemax"))
+  for (const index of [0, 1, Math.floor(count / 2), count - 2, count - 1]) {
+    await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + 20 + (bounds.height - 40) * index / (count - 1))
+    await expect(scrollbar).toHaveAttribute("aria-valuenow", String(index + 1))
+    await expect.poll(() => scrollbar.evaluate(element => {
+      const tick = element.querySelector('[data-active="true"]')!.getBoundingClientRect()
+      const card = element.querySelector('[data-position="current"]')!.getBoundingClientRect()
+      return Math.abs((tick.top + tick.height / 2) - (card.top + card.height / 2))
+    })).toBeLessThan(1)
+    const card = await page.getByTestId("group-scroll-preview").locator('[data-position="current"]').boundingBox()
+    expect(card!.y).toBeGreaterThan(await page.locator("header").evaluate(element => element.getBoundingClientRect().bottom))
+    expect(card!.y + card!.height).toBeLessThan(page.viewportSize()!.height)
+    if (index === 0 || index === count - 1) {
+      await page.screenshot({ path: `/tmp/fortsprite-scroller-${testInfo.project.name}-${index === 0 ? "start" : "end"}.png`, animations: "disabled", scale: "css" })
+    }
+  }
+})
+
+test("variant group scrollbar stays full height near the mobile toolbar without blocking controls", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "Mobile safe areas and browser height changes")
+  await page.addStyleTag({ content: ":root { --safe-area-top: 59px; --safe-area-bottom: 34px; }" })
+  const groups = page.getByTestId("virtualized-sprite-groups")
+  const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
+  const showFirstGroupAtBottom = () => groups.evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - (innerHeight - 160)))
+  for (const height of [760, 640]) {
+    await page.setViewportSize({ width: 393, height })
+    await showFirstGroupAtBottom()
+    await expect(scrollbar).toBeVisible()
+    await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+    const bounds = (await scrollbar.boundingBox())!
+    const ticks = await scrollbar.locator("[data-active]").evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top))
+    expect(Math.min(...ticks.slice(1).map((top, index) => top - ticks[index]!))).toBeGreaterThan(12)
+    const filter = page.getByRole("button", { name: "Add collection filter" })
+    const filterBounds = (await filter.boundingBox())!
+    expect(filterBounds.x + filterBounds.width).toBeLessThanOrEqual(bounds.x)
+    await filter.click()
+    await expect(page.getByRole("listbox")).toBeVisible()
+    await page.keyboard.press("Escape")
+    await assertFits(page)
+    await page.screenshot({ path: `/tmp/fortsprite-mobile-top-scroller-${height}.png`, animations: "disabled", scale: "css" })
+    await groups.evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
+    await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+    expect(Math.abs((await scrollbar.boundingBox())!.y - bounds.y)).toBeLessThan(1)
+  }
+})
+
 test("variant group scrollbar follows filters and hides outside grouped view", async ({ page }) => {
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
   const showGroups = async () => {

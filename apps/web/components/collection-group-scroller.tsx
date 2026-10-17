@@ -8,7 +8,6 @@ type CollectionGroupScrollerProps = {
   groups: { baseName: string; items: unknown[]; baseImagePath: string | null | undefined }[]
   activeIndex: number
   controls: string
-  contentTop: number
   visible: boolean
   onJump: (index: number) => void
 }
@@ -18,7 +17,6 @@ export function CollectionGroupScroller({
   groups,
   activeIndex,
   controls,
-  contentTop,
   visible,
   onJump,
 }: CollectionGroupScrollerProps) {
@@ -38,6 +36,8 @@ export function CollectionGroupScroller({
   const dragging = previewBounds?.touch === true
   const progress = index / (groups.length - 1)
   const tickCount = Math.min(groups.length, 17)
+  const activeTick = Math.round(progress * (tickCount - 1))
+  const tickProgress = activeTick / (tickCount - 1)
   const wavePosition = (pointerProgress ?? progress) * (tickCount - 1)
   const group = groups[index]
 
@@ -106,7 +106,7 @@ export function CollectionGroupScroller({
     <div
       className="fixed right-[max(0px,var(--safe-area-right))] z-30 flex w-11 items-center lg:right-[max(0.25rem,var(--safe-area-right))]"
       style={{
-        top: previewBounds?.top ?? `max(calc(var(--safe-area-top) + var(--app-header-content-height) + 1.5rem), ${contentTop + 16}px)`,
+        top: previewBounds?.top ?? "calc(var(--safe-area-top) + var(--app-header-content-height) + 1.5rem)",
         bottom: previewBounds ? undefined : "calc(var(--mobile-tab-clearance) + var(--safe-area-bottom) + 1.5rem)",
         height: previewBounds?.height,
         pointerEvents: "none",
@@ -195,7 +195,7 @@ export function CollectionGroupScroller({
             <span
               key={tick}
               className={styles.tick}
-              data-active={tick === Math.round(progress * (tickCount - 1))}
+              data-active={tick === activeTick}
               style={{ "--tick-scale": 1 + 0.85 * Math.exp(-0.5 * ((tick - wavePosition) / 1.1) ** 2) } as CSSProperties}
             />
           ))}
@@ -205,7 +205,9 @@ export function CollectionGroupScroller({
             aria-hidden="true"
             data-testid="group-scroll-preview"
             className={styles.preview}
-            style={{ top: `clamp(100px, calc(${progress * 100}% + ${20 - progress * 40}px), calc(100% - 100px))` }}
+            // Track insets are 20px and ticks are 3px tall. Align to the
+            // highlighted tick's center, including the first and last ticks.
+            style={{ top: `calc(${tickProgress * 100}% + ${21.5 - tickProgress * 43}px)` }}
           >
             {groups.slice(Math.max(0, index - 2), index + 3).map((previewGroup, offset) => {
               const groupIndex = Math.max(0, index - 2) + offset
