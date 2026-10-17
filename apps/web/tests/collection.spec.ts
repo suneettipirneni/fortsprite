@@ -792,7 +792,8 @@ test("variant group scrollbar commits a fast release and discards cancelled move
       window.scrollTo = original
     }
   }, { x, y: bounds.y, height: bounds.height, count: names.length })
-  expect(jumps).toBe(1)
+  // The destination is mounted in a React commit before any window scroll.
+  expect(jumps).toBe(0)
   await page.mouse.up()
   await expect(scrollbar).toHaveAttribute("data-dragging", "false")
   await expect(scrollbar).toHaveAttribute("aria-valuenow", "13")
@@ -850,7 +851,7 @@ test("variant group scrollbar follows filters and hides outside grouped view", a
   await expect(scrollbar).toHaveCount(0)
 })
 
-test("variant group scrollbar accepts a held touch and releases on cancellation", async ({ page }, testInfo) => {
+test("variant group scrollbar previews a rapid touch sweep and mounts the destination before release scrolling", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "CDP touch input uses mobile Chromium")
   const groups = page.getByTestId("virtualized-sprite-groups")
   await groups.evaluate((element) => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
@@ -858,15 +859,68 @@ test("variant group scrollbar accepts a held touch and releases on cancellation"
   await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
   const bounds = (await scrollbar.boundingBox())!
   const session = await page.context().newCDPSession(page)
+  await session.send("Emulation.setCPUThrottlingRate", { rate: 4 })
   const x = bounds.x + bounds.width - 10
+  const count = Number(await scrollbar.getAttribute("aria-valuemax"))
+  const target = Math.floor((count - 1) * 0.7)
+  const yFor = (index: number) => bounds.y + 20 + (bounds.height - 40) * index / (count - 1)
+  const originalOffset = await page.evaluate(() => window.scrollY)
+  const originalRendered = await groups.getAttribute("data-rendered-groups")
+  const recorder = await page.evaluateHandle((target) => {
+    const container = document.querySelector('[data-testid="virtualized-sprite-groups"]')!
+    const original = window.scrollTo
+    const state = { blankFrames: 0, frames: 0, jumps: [] as { mounted: boolean; covered: boolean }[] }
+    const covered = () => [...container.children].some((element) => {
+      const rect = element.getBoundingClientRect()
+      return rect.top < innerHeight / 2 && rect.bottom > innerHeight / 2
+    })
+    let frame = 0
+    const sample = () => {
+      state.frames++
+      if (!covered()) state.blankFrames++
+      frame = requestAnimationFrame(sample)
+    }
+    frame = requestAnimationFrame(sample)
+    window.scrollTo = ((...args: Parameters<typeof window.scrollTo>) => {
+      const mounted = !!container.querySelector(`[data-index="${target}"]`)
+      original.apply(window, args)
+      state.jumps.push({ mounted, covered: covered() })
+    }) as typeof window.scrollTo
+    return { state, stop: () => { cancelAnimationFrame(frame); window.scrollTo = original } }
+  }, target)
   await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y: bounds.y + 20 }] })
   await expect(scrollbar).toHaveAttribute("data-dragging", "true")
-  await session.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x, y: bounds.y + bounds.height - 20 }] })
-  await expect(scrollbar).toHaveAttribute("aria-valuenow", (await scrollbar.getAttribute("aria-valuemax"))!)
-  await expect.poll(() => page.getByTestId("virtualized-sprite-groups").locator("section").last().getByRole("heading", { level: 2 }).isVisible()).toBe(true)
+  // No settling/assertion between moves: exercise the rapid reversals in the
+  // phone recording with a slower main thread, including both endpoints.
+  for (const fraction of [0.2, 0.8, 1, 0.6, 0.1, 0.9, 0, 0.35, 0.7]) {
+    await session.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x, y: yFor(Math.floor((count - 1) * fraction)) }] })
+  }
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", String(target + 1))
+  await expect(page.getByTestId("group-scroll-preview").locator('[data-position="current"]')).toContainText("Release to jump")
+  expect(await page.evaluate(() => window.scrollY)).toBe(originalOffset)
+  await expect(groups).toHaveAttribute("data-rendered-groups", originalRendered!)
+  expect(await recorder.evaluate(({ state }) => state.jumps.length)).toBe(0)
   await expect.poll(() => page.getByTestId("group-scroll-preview").locator('[data-position="current"] img').evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+  await page.screenshot({ path: "/tmp/fortsprite-group-scroller-mobile-touch-preview.png", animations: "disabled", scale: "css" })
+  await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] })
+  await expect(scrollbar).toHaveAttribute("data-dragging", "false")
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", String(target + 1))
+  await expect(groups.locator(`[data-index="${target}"]`).getByRole("heading", { level: 2 })).toBeInViewport()
+  const samples = await recorder.evaluate((recorder) => { recorder.stop(); return recorder.state })
+  expect(samples.frames).toBeGreaterThan(10)
+  expect(samples.blankFrames).toBe(0)
+  expect(samples.jumps.length).toBeGreaterThan(0)
+  expect(samples.jumps.every(({ mounted, covered }) => mounted && covered)).toBe(true)
   await page.screenshot({ path: "/tmp/fortsprite-group-scroller-mobile-touch.png", animations: "disabled", scale: "css" })
+  // A cancelled gesture must restore the current group without moving the page.
+  const settledOffset = await page.evaluate(() => window.scrollY)
+  const nextBounds = (await scrollbar.boundingBox())!
+  await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y: nextBounds.y + 20 }] })
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", "1")
   await session.send("Input.dispatchTouchEvent", { type: "touchCancel", touchPoints: [] })
   await expect(scrollbar).toHaveAttribute("data-dragging", "false")
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", String(target + 1))
+  expect(await page.evaluate(() => window.scrollY)).toBe(settledOffset)
+  await session.send("Emulation.setCPUThrottlingRate", { rate: 1 })
   await session.detach()
 })

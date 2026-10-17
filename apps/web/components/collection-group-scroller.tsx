@@ -24,12 +24,13 @@ export function CollectionGroupScroller({
 }: CollectionGroupScrollerProps) {
   const hintId = useId()
   const pointerId = useRef<number | null>(null)
+  const touchDrag = useRef(false)
   const lastTarget = useRef<number | null>(null)
   const pendingTarget = useRef<number | null>(null)
   const frame = useRef<number | null>(null)
   const boundsRef = useRef<{ top: number; height: number } | null>(null)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
-  const [dragBounds, setDragBounds] = useState<{ top: number; height: number } | null>(null)
+  const [dragBounds, setDragBounds] = useState<{ top: number; height: number; touch: boolean } | null>(null)
   const [focused, setFocused] = useState(false)
   const index = Math.min(dragIndex ?? activeIndex, groups.length - 1)
   const dragging = dragIndex !== null
@@ -51,7 +52,9 @@ export function CollectionGroupScroller({
     if (next === null || next === lastTarget.current) return
     lastTarget.current = next
     setDragIndex(next)
-    onJump(next)
+    // On touch, keep expensive virtualized page jumps out of the gesture.
+    // The lightweight preview tracks the finger; release commits the choice.
+    if (!touchDrag.current) onJump(next)
   }
 
   function scrub(clientY: number) {
@@ -68,7 +71,7 @@ export function CollectionGroupScroller({
       ? previous
       : Math.round(position)
     pendingTarget.current = next
-    // High-frequency touch events only need one virtualized jump per frame.
+    // Coalesce high-frequency pointer events into one preview update per frame.
     if (frame.current === null) frame.current = requestAnimationFrame(flushTarget)
   }
 
@@ -77,6 +80,7 @@ export function CollectionGroupScroller({
     frame.current = null
     pendingTarget.current = null
     pointerId.current = null
+    touchDrag.current = false
     lastTarget.current = null
     boundsRef.current = null
     setDragIndex(null)
@@ -93,7 +97,7 @@ export function CollectionGroupScroller({
         pointerEvents: "none",
       }}
     >
-      <p id={hintId} className="sr-only">Hold and drag to jump between variant groups. Use arrow keys, Home, or End with a keyboard.</p>
+      <p id={hintId} className="sr-only">Drag to choose a variant group. On touch screens, lift your finger to jump. Use arrow keys, Home, or End with a keyboard.</p>
       <div
         role="scrollbar"
         aria-label="Jump to variant group"
@@ -117,8 +121,9 @@ export function CollectionGroupScroller({
           // caused by mobile browser chrome appearing or disappearing.
           const bounds = event.currentTarget.getBoundingClientRect()
           boundsRef.current = { top: bounds.top, height: bounds.height }
-          setDragBounds({ top: bounds.top, height: bounds.height })
+          setDragBounds({ top: bounds.top, height: bounds.height, touch: event.pointerType === "touch" })
           pointerId.current = event.pointerId
+          touchDrag.current = event.pointerType === "touch"
           event.currentTarget.setPointerCapture(event.pointerId)
           scrub(event.clientY)
         }}
@@ -131,6 +136,7 @@ export function CollectionGroupScroller({
           // final position now so it cannot be lost or replayed after release.
           scrub(event.clientY)
           flushTarget()
+          if (touchDrag.current && lastTarget.current !== null) onJump(lastTarget.current)
           event.currentTarget.releasePointerCapture(event.pointerId)
           endDrag()
         }}
@@ -187,7 +193,7 @@ export function CollectionGroupScroller({
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-2 text-sm leading-snug font-semibold">{previewGroup.baseName}</p>
                     <div className={styles.previewMeta}>
-                      <span>{previewGroup.items.length} {previewGroup.items.length === 1 ? "variant" : "variants"}</span>
+                      <span>{slot === 0 && dragBounds?.touch ? "Release to jump" : `${previewGroup.items.length} ${previewGroup.items.length === 1 ? "variant" : "variants"}`}</span>
                       <span className={styles.position}><strong>{groupIndex + 1}</strong> / {groups.length}</span>
                     </div>
                   </div>
