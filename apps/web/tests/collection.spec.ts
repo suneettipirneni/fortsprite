@@ -821,6 +821,41 @@ test("variant group scrollbar tick widths form a moving wave", async ({ page }) 
   await expect.poll(() => width(middle + 3)).toBeLessThan(13)
 })
 
+test("variant group scrollbar keeps rolling cards separated", async ({ page }) => {
+  await page.getByTestId("virtualized-sprite-groups").evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
+  const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+  const bounds = (await scrollbar.boundingBox())!
+  const count = Number(await scrollbar.getAttribute("aria-valuemax"))
+  const middle = Math.floor(count / 2)
+  const yFor = (index: number) => bounds.y + 20 + (bounds.height - 40) * index / (count - 1)
+  await page.mouse.move(bounds.x + bounds.width / 2, yFor(middle))
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", String(middle + 1))
+  const recorder = await page.getByTestId("group-scroll-preview").evaluateHandle(element => {
+    const state = { frames: 0, minimumGap: Infinity }
+    let frame = 0
+    const sample = () => {
+      const cards = [...element.querySelectorAll('[data-position]:not([data-position="buffer"])')]
+        .map(card => card.getBoundingClientRect()).sort((a, b) => a.top - b.top)
+      for (let index = 1; index < cards.length; index++) {
+        state.minimumGap = Math.min(state.minimumGap, cards[index]!.top - cards[index - 1]!.bottom)
+      }
+      state.frames++
+      frame = requestAnimationFrame(sample)
+    }
+    frame = requestAnimationFrame(sample)
+    return { state, stop: () => cancelAnimationFrame(frame) }
+  })
+  for (const index of [middle + 1, middle + 2, middle + 1, middle, middle - 1, middle]) {
+    await page.mouse.move(bounds.x + bounds.width / 2, yFor(index), { steps: 4 })
+    await expect(scrollbar).toHaveAttribute("aria-valuenow", String(index + 1))
+  }
+  await expect.poll(() => page.getByTestId("group-scroll-preview").evaluate(element => element.getAnimations({ subtree: true }).filter(animation => animation.playState === "running").length)).toBe(0)
+  const result = await recorder.evaluate(recorder => { recorder.stop(); return recorder.state })
+  expect(result.frames).toBeGreaterThan(10)
+  expect(result.minimumGap).toBeGreaterThan(8)
+})
+
 test("variant group scrollbar aligns the current card with its highlighted tick at both ends", async ({ page }, testInfo) => {
   await page.getByTestId("virtualized-sprite-groups").evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
