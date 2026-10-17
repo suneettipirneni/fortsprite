@@ -10,7 +10,7 @@
   /* Shared desktop cap for page content and navigation. */
   --container-app: 75rem;
   --font-sans: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-mono: var(--font-sans);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

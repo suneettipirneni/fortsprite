@@ -17,7 +17,7 @@ export function PageHeader({
     <header className="grid gap-5 border-b border-border pb-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:pb-8">
       <div className="min-w-0">
         {eyebrow ? (
-          <p className="mb-2 font-mono text-sm uppercase tracking-wide text-muted-foreground">
+          <p className="mb-2 font-sans text-sm uppercase tracking-wide text-muted-foreground">
             {eyebrow}
           </p>
         ) : null}

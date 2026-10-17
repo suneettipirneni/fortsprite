@@ -46,7 +46,7 @@ export function LegalPage({
       </header>
       <article className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-12 sm:px-6 sm:py-16">
         <div className="flex flex-col gap-3">
-          <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
+          <p className="font-sans text-sm uppercase tracking-wide text-muted-foreground">
             {eyebrow}
           </p>
           <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">

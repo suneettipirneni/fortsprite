@@ -68,7 +68,7 @@ export function SpriteTile({
       >
         <article
           className={cn(
-            "flex min-w-0 overflow-hidden rounded-xl bg-card/76 shadow-sm ring-1 ring-inset ring-white/10 backdrop-blur-sm",
+            "flex min-w-0 overflow-hidden rounded-xl bg-card/76 shadow-sm ring-1 ring-inset ring-white/10",
             view === "list" ? "flex-row items-center" : "flex-col",
           )}
           data-sprite-id={sprite.id}

@@ -81,7 +81,7 @@ export function McpKeyManager({ keys, endpoint, loading = false }: { keys: McpKe
       <div className="space-y-2 text-sm">
         <p className="text-muted-foreground">Use this remote MCP URL with an Authorization header containing Bearer followed by your key.</p>
         <div className="flex items-center gap-2">
-          <Input aria-label="Remote MCP URL" readOnly value={endpoint} className="min-w-0 font-mono text-xs" />
+          <Input aria-label="Remote MCP URL" readOnly value={endpoint} className="min-w-0 font-sans text-xs" />
           <Button variant="outline" disabled={loading} onClick={() => { void copy(endpoint, "MCP URL") }} aria-label="Copy MCP URL"><CopyIcon /></Button>
         </div>
       </div>
@@ -89,7 +89,7 @@ export function McpKeyManager({ keys, endpoint, loading = false }: { keys: McpKe
         <div className="space-y-3 rounded-xl border border-border p-4">
           <p className="text-sm font-medium">Copy your new key now. FortSprite shows it only once.</p>
           <div className="flex items-center gap-2">
-            <Input aria-label="New MCP key" readOnly value={credential.key} className="min-w-0 font-mono text-xs" />
+            <Input aria-label="New MCP key" readOnly value={credential.key} className="min-w-0 font-sans text-xs" />
             <Button variant="outline" onClick={() => { void copy(credential.key, "MCP key") }} aria-label="Copy MCP key"><CopyIcon /></Button>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setCredential(null)}>Done, hide key</Button>
@@ -102,7 +102,7 @@ export function McpKeyManager({ keys, endpoint, loading = false }: { keys: McpKe
               <div className="min-w-0">
                 <p className="truncate font-medium">{key.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  <span className="font-mono">{key.start}…</span>
+                  <span className="font-sans">{key.start}…</span>
                   {key.expiresAt ? ` · Expires ${new Date(key.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}` : ""}
                 </p>
               </div>

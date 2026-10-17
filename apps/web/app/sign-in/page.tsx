@@ -47,7 +47,7 @@ export default function SignInPage({
           </div>
         </section>
         <aside className="relative hidden border-l border-white/8 p-12 text-sidebar-foreground lg:flex lg:items-center">
-          <p className="absolute top-12 left-12 font-mono text-sm uppercase tracking-wide text-sidebar-foreground/55">
+          <p className="absolute top-12 left-12 font-sans text-sm uppercase tracking-wide text-sidebar-foreground/55">
             Squad intelligence
           </p>
           <div className="flex max-w-lg flex-col gap-6">

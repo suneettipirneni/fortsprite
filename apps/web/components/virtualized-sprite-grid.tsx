@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  memo,
   useCallback,
   useId,
   useLayoutEffect,
@@ -148,7 +149,9 @@ function useVirtualContainerMeasurements() {
   return { ref, width, scrollMargin, viewport, scrollPaddingStart }
 }
 
-function SpriteTiles({
+// The virtualizer parents opt out of React Compiler, so explicitly keep
+// unchanged rows out of scroll-driven renders. Tracking subscriptions stay live.
+const SpriteTiles = memo(function SpriteTiles({
   items,
   columns,
   gap,
@@ -181,9 +184,9 @@ function SpriteTiles({
       ))}
     </div>
   )
-}
+})
 
-function SpriteGroupHeading({
+const SpriteGroupHeading = memo(function SpriteGroupHeading({
   baseName,
   items,
 }: {
@@ -210,7 +213,7 @@ function SpriteGroupHeading({
       }}</CollectionTracking>
     </div>
   )
-}
+})
 
 export function VirtualizedSpriteGrid({
   items,

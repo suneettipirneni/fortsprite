@@ -45,7 +45,7 @@ export function McpGrantManager({ grants, endpoint, loading = false }: { grants:
         <p className="mt-1 text-sm text-muted-foreground">Connect ChatGPT or Claude using FortSprite&apos;s MCP URL and OAuth sign-in. Review each request before granting access.</p>
       </div>
       <div className="flex items-center gap-2">
-        <Input aria-label="Assistant MCP URL" readOnly value={endpoint} className="min-w-0 font-mono text-xs" />
+        <Input aria-label="Assistant MCP URL" readOnly value={endpoint} className="min-w-0 font-sans text-xs" />
         <Button variant="outline" disabled={loading} onClick={() => { void copyEndpoint() }} aria-label="Copy assistant MCP URL"><CopyIcon /></Button>
       </div>
       {grants.length ? (
