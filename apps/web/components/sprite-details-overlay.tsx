@@ -15,6 +15,7 @@ import { SpriteRarityBadge } from "@/components/sprite-rarity-badge"
 import type { CollectionNotice, SpriteDetailsOverlayProps } from "@/components/collection-sprite-tile"
 import type { CollectionChange } from "@/lib/collection-state"
 import { spriteAbilities } from "@/lib/sprite-abilities"
+import { VariantBackdrop } from "@/components/variant-backdrop"
 import { variantStyle } from "@/lib/variant-style"
 
 const dustFormatter = new Intl.NumberFormat("en-US")
@@ -238,9 +239,10 @@ function SpriteDetails({
             {variantAbility ? (
               <div
                 data-slot="variant-ability"
-                className="flex flex-col gap-3 rounded-lg p-4 text-white ring-1 ring-inset ring-white/15"
+                className="relative isolate flex flex-col gap-3 overflow-hidden rounded-lg p-4 text-white ring-1 ring-inset ring-white/15"
                 style={variantStyle(sprite.variant).frame}
               >
+                <VariantBackdrop variant={sprite.variant} sizes="(max-width: 640px) 90vw, 480px" softened />
                 <h3 className="font-semibold">{sprite.variant}</h3>
                 <p className="text-pretty text-white/90">{variantAbility.description}</p>
               </div>

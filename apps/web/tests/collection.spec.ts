@@ -243,6 +243,29 @@ test("virtualized collection renders the final Sprite after a full-page scroll",
   })
 })
 
+test("variant backings show blur placeholders until optimized images load", async ({ page }) => {
+  let release!: () => void
+  const imagesReady = new Promise<void>((resolve) => { release = resolve })
+  await page.route("**/_next/image?*", async (route) => {
+    await imagesReady
+    await route.continue()
+  })
+  try {
+    await page.reload({ waitUntil: "domcontentloaded" })
+    await page.getByRole("combobox", { name: "Search collection", exact: true }).fill("Gold Vampire")
+    const backdrop = page.locator('[data-variant-backdrop="Gold"] img').first()
+    await expect(backdrop).toBeVisible()
+    await expect(backdrop).toHaveAttribute("style", /data:image/)
+    expect(await backdrop.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(false)
+    release()
+    await expect.poll(() => backdrop.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
+    await expect(backdrop).not.toHaveAttribute("style", /data:image/)
+  } finally {
+    release()
+    await page.unrouteAll({ behavior: "wait" })
+  }
+})
+
 test("details separate variant bonuses from base abilities", async ({ page }, testInfo) => {
   await expect(page).toHaveURL(/\/collection$/)
   await expect(page).toHaveTitle(/My collection/)
@@ -277,7 +300,15 @@ test("details separate variant bonuses from base abilities", async ({ page }, te
         return [style.backgroundColor, style.backgroundImage, style.backgroundBlendMode]
       })
       expect(background).toEqual(portraitBackground)
+      const backdrop = dialog.locator(`[data-variant-backdrop="${variant}"] img`).first()
+      await expect(backdrop).toHaveAttribute("src", /\/_next\/image\?/)
+      await expect.poll(() => backdrop.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true)
+      const metadataBackdrop = dialog.locator('[data-slot="variant-ability"] [data-variant-backdrop] img')
+      await expect(metadataBackdrop).toHaveCSS("filter", "blur(24px)")
+      await expect(metadataBackdrop).toHaveAttribute("alt", "")
+
     } else {
+      await expect(dialog.locator("[data-variant-backdrop]")).toHaveCount(0)
       await expect(dialog.getByRole("link", { name: "Variant ability source" })).toHaveCount(0)
     }
     await expect(page.locator("nextjs-dialog")).toHaveCount(0)
