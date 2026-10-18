@@ -895,7 +895,7 @@ test("variant group scrollbar keeps rolling cards separated", async ({ page }) =
   const result = await recorder.evaluate(recorder => { recorder.stop(); return recorder.state })
   expect(result.frames).toBeGreaterThan(10)
   expect(result.minimumGap, result.worst).toBeGreaterThanOrEqual(0)
-  expect(result.minimumGap).toBeLessThan(3)
+  expect(result.minimumGap).toBeLessThan(1)
 })
 
 test("variant group scrollbar aligns the current card with its highlighted tick at both ends", async ({ page }, testInfo) => {

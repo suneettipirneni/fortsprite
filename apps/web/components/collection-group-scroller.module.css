@@ -29,7 +29,7 @@
 }
 
 .preview {
-  --card-step: 54px;
+  --card-step: 52.5px;
   position: absolute;
   left: 42px;
   width: 200px;
