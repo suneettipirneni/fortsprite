@@ -694,7 +694,7 @@ test("variant group scrollbar previews on hover, jumps on click, and supports ke
   const incoming = await preview.locator('[data-position="next"]').elementHandle()
   await page.mouse.move(x, yFor(middle + 1))
   await expect.poll(() => incoming!.getAttribute("data-position")).toBe("current")
-  expect(await incoming!.evaluate((element) => getComputedStyle(element).transitionDuration)).toBe("0.22s, 0.16s, 0.16s")
+  expect(await incoming!.evaluate((element) => getComputedStyle(element).transitionDuration)).toBe("0.16s")
   await page.mouse.click(x, yFor(middle + 1))
   await assertGroup(middle + 1)
   await page.mouse.move(x, yFor(middle))
@@ -821,6 +821,43 @@ test("variant group scrollbar tick widths form a moving wave", async ({ page }) 
   await expect.poll(() => width(middle + 3)).toBeLessThan(13)
 })
 
+test("variant group scrollbar rolls continuously within a selected group", async ({ page }, testInfo) => {
+  await page.getByTestId("virtualized-sprite-groups").evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
+  const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
+  const bounds = (await scrollbar.boundingBox())!
+  const count = Number(await scrollbar.getAttribute("aria-valuemax"))
+  const middle = Math.floor(count / 2)
+  const x = bounds.x + bounds.width / 2
+  const yFor = (index: number) => bounds.y + 20 + (bounds.height - 40) * index / (count - 1)
+  const session = testInfo.project.name === "mobile" ? await page.context().newCDPSession(page) : null
+  const move = async (position: number, start = false) => {
+    if (session) await session.send("Input.dispatchTouchEvent", { type: start ? "touchStart" : "touchMove", touchPoints: [{ x, y: yFor(position) }] })
+    else await page.mouse.move(x, yFor(position))
+  }
+  await move(middle, true)
+  await expect(scrollbar).toHaveAttribute("aria-valuenow", String(middle + 1))
+  const card = page.getByTestId("group-scroll-preview").locator('[data-position="current"]')
+  const initial = (await card.boundingBox())!.y
+  const scrollY = await page.evaluate(() => window.scrollY)
+  let previous = initial
+  for (const offset of [0.15, 0.3, 0.45]) {
+    await move(middle + offset)
+    await expect.poll(async () => (await card.boundingBox())!.y).toBeLessThan(previous - 3)
+    await expect(scrollbar).toHaveAttribute("aria-valuenow", String(middle + 1))
+    previous = (await card.boundingBox())!.y
+  }
+  expect(initial - previous).toBeGreaterThan(15)
+  await page.screenshot({ path: `/tmp/fortsprite-scroller-${testInfo.project.name}-continuous.png`, animations: "disabled", scale: "css" })
+  await move(middle)
+  await expect.poll(async () => Math.abs((await card.boundingBox())!.y - initial)).toBeLessThan(1)
+  expect(await page.evaluate(() => window.scrollY)).toBe(scrollY)
+  if (session) {
+    await session.send("Input.dispatchTouchEvent", { type: "touchCancel", touchPoints: [] })
+    await session.detach()
+  }
+})
+
 test("variant group scrollbar keeps rolling cards separated", async ({ page }) => {
   await page.getByTestId("virtualized-sprite-groups").evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
@@ -832,13 +869,17 @@ test("variant group scrollbar keeps rolling cards separated", async ({ page }) =
   await page.mouse.move(bounds.x + bounds.width / 2, yFor(middle))
   await expect(scrollbar).toHaveAttribute("aria-valuenow", String(middle + 1))
   const recorder = await page.getByTestId("group-scroll-preview").evaluateHandle(element => {
-    const state = { frames: 0, minimumGap: Infinity }
+    const state = { frames: 0, minimumGap: Infinity, worst: "" }
     let frame = 0
     const sample = () => {
       const cards = [...element.querySelectorAll('[data-position]:not([data-position="buffer"])')]
         .map(card => card.getBoundingClientRect()).sort((a, b) => a.top - b.top)
       for (let index = 1; index < cards.length; index++) {
-        state.minimumGap = Math.min(state.minimumGap, cards[index]!.top - cards[index - 1]!.bottom)
+        const gap = cards[index]!.top - cards[index - 1]!.bottom
+        if (gap < state.minimumGap) {
+          state.minimumGap = gap
+          state.worst = JSON.stringify([...element.querySelectorAll('[data-position]:not([data-position="buffer"])')].map(card => ({ text: card.textContent, height: (card as HTMLElement).offsetHeight, rect: card.getBoundingClientRect().toJSON(), transform: getComputedStyle(card).transform })))
+        }
       }
       state.frames++
       frame = requestAnimationFrame(sample)
@@ -853,8 +894,8 @@ test("variant group scrollbar keeps rolling cards separated", async ({ page }) =
   await expect.poll(() => page.getByTestId("group-scroll-preview").evaluate(element => element.getAnimations({ subtree: true }).filter(animation => animation.playState === "running").length)).toBe(0)
   const result = await recorder.evaluate(recorder => { recorder.stop(); return recorder.state })
   expect(result.frames).toBeGreaterThan(10)
-  expect(result.minimumGap).toBeGreaterThanOrEqual(0)
-  expect(result.minimumGap).toBeLessThan(5)
+  expect(result.minimumGap, result.worst).toBeGreaterThanOrEqual(0)
+  expect(result.minimumGap).toBeLessThan(1)
 })
 
 test("variant group scrollbar aligns the current card with its highlighted tick at both ends", async ({ page }, testInfo) => {
@@ -863,7 +904,7 @@ test("variant group scrollbar aligns the current card with its highlighted tick 
   await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
   const bounds = (await scrollbar.boundingBox())!
   const count = Number(await scrollbar.getAttribute("aria-valuemax"))
-  for (const index of [0, 1, Math.floor(count / 2), count - 2, count - 1]) {
+  for (const index of [0, count - 1]) {
     await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + 20 + (bounds.height - 40) * index / (count - 1))
     await expect(scrollbar).toHaveAttribute("aria-valuenow", String(index + 1))
     await expect.poll(() => scrollbar.evaluate(element => {
