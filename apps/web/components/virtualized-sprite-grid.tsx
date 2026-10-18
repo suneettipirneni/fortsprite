@@ -437,7 +437,7 @@ export function VirtualizedSpriteGroups({
       items: [],
     }
     return (
-      <div className="pr-7 sm:pr-8">
+      <div className="pl-7 sm:pl-8">
         <div
           ref={ref}
           data-testid="virtualized-sprite-groups"
@@ -461,7 +461,7 @@ export function VirtualizedSpriteGroups({
   }
 
   return (
-    <div className="pr-7 sm:pr-8">
+    <div className="pl-7 sm:pl-8">
       <div
         id={groupsId}
         ref={setContainerRef}
