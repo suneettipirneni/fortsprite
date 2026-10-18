@@ -38,6 +38,8 @@ export function CollectionGroupScroller({
   const tickCount = Math.min(groups.length, 17)
   const activeTick = Math.round(progress * (tickCount - 1))
   const tickProgress = activeTick / (tickCount - 1)
+  const previewProgress = pointerProgress ?? tickProgress
+  const rollPosition = pointerProgress === null ? index : pointerProgress * (groups.length - 1)
   const wavePosition = (pointerProgress ?? progress) * (tickCount - 1)
   const group = groups[index]
 
@@ -104,7 +106,7 @@ export function CollectionGroupScroller({
 
   return (
     <div
-      className="fixed right-[max(0px,var(--safe-area-right))] z-30 flex w-11 items-center lg:right-[max(0.25rem,var(--safe-area-right))]"
+      className="fixed left-[max(0px,var(--safe-area-left))] z-30 flex w-11 items-center lg:left-[max(0.25rem,var(--safe-area-left))]"
       style={{
         top: previewBounds?.top ?? "calc(var(--safe-area-top) + var(--app-header-content-height) + 1.5rem)",
         bottom: previewBounds ? undefined : "calc(var(--mobile-tab-clearance) + var(--safe-area-bottom) + 1.5rem)",
@@ -126,7 +128,7 @@ export function CollectionGroupScroller({
         tabIndex={0}
         data-dragging={dragging}
         data-hovering={hovering}
-        className={`${styles.rail} relative h-full max-h-80 w-11 touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring`}
+        className={`${styles.rail} relative h-full max-h-72 w-11 touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring`}
         style={{ pointerEvents: "auto", cursor: dragging ? "grabbing" : "pointer" }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
@@ -205,39 +207,43 @@ export function CollectionGroupScroller({
             aria-hidden="true"
             data-testid="group-scroll-preview"
             className={styles.preview}
-            // Track insets are 20px and ticks are 3px tall. Align to the
-            // highlighted tick's center, including the first and last ticks.
-            style={{ top: `calc(${tickProgress * 100}% + ${21.5 - tickProgress * 43}px)` }}
+            // Follow the pointer continuously, with the first and last
+            // positions aligned to the centers of the endpoint ticks.
+            style={{ top: `calc(${previewProgress * 100}% + ${21.5 - previewProgress * 43}px)` }}
           >
-            {groups.slice(Math.max(0, index - 2), index + 3).map((previewGroup, offset) => {
-              const groupIndex = Math.max(0, index - 2) + offset
-              const slot = groupIndex - index
-              // Keep one invisible card on either side so adjacent groups
-              // retain their DOM identity as they roll into and out of view.
-              return (
-                <div
-                  key={previewGroup.baseName}
-                  className={styles.previewCard}
-                  data-position={slot === 0 ? "current" : slot === -1 ? "previous" : slot === 1 ? "next" : "buffer"}
-                  style={{ "--slot": slot, "--distance": Math.abs(slot), zIndex: 3 - Math.abs(slot) } as CSSProperties}
-                >
-                  <SpritePortrait
-                    variant="Base"
-                    label={`Base ${previewGroup.baseName}`}
-                    src={previewGroup.baseImagePath ?? undefined}
-                    sizes="56px"
-                    className={styles.portrait}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="line-clamp-2 text-sm leading-snug font-semibold">{previewGroup.baseName}</p>
-                    <div className={styles.previewMeta}>
-                      <span>{slot === 0 && (dragging || hovering) ? (dragging ? "Release to jump" : "Click to jump") : `${previewGroup.items.length} ${previewGroup.items.length === 1 ? "variant" : "variants"}`}</span>
-                      <span className={styles.position}><strong>{groupIndex + 1}</strong> / {groups.length}</span>
+            <div className={styles.previewCards} style={{ "--preview-index": rollPosition } as CSSProperties}>
+              {groups.slice(Math.max(0, index - 2), index + 3).map((previewGroup, offset) => {
+                const groupIndex = Math.max(0, index - 2) + offset
+                const slot = groupIndex - index
+                const rollSlot = groupIndex - rollPosition
+                const distance = Math.abs(rollSlot)
+                // Keep extra cards mounted so their identity survives selection
+                // changes while position, tilt, and opacity follow the pointer.
+                return (
+                  <div
+                    key={previewGroup.baseName}
+                    className={styles.previewCard}
+                    data-position={slot === 0 ? "current" : slot === -1 ? "previous" : slot === 1 ? "next" : "buffer"}
+                    style={{ "--group-index": groupIndex, "--slot": rollSlot, "--distance": distance, opacity: distance <= 1 ? 1 - distance * 0.28 : Math.max(0, (2 - distance) * 0.72), zIndex: 3 - Math.abs(slot) } as CSSProperties}
+                  >
+                    <SpritePortrait
+                      variant="Base"
+                      label={`Base ${previewGroup.baseName}`}
+                      src={previewGroup.baseImagePath ?? undefined}
+                      sizes="36px"
+                      className={styles.portrait}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-xs leading-[15px] font-semibold">{previewGroup.baseName}</p>
+                      <div className={styles.previewMeta}>
+                        <span>{slot === 0 && (dragging || hovering) ? (dragging ? "Release to jump" : "Click to jump") : `${previewGroup.items.length} ${previewGroup.items.length === 1 ? "variant" : "variants"}`}</span>
+                        <span className={styles.position}><strong>{groupIndex + 1}</strong> / {groups.length}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         )}
       </div>
