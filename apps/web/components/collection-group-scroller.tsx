@@ -26,6 +26,12 @@ export function CollectionGroupScroller({
   const pendingTarget = useRef<number | null>(null)
   const pendingProgress = useRef<number | null>(null)
   const frame = useRef<number | null>(null)
+  const motionFrame = useRef<number | null>(null)
+  const snapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const renderedProgress = useRef<number | null>(null)
+  const motionTarget = useRef(0)
+  const motionTime = useRef<number | null>(null)
+  const reducedMotion = useRef(false)
   const boundsRef = useRef<{ top: number; height: number } | null>(null)
   const [previewIndex, setPreviewIndex] = useState<number | null>(null)
   const [previewBounds, setPreviewBounds] = useState<{ top: number; height: number; touch: boolean } | null>(null)
@@ -45,14 +51,47 @@ export function CollectionGroupScroller({
 
   useEffect(() => () => {
     if (frame.current !== null) cancelAnimationFrame(frame.current)
+    if (motionFrame.current !== null) cancelAnimationFrame(motionFrame.current)
+    if (snapTimer.current !== null) clearTimeout(snapTimer.current)
   }, [])
 
   if (groups.length < 2 || (!visible && !dragging && !hovering && !focused)) return null
 
+  // Animate one shared fractional position so translation, tilt, and fading
+  // stay in step during snapping and when movement interrupts a snap.
+  function movePreview(now: number) {
+    motionFrame.current = null
+    const target = motionTarget.current
+    const current = renderedProgress.current ?? target
+    const elapsed = motionTime.current === null ? 16 : Math.min(32, now - motionTime.current)
+    const next = current + (target - current) * (1 - Math.exp(-elapsed / 36))
+    const settled = Math.abs(target - next) * (groups.length - 1) < 0.001
+    renderedProgress.current = settled ? target : next
+    setPointerProgress(renderedProgress.current)
+    motionTime.current = now
+    if (!settled) motionFrame.current = requestAnimationFrame(movePreview)
+    else motionTime.current = null
+  }
+
+  function moveToward(fraction: number) {
+    motionTarget.current = fraction
+    // Enter at the pointer immediately; long jumps must not sweep an
+    // unmounted part of the stack across the preview.
+    if (renderedProgress.current === null || reducedMotion.current || Math.abs(fraction - renderedProgress.current) * (groups.length - 1) > 1.5) {
+      if (motionFrame.current !== null) cancelAnimationFrame(motionFrame.current)
+      motionFrame.current = null
+      motionTime.current = null
+      renderedProgress.current = fraction
+      setPointerProgress(fraction)
+    } else if (motionFrame.current === null) {
+      motionFrame.current = requestAnimationFrame(movePreview)
+    }
+  }
+
   function flushTarget() {
     if (frame.current !== null) cancelAnimationFrame(frame.current)
     frame.current = null
-    if (pendingProgress.current !== null) setPointerProgress(pendingProgress.current)
+    if (pendingProgress.current !== null) moveToward(pendingProgress.current)
     pendingProgress.current = null
     const next = pendingTarget.current
     pendingTarget.current = null
@@ -69,18 +108,27 @@ export function CollectionGroupScroller({
     const fraction = Math.max(0, Math.min(1, (clientY - bounds.top - 20) / Math.max(1, bounds.height - 40)))
     pendingProgress.current = fraction
     const position = fraction * (groups.length - 1)
-    const previous = pendingTarget.current ?? lastTarget.current
-    // Retain the selection slightly past the rounding boundary. Tiny finger
-    // tremors otherwise alternate between groups several screens apart.
-    const next = previous !== null && Math.abs(position - previous) < 0.7
-      ? previous
-      : Math.round(position)
+    const next = Math.round(position)
     pendingTarget.current = next
+    if (snapTimer.current !== null) clearTimeout(snapTimer.current)
+    // Keep fractional motion while moving, then gently center the closest
+    // group after a brief pause without scrolling the collection.
+    snapTimer.current = setTimeout(() => {
+      snapTimer.current = null
+      flushTarget()
+      moveToward(next / (groups.length - 1))
+    }, 120)
     // Coalesce high-frequency pointer events into one preview update per frame.
     if (frame.current === null) frame.current = requestAnimationFrame(flushTarget)
   }
 
   function endPreview() {
+    if (snapTimer.current !== null) clearTimeout(snapTimer.current)
+    snapTimer.current = null
+    if (motionFrame.current !== null) cancelAnimationFrame(motionFrame.current)
+    motionFrame.current = null
+    motionTime.current = null
+    renderedProgress.current = null
     if (frame.current !== null) cancelAnimationFrame(frame.current)
     frame.current = null
     pendingTarget.current = null
@@ -97,6 +145,7 @@ export function CollectionGroupScroller({
   function hover(element: HTMLDivElement, clientY: number) {
     if (!boundsRef.current) {
       const { top, height } = element.getBoundingClientRect()
+      reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches
       boundsRef.current = { top, height }
       setPreviewBounds({ top, height, touch: false })
     }
@@ -152,6 +201,7 @@ export function CollectionGroupScroller({
           // Freeze the geometry for the gesture, including viewport changes
           // caused by mobile browser chrome appearing or disappearing.
           const bounds = event.currentTarget.getBoundingClientRect()
+          reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches
           boundsRef.current = { top: bounds.top, height: bounds.height }
           setPreviewBounds({ top: bounds.top, height: bounds.height, touch: true })
           pointerId.current = event.pointerId

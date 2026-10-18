@@ -118,7 +118,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tick { transition: none; }
-  .preview { animation: none; }
+  .preview { --card-step: 54px; animation: none; }
   .previewCards, .previewCard { transition: none; }
   .previewCard { transform: translateY(calc(-50% + var(--group-index) * var(--card-step))) scale(calc(1 - var(--distance) * 0.025)); }
 }
