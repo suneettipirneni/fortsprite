@@ -4,6 +4,8 @@ import Image from "next/image"
 
 import { cn } from "@workspace/ui/lib/utils"
 
+import { VariantBackdrop } from "@/components/variant-backdrop"
+
 import { spriteArtwork } from "@/lib/generated/sprite-artwork"
 import { variantStyle } from "@/lib/variant-style"
 
@@ -34,6 +36,7 @@ export function SpritePortrait({
         )}
         style={classes.frame}
       >
+        <VariantBackdrop variant={variant} sizes={sizes} />
         <Image
           key={src}
           src={artwork}
@@ -59,6 +62,7 @@ export function SpritePortrait({
       )}
       style={classes.frame}
     >
+      <VariantBackdrop variant={variant} sizes={sizes} />
       <div
         className={cn(
           "absolute inset-x-[18%] bottom-[12%] h-[38%] rounded-full blur-xl",
