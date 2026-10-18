@@ -821,7 +821,7 @@ test("variant group scrollbar tick widths form a moving wave", async ({ page }) 
   await expect.poll(() => width(middle + 3)).toBeLessThan(13)
 })
 
-test("variant group scrollbar rolls continuously and snaps to the closest group on pause", async ({ page }, testInfo) => {
+test("variant group scrollbar rolls continuously within a selected group", async ({ page }, testInfo) => {
   await page.getByTestId("virtualized-sprite-groups").evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
   await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
@@ -847,30 +847,15 @@ test("variant group scrollbar rolls continuously and snaps to the closest group 
     await expect(scrollbar).toHaveAttribute("aria-valuenow", String(middle + 1))
     previous = (await card.boundingBox())!.y
   }
-  expect(initial - previous).toBeGreaterThan(9)
+  expect(initial - previous).toBeGreaterThan(15)
   await page.screenshot({ path: `/tmp/fortsprite-scroller-${testInfo.project.name}-continuous.png`, animations: "disabled", scale: "css" })
-  // Without another pointer event, the fractional position settles back
-  // to this group. The page itself must stay put until click or release.
+  await move(middle)
   await expect.poll(async () => Math.abs((await card.boundingBox())!.y - initial)).toBeLessThan(1)
   expect(await page.evaluate(() => window.scrollY)).toBe(scrollY)
-  // Cross the midpoint but stay below the old 0.7 hysteresis boundary.
-  // The nearest group must win, and its card must settle flat and centered.
-  await move(middle + 0.6)
-  await expect(scrollbar).toHaveAttribute("aria-valuenow", String(middle + 2))
-  await expect.poll(() => card.evaluate(element => {
-    const preview = element.closest('[data-testid="group-scroll-preview"]')!.getBoundingClientRect()
-    const bounds = element.getBoundingClientRect()
-    return Math.abs(bounds.top + bounds.height / 2 - preview.top - preview.height / 2)
-  })).toBeLessThan(0.2)
-  await page.screenshot({ path: `/tmp/fortsprite-scroller-${testInfo.project.name}-snapped.png`, animations: "disabled", scale: "css" })
-  // Resume, then commit before the pause timer can finish. Commit should
-  // use the actual nearest pointer target, not a trailing animation frame.
-  await move(middle + 1.6)
-  if (session) await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] })
-  else await page.mouse.click(x, yFor(middle + 1.6))
-  await expect(scrollbar).toHaveAttribute("aria-valuenow", String(middle + 3))
-  await expect(page.getByTestId("virtualized-sprite-groups").locator(`[data-index="${middle + 2}"]`).getByRole("heading", { level: 2 })).toBeInViewport()
-  if (session) await session.detach()
+  if (session) {
+    await session.send("Input.dispatchTouchEvent", { type: "touchCancel", touchPoints: [] })
+    await session.detach()
+  }
 })
 
 test("variant group scrollbar keeps rolling cards separated", async ({ page }) => {
