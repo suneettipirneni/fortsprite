@@ -104,7 +104,7 @@ export function CollectionGroupScroller({
 
   return (
     <div
-      className="fixed right-[max(0px,var(--safe-area-right))] z-30 flex w-11 items-center lg:right-[max(0.25rem,var(--safe-area-right))]"
+      className="fixed left-[max(0px,var(--safe-area-left))] z-30 flex w-11 items-center lg:left-[max(0.25rem,var(--safe-area-left))]"
       style={{
         top: previewBounds?.top ?? "calc(var(--safe-area-top) + var(--app-header-content-height) + 1.5rem)",
         bottom: previewBounds ? undefined : "calc(var(--mobile-tab-clearance) + var(--safe-area-bottom) + 1.5rem)",

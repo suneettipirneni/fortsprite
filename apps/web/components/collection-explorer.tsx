@@ -332,7 +332,7 @@ function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: Cata
       onRemovedFocus={() => queryInputRef.current?.focus()}
       onChange={updateSprite}
     >
-      <div aria-live="polite" aria-atomic="true" data-testid="collection-progress-stats" className={`grid shrink-0 grid-cols-2 gap-0 tabular-nums ${view === "grouped" ? "max-lg:pr-7" : ""}`}>
+      <div aria-live="polite" aria-atomic="true" data-testid="collection-progress-stats" className={`grid shrink-0 grid-cols-2 gap-0 tabular-nums ${view === "grouped" ? "max-lg:pl-7" : ""}`}>
         {(["owned", "mastered"] as const).map((field) => <div key={field} className={field === "owned" ? "pr-6" : "border-l border-white/10 pl-6 sm:pl-8"}>
           <CollectionTracking fallback={<CollectionStatSkeleton field={field} total={seasonSprites.length} />}>{(snapshot) => {
             const count = snapshot.items.filter((item) =>
@@ -350,7 +350,7 @@ function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: Cata
         data-testid="collection-content"
         className="@container isolate flex min-w-0 flex-col gap-5 border-t border-white/10 pt-5 antialiased sm:col-span-2 sm:gap-6 sm:pt-8"
       >
-        <div className={`flex flex-col gap-3 ${view === "grouped" ? "max-lg:pr-7" : ""}`}>
+        <div className={`flex flex-col gap-3 ${view === "grouped" ? "max-lg:pl-7" : ""}`}>
           <div className="grid min-w-0 gap-2 @2xl:grid-cols-[minmax(0,1fr)_11rem]">
             <CollectionQueryBar
               query={query}

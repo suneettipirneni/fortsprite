@@ -874,6 +874,15 @@ test("variant group scrollbar aligns the current card with its highlighted tick 
     const card = await page.getByTestId("group-scroll-preview").locator('[data-position="current"]').boundingBox()
     expect(card!.y).toBeGreaterThan(await page.locator("header").evaluate(element => element.getBoundingClientRect().bottom))
     expect(card!.y + card!.height).toBeLessThan(page.viewportSize()!.height)
+    expect(bounds.x).toBeLessThan(8)
+    expect(card!.x).toBeGreaterThan(bounds.x + bounds.width - 6)
+    expect(card!.x + card!.width).toBeLessThan(page.viewportSize()!.width)
+    const mirrored = await page.getByTestId("group-scroll-preview").locator('[data-position="current"]').evaluate(element => {
+      const pointer = getComputedStyle(element, "::after")
+      return { left: pointer.left, border: pointer.borderLeftWidth }
+    })
+    expect(mirrored.left).toBe("-6px")
+    expect(mirrored.border).toBe("1px")
     if (index === 0 || index === count - 1) {
       await page.screenshot({ path: `/tmp/fortsprite-scroller-${testInfo.project.name}-${index === 0 ? "start" : "end"}.png`, animations: "disabled", scale: "css" })
     }
@@ -895,8 +904,10 @@ test("variant group scrollbar stays full height near the mobile toolbar without 
     const ticks = await scrollbar.locator("[data-active]").evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top))
     expect(Math.min(...ticks.slice(1).map((top, index) => top - ticks[index]!))).toBeGreaterThan(12)
     const filter = page.getByRole("button", { name: "Add collection filter" })
+    const searchBounds = (await page.getByRole("combobox", { name: "Search collection" }).boundingBox())!
+    expect(searchBounds.x).toBeGreaterThanOrEqual(bounds.x + bounds.width)
     const filterBounds = (await filter.boundingBox())!
-    expect(filterBounds.x + filterBounds.width).toBeLessThanOrEqual(bounds.x)
+    expect(filterBounds.x).toBeGreaterThanOrEqual(bounds.x + bounds.width)
     await filter.click()
     await expect(page.getByRole("listbox")).toBeVisible()
     await page.keyboard.press("Escape")
