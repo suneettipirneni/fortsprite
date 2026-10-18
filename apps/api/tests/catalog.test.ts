@@ -76,6 +76,24 @@ test("the checked-in snapshot matches the import schema", async () => {
   assert.equal(parseCatalogSnapshot(snapshot).length, snapshot.length)
 })
 
+test("reviewed dust supplements legacy rows and imports without replacing primary provenance", async () => {
+  const item = { ...source("dust-supplement"), baseName: "Jonesy", variant: "Base" }
+  await importCatalogSnapshot([item])
+  const saved = await record(item.stableKey)
+  assert.equal(saved.spriteDustValue, 100)
+  assert.equal(saved.sourceSummonCost, "0")
+  assert.equal(saved.sourceUrl, item.sourcePage)
+  const legacy = catalogItem({ ...saved, spriteDustValue: 0 })
+  assert.equal(legacy.spriteDustValue, 100)
+  assert.equal(legacy.spriteDustSource?.name, "CertiFried")
+  assert.equal(legacy.sourcePage, item.sourcePage)
+  assert.equal((await importCatalogSnapshot([item])).unchanged, 1)
+  await importCatalogSnapshot([{ ...item, sourceSeasonId: 41, season: "C7 S3", spriteDustValue: 2700 }])
+  const archived = catalogItem(await record(item.stableKey))
+  assert.equal(archived.spriteDustValue, 2700)
+  assert.equal(archived.spriteDustSource, undefined)
+})
+
 test("unchanged imports preserve IDs, timestamps, exact metadata and collection history", async () => {
   const item = source("stable")
   const first = await importCatalogSnapshot([item])

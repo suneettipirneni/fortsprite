@@ -155,6 +155,8 @@ pnpm dev
 
 Open `http://localhost:3000`. Check `http://localhost:3000/api/v1/health` if the app cannot reach PostgreSQL.
 
+See [Sprite metadata sources](docs/sprite-metadata.md) for the reviewed CertiFried resummon-cost supplement and snapshot refresh command.
+
 Collection ownership and mastery are stored in PostgreSQL. Missing items cannot remain mastered. Friend availability derives from ownership and mutually accepted FortSprite sharing, with no per-item opt-in. The collection page and dashboard read saved counts.
 
 Friends connect through exact FortSprite usernames, can accept collection sharing, compare both directions, and block or remove sharing. New accounts require a case-insensitively unique username and are created and accessed with passkeys only. Account settings support profile editing, additional passkeys, and confirmed deletion after a recent sign-in. The final passkey cannot be removed without deleting the account.

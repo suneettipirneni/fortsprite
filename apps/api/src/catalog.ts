@@ -6,6 +6,7 @@ import type { CatalogItem, CatalogSnapshot } from "@workspace/contracts"
 
 import { db } from "./db/client.ts"
 import { sprites } from "./db/schema.ts"
+import { resummonCostGroups, spriteDustSource, supplementalDustMetadata } from "./catalog-metadata.ts"
 
 const percentSchema = z
   .string()
@@ -98,11 +99,18 @@ export function catalogItem(row: typeof sprites.$inferSelect): CatalogItem {
     dropChances: row.dropChances,
     sourcePage: row.sourceUrl,
     sourceVerifiedAt: row.sourceVerifiedAt.toISOString(),
+    ...supplementalDustMetadata({
+      baseName: row.baseName,
+      variant: row.variantName,
+      season: row.season,
+      sourceSeasonId: row.sourceSeasonId,
+    }),
   }
 }
 
 export function catalogRevision(rows: readonly { id: string; updatedAt: string }[]) {
   return createHash("sha256")
+    .update(JSON.stringify({ spriteDustSource, resummonCostGroups }))
     .update(JSON.stringify([...rows].sort((a, b) => a.id.localeCompare(b.id))
       .map((row) => [row.id, row.updatedAt])))
     .digest("hex")
@@ -195,7 +203,7 @@ export async function importCatalogSnapshot(
         descriptionLines: item.descriptionLines,
         levelProgression: item.levelProgression ?? null,
         location: item.location ?? null,
-        spriteDustValue: item.spriteDustValue ?? null,
+        spriteDustValue: supplementalDustMetadata(item)?.spriteDustValue ?? item.spriteDustValue ?? null,
         dropChancePercent: item.dropChancePercent ?? null,
         dropChances: item.dropChances,
         sourceUrl: item.sourcePage,

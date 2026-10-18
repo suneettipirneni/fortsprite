@@ -19,7 +19,7 @@
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -53,7 +53,7 @@
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -87,7 +87,7 @@
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -121,7 +121,7 @@
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -155,7 +155,7 @@
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -189,7 +189,7 @@
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -223,7 +223,7 @@
     ],
     "levelProgression": "Increase amount healed with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -254,7 +254,7 @@
     "descriptionLines": [],
     "levelProgression": "Upgrades a random item in the player's inventory with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -287,7 +287,7 @@
     ],
     "levelProgression": "Upgrades a random item in the player's inventory with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -320,7 +320,7 @@
     ],
     "levelProgression": "Upgrades a random item in the player's inventory with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -353,7 +353,7 @@
     ],
     "levelProgression": "Upgrades a random item in the player's inventory with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -386,7 +386,7 @@
     ],
     "levelProgression": "Upgrades a random item in the player's inventory with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -419,7 +419,7 @@
       "Upgrades a random item in the player's inventory with each Level Up!"
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -452,7 +452,7 @@
     ],
     "levelProgression": "Upgrades a random item in the player's inventory with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -485,7 +485,7 @@
       "Location"
     ],
     "levelProgression": "Time between bush activating decreases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -520,7 +520,7 @@
       "Location"
     ],
     "levelProgression": "Time between bush activating decreases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -555,7 +555,7 @@
       "Location"
     ],
     "levelProgression": "Time between bush activating decreases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -589,7 +589,7 @@
       "Grants a bush on you after a duration, gain a bush on elimination at max level."
     ],
     "levelProgression": "Time between bush activating decreases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -624,7 +624,7 @@
     ],
     "levelProgression": "Time between bush activating decreases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -657,7 +657,7 @@
       "Grants a bush on you after a duration, gain a bush on elimination at max level."
     ],
     "levelProgression": "Time between bush activating decreases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -691,7 +691,7 @@
       "Location"
     ],
     "levelProgression": "Time between bush activating decreases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -725,7 +725,7 @@
     ],
     "levelProgression": "Sprint faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -759,7 +759,7 @@
     ],
     "levelProgression": "Sprint faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -793,7 +793,7 @@
     ],
     "levelProgression": "Sprint faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -827,7 +827,7 @@
     ],
     "levelProgression": "Sprint faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -861,7 +861,7 @@
     ],
     "levelProgression": "Sprint faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -895,7 +895,7 @@
     ],
     "levelProgression": "Sprint faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -928,7 +928,7 @@
     ],
     "levelProgression": "Hover speed increased with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -962,7 +962,7 @@
     ],
     "levelProgression": "Hover speed increased with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -996,7 +996,7 @@
     ],
     "levelProgression": "Hover speed increased with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1030,7 +1030,7 @@
     ],
     "levelProgression": "Hover speed increased with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1064,7 +1064,7 @@
     ],
     "levelProgression": "Hover speed increased with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1098,7 +1098,7 @@
     ],
     "levelProgression": "Hover speed increased with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1132,7 +1132,7 @@
     ],
     "levelProgression": "Automatic reload gets faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1167,7 +1167,7 @@
     ],
     "levelProgression": "Automatic reload gets faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1202,7 +1202,7 @@
     ],
     "levelProgression": "Automatic reload gets faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1237,7 +1237,7 @@
     ],
     "levelProgression": "Automatic reload gets faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1272,7 +1272,7 @@
     ],
     "levelProgression": "Automatic reload gets faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1307,7 +1307,7 @@
     ],
     "levelProgression": "Automatic reload gets faster with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1339,7 +1339,7 @@
       "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1250,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1373,7 +1373,7 @@
       "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1407,7 +1407,7 @@
       "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1441,7 +1441,7 @@
       "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1476,7 +1476,7 @@
     ],
     "levelProgression": null,
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1509,7 +1509,7 @@
       "Find an 8-Bit Shotgun in your first chest and gain a score multiplier for it."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1542,7 +1542,7 @@
     ],
     "levelProgression": "Cooldown between jumps decreases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1750,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1576,7 +1576,7 @@
     ],
     "levelProgression": "Cooldown between jumps decreases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1610,7 +1610,7 @@
     ],
     "levelProgression": "Cooldown between jumps decreases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1644,7 +1644,7 @@
     ],
     "levelProgression": "Cooldown between jumps decreases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1678,7 +1678,7 @@
     ],
     "levelProgression": "Cooldown between jumps decreases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1712,7 +1712,7 @@
     ],
     "levelProgression": "Cooldown between jumps decreases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1746,7 +1746,7 @@
       "New variants unlocked after mastering!"
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2000,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1782,7 +1782,7 @@
       "New variants unlocked after mastering!"
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1818,7 +1818,7 @@
       "New variants unlocked after mastering!"
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1855,7 +1855,7 @@
     ],
     "levelProgression": null,
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1890,7 +1890,7 @@
       "New variants unlocked after mastering!"
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1926,7 +1926,7 @@
     ],
     "levelProgression": "New variants unlocked after mastering!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1959,7 +1959,7 @@
     ],
     "levelProgression": "Accuracy increases with each Level Up!",
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1750,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -1993,7 +1993,7 @@
     ],
     "levelProgression": "Accuracy increases with each Level Up!",
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2027,7 +2027,7 @@
     ],
     "levelProgression": "Accuracy increases with each Level Up!",
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2061,7 +2061,7 @@
     ],
     "levelProgression": "Accuracy increases with each Level Up!",
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2095,7 +2095,7 @@
     ],
     "levelProgression": "Accuracy increases with each Level Up!",
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2129,7 +2129,7 @@
     ],
     "levelProgression": "Accuracy increases with each Level Up!",
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2162,7 +2162,7 @@
     ],
     "levelProgression": "Item quality increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2000,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2196,7 +2196,7 @@
     ],
     "levelProgression": "Item quality increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2230,7 +2230,7 @@
     ],
     "levelProgression": "Item quality increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2264,7 +2264,7 @@
     ],
     "levelProgression": "Item quality increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2298,7 +2298,7 @@
     ],
     "levelProgression": "Item quality increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2332,7 +2332,7 @@
     ],
     "levelProgression": "Item quality increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2366,7 +2366,7 @@
     ],
     "levelProgression": "Item quality increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2399,7 +2399,7 @@
     ],
     "levelProgression": "Slide farther with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1250,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2432,7 +2432,7 @@
     ],
     "levelProgression": null,
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2466,7 +2466,7 @@
     ],
     "levelProgression": null,
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2500,7 +2500,7 @@
     ],
     "levelProgression": null,
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2534,7 +2534,7 @@
     ],
     "levelProgression": null,
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2568,7 +2568,7 @@
     ],
     "levelProgression": null,
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2601,7 +2601,7 @@
       "Grants overshield, scaling with level."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2635,7 +2635,7 @@
     ],
     "levelProgression": "Mark more often and in a larger radius with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1750,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2670,7 +2670,7 @@
     ],
     "levelProgression": "Mark more often and in a larger radius with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2705,7 +2705,7 @@
     ],
     "levelProgression": "Mark more often and in a larger radius with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2739,7 +2739,7 @@
     ],
     "levelProgression": "Mark more often and in a larger radius with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2773,7 +2773,7 @@
     ],
     "levelProgression": "Mark more often and in a larger radius with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2806,7 +2806,7 @@
       "Periodically mark enemies in an area around you."
     ],
     "levelProgression": "Mark more often with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2840,7 +2840,7 @@
     ],
     "levelProgression": "Overdrive lasts longer with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1250,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2875,7 +2875,7 @@
     ],
     "levelProgression": "Overdrive lasts longer with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2910,7 +2910,7 @@
     ],
     "levelProgression": "Overdrive lasts longer with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2944,7 +2944,7 @@
     ],
     "levelProgression": "Overdrive lasts longer with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -2978,7 +2978,7 @@
     ],
     "levelProgression": "Overdrive lasts longer with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3011,7 +3011,7 @@
       "Applies Overdrive after eating or drinking a Consumable."
     ],
     "levelProgression": "Overdrive lasts longer with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3044,7 +3044,7 @@
     ],
     "levelProgression": "Increases Overdrive duration with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1250,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3078,7 +3078,7 @@
     ],
     "levelProgression": "Increases Overdrive duration with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3112,7 +3112,7 @@
     ],
     "levelProgression": "Increases Overdrive duration with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3146,7 +3146,7 @@
     ],
     "levelProgression": "Increases Overdrive duration with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3180,7 +3180,7 @@
     ],
     "levelProgression": "Increases Overdrive duration with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3215,7 +3215,7 @@
     ],
     "levelProgression": "Increases Overdrive duration with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3247,7 +3247,7 @@
       "Grants cloak for a duration when you take damage."
     ],
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1750,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3281,7 +3281,7 @@
       "Grants cloak for a duration when you take damage."
     ],
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3315,7 +3315,7 @@
       "Grants cloak for a duration when you take damage."
     ],
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3349,7 +3349,7 @@
       "Grants cloak for a duration when you take damage."
     ],
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3384,7 +3384,7 @@
     ],
     "levelProgression": "Cloak duration increases with each Level Up!",
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3418,7 +3418,7 @@
     ],
     "levelProgression": "Cloak duration increases with each Level Up!",
     "location": "Found in the world at nighttime",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3452,7 +3452,7 @@
     ],
     "levelProgression": "Chance to spawn cake increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1250,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3487,7 +3487,7 @@
     ],
     "levelProgression": "Chance to spawn cake increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3522,7 +3522,7 @@
     ],
     "levelProgression": "Chance to spawn cake increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3557,7 +3557,7 @@
     ],
     "levelProgression": "Chance to spawn cake increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3592,7 +3592,7 @@
     ],
     "levelProgression": "Chance to spawn cake increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3627,7 +3627,7 @@
     ],
     "levelProgression": "Chance to spawn cake increases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3659,7 +3659,7 @@
       "(Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1750,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3693,7 +3693,7 @@
       "(Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3727,7 +3727,7 @@
       "(Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3761,7 +3761,7 @@
       "(Active - Jump In Air) Triggers a whirlwind attack, damaging and knocking back nearby enemies."
     ],
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3796,7 +3796,7 @@
     ],
     "levelProgression": "Damage increases and cooldown decreases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3830,7 +3830,7 @@
     ],
     "levelProgression": "Damage increases and cooldown decreases with each Level Up!",
     "location": "Spotted near high and mountainous areas",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3863,7 +3863,7 @@
       "Gain charges over time."
     ],
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3898,7 +3898,7 @@
       "Gain charges over time."
     ],
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3933,7 +3933,7 @@
       "Gain charges over time."
     ],
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -3968,7 +3968,7 @@
       "Gain charges over time."
     ],
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4004,7 +4004,7 @@
     ],
     "levelProgression": "Super jump strength increases and cooldown decreases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4038,7 +4038,7 @@
       "Gain charges over time."
     ],
     "levelProgression": "Super jump strength increases and cooldown decreases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4071,7 +4071,7 @@
     ],
     "levelProgression": "Healing effectiveness increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4105,7 +4105,7 @@
     ],
     "levelProgression": "Healing effectiveness increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4139,7 +4139,7 @@
     ],
     "levelProgression": "Healing effectiveness increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4173,7 +4173,7 @@
     ],
     "levelProgression": "Healing effectiveness increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4207,7 +4207,7 @@
     ],
     "levelProgression": "Healing effectiveness increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4240,7 +4240,7 @@
       "Increases the effectiveness of healing items."
     ],
     "levelProgression": "Healing effectiveness increases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4274,7 +4274,7 @@
     ],
     "levelProgression": "Charge cooldown decreases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2000,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4309,7 +4309,7 @@
     ],
     "levelProgression": "Charge cooldown decreases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4344,7 +4344,7 @@
     ],
     "levelProgression": "Charge cooldown decreases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4379,7 +4379,7 @@
     ],
     "levelProgression": "Charge cooldown decreases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4414,7 +4414,7 @@
     ],
     "levelProgression": "Charge cooldown decreases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4448,7 +4448,7 @@
       "Gain charges over time."
     ],
     "levelProgression": "Charge cooldown decreases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4483,7 +4483,7 @@
     ],
     "levelProgression": "Charge cooldown decreases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4516,7 +4516,7 @@
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1750,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4550,7 +4550,7 @@
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4584,7 +4584,7 @@
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4618,7 +4618,7 @@
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4652,7 +4652,7 @@
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4685,7 +4685,7 @@
       "Recover health when damaging an enemy."
     ],
     "levelProgression": "Health recovered percent increases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4718,7 +4718,7 @@
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1750,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4752,7 +4752,7 @@
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4786,7 +4786,7 @@
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4820,7 +4820,7 @@
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4854,7 +4854,7 @@
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4887,7 +4887,7 @@
       "Melee attacks deal more damage."
     ],
     "levelProgression": "Melee attack damage increases with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 2100,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4921,7 +4921,7 @@
     ],
     "levelProgression": "Find better food with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4956,7 +4956,7 @@
     ],
     "levelProgression": "Find better food with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -4991,7 +4991,7 @@
     ],
     "levelProgression": "Find better food with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5026,7 +5026,7 @@
     ],
     "levelProgression": "Find better food with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5061,7 +5061,7 @@
     ],
     "levelProgression": "Find better food with each Level Up!",
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5095,7 +5095,7 @@
       "Find food when jumping out of hiding props, and a small chance when opening containers."
     ],
     "levelProgression": "Find better food with each Level Up!",
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5128,7 +5128,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1500,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5162,7 +5162,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5196,7 +5196,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5230,7 +5230,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5264,7 +5264,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5298,7 +5298,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 1800,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5333,7 +5333,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2000,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5369,7 +5369,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5405,7 +5405,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5441,7 +5441,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5477,7 +5477,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [
@@ -5513,7 +5513,7 @@
     ],
     "levelProgression": null,
     "location": null,
-    "spriteDustValue": 0,
+    "spriteDustValue": 2400,
     "sourceSummonCost": "0",
     "dropChancePercent": "0",
     "dropChances": [

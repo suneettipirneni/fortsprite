@@ -447,13 +447,25 @@ test("details support keyboard focus and modal removal restores the active filte
   await page.keyboard.press("Enter")
   const dialog = page.getByRole("dialog")
   await expect(dialog).toBeVisible()
-  const dropChance = dialog.locator("dl > div").filter({
-    has: page.getByText("Drop chance", { exact: true }),
+  await expect(dialog.getByText("Drop chance", { exact: true })).toHaveCount(0)
+  await expect(dialog.getByText(/Sprite Chest/)).toHaveCount(0)
+  const resummonCost = dialog.locator("dl > div").filter({
+    has: page.getByText("Resummon cost", { exact: true }),
   }).getByRole("definition")
-  for (const { source, percent } of first.dropChances)
-    await expect(
-      dropChance.getByText(`${source} ${percent}%`, { exact: true }),
-    ).toBeVisible()
+  await expect(resummonCost).toHaveText(
+    first.spriteDustValue === null ? "—" : new Intl.NumberFormat("en-US").format(first.spriteDustValue),
+  )
+  if (first.spriteDustSource) {
+    await expect(dialog.getByRole("link", { name: "CertiFried", exact: true }))
+      .toHaveAttribute("href", first.spriteDustSource.url)
+  }
+  if (process.env.COLLECTION_SCREENSHOT_DIR) {
+    await page.screenshot({
+      path: `${process.env.COLLECTION_SCREENSHOT_DIR}/${testInfo.project.name}-sprite-metadata.png`,
+      animations: "disabled",
+      scale: "css",
+    })
+  }
   const friends = dialog.locator("dl > div").filter({
     has: page.getByText("Friends", { exact: true }),
   }).getByRole("definition")
