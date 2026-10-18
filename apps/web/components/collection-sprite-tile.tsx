@@ -190,7 +190,7 @@ export function SpriteTile({
                   {sprite.spriteDustValue === null
                     ? "—"
                     : dustFormatter.format(sprite.spriteDustValue)}{" "}
-                  Sprite Dust
+                  Dust to resummon
                 </p>
                 <p>
                   {sprite.rarity} ·{" "}

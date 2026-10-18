@@ -63,6 +63,12 @@ export interface CatalogItem {
   levelProgression: string | null
   location: string | null
   spriteDustValue: number | null
+  spriteDustSource?: {
+    name: string
+    url: string
+    verifiedAt: string
+    auditedAt: string
+  }
   dropChancePercent: string | null
   dropChances: { source: string; percent: string }[]
   sourcePage: string

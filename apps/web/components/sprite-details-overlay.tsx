@@ -201,11 +201,11 @@ function SpriteDetails({
       </div>
 
       <div className="grid gap-6 px-5 py-6 sm:p-6">
-        <dl className="grid grid-cols-2 overflow-hidden rounded-xl bg-muted/40 ring-1 ring-inset ring-white/10 sm:grid-cols-3">
+        <dl className="grid grid-cols-2 overflow-hidden rounded-xl bg-muted/40 ring-1 ring-inset ring-white/10">
           <div className="order-1 min-w-0 p-4">
             <dt className="flex items-center gap-1 text-sm font-medium text-muted-foreground sm:text-xs">
               <FlaskRoundIcon aria-hidden="true" className="size-3.5 shrink-0" />
-              Sprite Dust
+              Resummon cost
             </dt>
             <dd className="mt-1 truncate text-lg font-semibold tabular-nums sm:text-base">
               {sprite.spriteDustValue === null
@@ -213,23 +213,7 @@ function SpriteDetails({
                 : dustFormatter.format(sprite.spriteDustValue)}
             </dd>
           </div>
-          <div className="order-3 col-span-2 min-w-0 border-t border-white/10 p-4 sm:order-2 sm:col-span-1 sm:border-t-0 sm:border-l">
-            <dt className="text-sm font-medium text-muted-foreground sm:text-xs">
-              Drop chance
-            </dt>
-            <dd className="mt-1 text-base font-semibold tabular-nums sm:text-sm">
-              {sprite.dropChances.length > 0
-                ? sprite.dropChances.map(({ source, percent }) => (
-                    <div key={source} className="truncate">
-                      {source} {percent}%
-                    </div>
-                  ))
-                : sprite.dropChancePercent === null
-                  ? "—"
-                  : `${sprite.dropChancePercent}%`}
-            </dd>
-          </div>
-          <div className="order-2 min-w-0 border-l border-white/10 p-4 sm:order-3">
+          <div className="order-2 min-w-0 border-l border-white/10 p-4">
             <dt className="text-sm font-medium text-muted-foreground sm:text-xs">
               Friends
             </dt>
@@ -291,6 +275,20 @@ function SpriteDetails({
                 </a>
                 .
               </p>
+              {sprite.spriteDustSource ? (
+                <p>
+                  Resummon costs: {" "}
+                  <a
+                    href={sprite.spriteDustSource.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline underline-offset-4 hover:text-foreground"
+                  >
+                    {sprite.spriteDustSource.name}
+                  </a>
+                  {" "}· checked {verifiedDateFormatter.format(new Date(sprite.spriteDustSource.verifiedAt))}.
+                </p>
+              ) : null}
             </div>
           </section>
 

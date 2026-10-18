@@ -6,6 +6,7 @@
     "dev": "node scripts/prepare-sprite-assets.mjs && next dev",
     "build": "node scripts/prepare-sprite-assets.mjs --production && next build",
     "catalog:sync-assets": "node scripts/sync-sprite-assets.mjs",
+    "catalog:sync-metadata": "node --import tsx scripts/sync-sprite-metadata.mts",
     "catalog:validate": "node scripts/validate-sprite-catalog.mjs",
     "pwa:generate-splash": "node --import tsx scripts/generate-pwa-splash.mjs",
     "lint": "oxlint -c ../../.oxlintrc.json .",
