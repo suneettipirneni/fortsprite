@@ -126,7 +126,7 @@ export function CollectionGroupScroller({
         tabIndex={0}
         data-dragging={dragging}
         data-hovering={hovering}
-        className={`${styles.rail} relative h-full max-h-80 w-11 touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring`}
+        className={`${styles.rail} relative h-full max-h-72 w-11 touch-none select-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring`}
         style={{ pointerEvents: "auto", cursor: dragging ? "grabbing" : "pointer" }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
@@ -225,11 +225,11 @@ export function CollectionGroupScroller({
                     variant="Base"
                     label={`Base ${previewGroup.baseName}`}
                     src={previewGroup.baseImagePath ?? undefined}
-                    sizes="56px"
+                    sizes="44px"
                     className={styles.portrait}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="line-clamp-2 text-sm leading-snug font-semibold">{previewGroup.baseName}</p>
+                    <p className="line-clamp-2 text-[13px] leading-[18px] font-semibold">{previewGroup.baseName}</p>
                     <div className={styles.previewMeta}>
                       <span>{slot === 0 && (dragging || hovering) ? (dragging ? "Release to jump" : "Click to jump") : `${previewGroup.items.length} ${previewGroup.items.length === 1 ? "variant" : "variants"}`}</span>
                       <span className={styles.position}><strong>{groupIndex + 1}</strong> / {groups.length}</span>

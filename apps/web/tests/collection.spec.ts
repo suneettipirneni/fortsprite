@@ -775,7 +775,7 @@ test("variant group scrollbar commits the latest hover on click and discards aba
   const names = [...new Set(collection.items.toSorted((a, b) => a.displayOrder - b.displayOrder).map((item) => item.baseName))]
   await page.getByTestId("virtualized-sprite-groups").evaluate((element) => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
-  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
   const bounds = (await scrollbar.boundingBox())!
   const x = bounds.x + bounds.width / 2
   await page.mouse.move(x, bounds.y + 20)
@@ -801,7 +801,7 @@ test("variant group scrollbar commits the latest hover on click and discards aba
 test("variant group scrollbar tick widths form a moving wave", async ({ page }) => {
   await page.getByTestId("virtualized-sprite-groups").evaluate((element) => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
-  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
   const bounds = (await scrollbar.boundingBox())!
   const ticks = scrollbar.locator("[data-active]")
   const count = await ticks.count()
@@ -824,7 +824,7 @@ test("variant group scrollbar tick widths form a moving wave", async ({ page }) 
 test("variant group scrollbar keeps rolling cards separated", async ({ page }) => {
   await page.getByTestId("virtualized-sprite-groups").evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
-  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
   const bounds = (await scrollbar.boundingBox())!
   const count = Number(await scrollbar.getAttribute("aria-valuemax"))
   const middle = Math.floor(count / 2)
@@ -860,7 +860,7 @@ test("variant group scrollbar keeps rolling cards separated", async ({ page }) =
 test("variant group scrollbar aligns the current card with its highlighted tick at both ends", async ({ page }, testInfo) => {
   await page.getByTestId("virtualized-sprite-groups").evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
-  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
   const bounds = (await scrollbar.boundingBox())!
   const count = Number(await scrollbar.getAttribute("aria-valuemax"))
   for (const index of [0, 1, Math.floor(count / 2), count - 2, count - 1]) {
@@ -899,7 +899,7 @@ test("variant group scrollbar stays full height near the mobile toolbar without 
     await page.setViewportSize({ width: 393, height })
     await showFirstGroupAtBottom()
     await expect(scrollbar).toBeVisible()
-    await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+    await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
     const bounds = (await scrollbar.boundingBox())!
     const ticks = await scrollbar.locator("[data-active]").evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top))
     expect(Math.min(...ticks.slice(1).map((top, index) => top - ticks[index]!))).toBeGreaterThan(12)
@@ -914,7 +914,7 @@ test("variant group scrollbar stays full height near the mobile toolbar without 
     await assertFits(page)
     await page.screenshot({ path: `/tmp/fortsprite-mobile-top-scroller-${height}.png`, animations: "disabled", scale: "css" })
     await groups.evaluate(element => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
-    await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+    await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
     expect(Math.abs((await scrollbar.boundingBox())!.y - bounds.y)).toBeLessThan(1)
   }
 })
@@ -963,7 +963,7 @@ test("variant group scrollbar previews a rapid touch sweep and mounts the destin
   const groups = page.getByTestId("virtualized-sprite-groups")
   await groups.evaluate((element) => window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 100))
   const scrollbar = page.getByRole("scrollbar", { name: "Jump to variant group" })
-  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(320)
+  await expect.poll(async () => Math.round((await scrollbar.boundingBox())?.height ?? 0)).toBe(288)
   const bounds = (await scrollbar.boundingBox())!
   const session = await page.context().newCDPSession(page)
   await session.send("Emulation.setCPUThrottlingRate", { rate: 4 })
