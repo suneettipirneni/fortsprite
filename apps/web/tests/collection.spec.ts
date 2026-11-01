@@ -271,6 +271,8 @@ test("details separate variant bonuses from base abilities", async ({ page }, te
   await expect(page).toHaveTitle(/My collection/)
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   for (const [variant, baseName] of [
+    ["Cursed", "Chester"],
+    ["Fortune", "Wayfinder"],
     ["Gold", "Vampire"],
     ["Trick or Treat", "Jonesy"],
     ["Quack", "Water"],
@@ -313,6 +315,9 @@ test("details separate variant bonuses from base abilities", async ({ page }, te
     }
     await expect(page.locator("nextjs-dialog")).toHaveCount(0)
     await assertFits(page)
+    if (variant === "Cursed" || variant === "Fortune") {
+      await page.screenshot({ path: `/tmp/fortsprite-${variant.toLowerCase()}-${testInfo.project.name}.png` })
+    }
     if (variant === "Trick or Treat") {
       await page.screenshot({ path: `/tmp/fortsprite-variant-ability-${testInfo.project.name}.png` })
     }

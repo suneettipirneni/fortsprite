@@ -2,6 +2,14 @@ import type { CatalogItem } from "@workspace/contracts"
 
 // Reviewed variant-wide effects. See docs/sprite-abilities.md for provenance.
 export const variantAbilities: Record<string, { description: string; source: string }> = {
+  Cursed: {
+    description: "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped.",
+    source: "https://communities.epicgames.com/thread/set-sail-for-fortnite-treasure-hunters-the-greatest-adventure-of-all-time/Pmud",
+  },
+  Fortune: {
+    description: "Reveals nearby chests.",
+    source: "https://communities.epicgames.com/thread/set-sail-for-fortnite-treasure-hunters-the-greatest-adventure-of-all-time/Pmud",
+  },
   Gold: {
     description: "Gain 3x bonus XP from eliminations",
     source: "https://fortnite.gg/sprites/228-gold-vampire-sprite",

@@ -1,11 +1,13 @@
 # Sprite variant abilities
 
-Reviewed October 15, 2026. Variant effects stack with the individual Sprite's base abilities. The details panel labels these separately using the variant name. `apps/web/lib/sprite-abilities.ts` holds the reviewed effects and sources; `catalog.json` includes the effects in both description fields for API/MCP consumers after catalog import.
+Treasure Hunters effects reviewed November 1, 2026. Earlier seasons reviewed October 15, 2026. Variant effects stack with the individual Sprite's base abilities. The details panel labels these separately using the variant name. `apps/web/lib/sprite-abilities.ts` holds the reviewed effects and sources; `catalog.json` includes the effects in both description fields for API/MCP consumers after catalog import.
 
 Fortnite.GG omits variant effects on some detail pages. Sixty entries needed their variant effect added: 26 Trick or Treat, nine Cube, nine Quack, and four each of Gold, Cheat Master, Loot Hacker, and Bounty Hunter. The prior 54 count measured descriptions identical to their base entry and missed six descriptions with different line grouping or text. The UI also supplies reviewed variant effects for older database imports and removes the duplicate from base ability text.
 
 | Variant | Effect | Evidence |
 | --- | --- | --- |
+| Cursed | Improves the chance of finding rare Sprite variants. Entering water deals damage. | [Epic Treasure Hunters update](https://communities.epicgames.com/thread/set-sail-for-fortnite-treasure-hunters-the-greatest-adventure-of-all-time/Pmud) |
+| Fortune | Detects nearby chests. | [Epic Treasure Hunters update](https://communities.epicgames.com/thread/set-sail-for-fortnite-treasure-hunters-the-greatest-adventure-of-all-time/Pmud) |
 | Gold | 3× elimination XP | [Gold Vampire](https://fortnite.gg/sprites/228-gold-vampire-sprite) |
 | Cheat Master | Any inputs work when entering world cheat codes | [Cheat Master Jonesy](https://fortnite.gg/sprites/183-cheat-master-jonesy-sprite) |
 | Loot Hacker | Increased item spawn chances from Loot Hacks | [Loot Hacker Jonesy](https://fortnite.gg/sprites/110-loot-hacker-jonesy-sprite) |

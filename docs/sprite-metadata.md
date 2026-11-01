@@ -1,5 +1,7 @@
 # Sprite metadata sources
 
+The November 1 Treasure Hunters snapshot uses season 43 (`C7 MS`). It includes the 11 launch families named by Epic and the Base, Cursed and Fortune entries listed for those families by Fortnite.GG. Sweet Dreams has only a Base entry. Lil’ Uzi Vert Jr., Transponder Snail and returning Gold variants await release verification. The detail pages report a raw summon cost of zero across the new roster, so the snapshot preserves that source field and leaves the displayed cost unknown. [Epic launch notes](https://communities.epicgames.com/thread/set-sail-for-fortnite-treasure-hunters-the-greatest-adventure-of-all-time/Pmud) · [Fortnite.GG roster](https://fortnite.gg/sprites)
+
 Fortnite.GG remains the primary source for identities, artwork, abilities,
 locations and season labels. CertiFried's [Sprite catalog audit](https://certifriedmultitool.com/sprites/info)
 supplements C7 S4 resummon costs from its published family pricing table. Reviewed

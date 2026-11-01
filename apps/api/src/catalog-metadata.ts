@@ -1,6 +1,6 @@
 // Reviewed supplemental metadata. Keep Fortnite.GG as the primary catalog source.
 // Scope costs to the season and variant names checked against the audit; never
-// apply current-season pricing to archived Sprites or future variant types.
+// apply Override pricing to other seasons or unreviewed variants.
 export const spriteDustSource = {
   name: "CertiFried",
   url: "https://certifriedmultitool.com/sprites/info",
