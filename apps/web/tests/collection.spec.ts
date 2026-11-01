@@ -167,6 +167,36 @@ test("current season is selected by default and multiple seasons can be shown", 
   await assertFits(page)
 })
 
+test("current season includes Transponder Snail and all Lil' Uzi Vert Jr. variants", async ({ page }, testInfo) => {
+  await page.reload()
+  await expect(queryChip(page, "Season", "C7 MS")).toBeVisible()
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
+  const grid = page.getByTestId("virtualized-sprite-grid")
+  const search = page.getByRole("combobox", { name: "Search collection", exact: true })
+  await search.fill("Transponder Snail")
+  await expect(grid).toHaveAttribute("data-total-items", "1")
+  const snail = (await snapshot(page)).items.find((item) => item.stableKey === "fortnite-gg:314")!
+  expect(snail.sourceSeasonId).toBe(43)
+  const card = page.locator(`article[data-sprite-id="${snail.id}"]`)
+  await expect.poll(() => card.locator("img").first().evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
+  if (snail.owned) {
+    await card.getByRole("button", { name: /^Captured / }).click()
+    await expect.poll(async () => (await snapshot(page)).items.find((item) => item.id === snail.id)?.owned).toBe(false)
+  }
+  await card.getByRole("button", { name: /^Captured / }).click()
+  await expect.poll(async () => (await snapshot(page)).items.find((item) => item.id === snail.id)?.owned).toBe(true)
+  await page.screenshot({ path: `/tmp/fortsprite-snail-${testInfo.project.name}.png` })
+  await page.reload()
+  await search.fill("Transponder Snail")
+  await expect(card.getByRole("button", { name: /^Captured / })).toHaveAttribute("aria-pressed", "true")
+  await search.fill("Lil' Uzi Vert Jr.")
+  await expect(grid).toHaveAttribute("data-total-items", "3")
+  for (const variant of ["Base", "Cursed", "Fortune"]) {
+    await expect(page.getByRole("button", { name: new RegExp(`^Open ${variant} Lil' Uzi Vert Jr\\. details\\.`) })).toBeVisible()
+  }
+  await assertFits(page)
+})
+
 test("meaningful collection renders without overflow or serious accessibility failures", async ({
   page,
 }, testInfo) => {
