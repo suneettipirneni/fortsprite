@@ -94,6 +94,26 @@ export const variantStyles = {
     body: "bg-violet-600",
     glow: "bg-violet-400/35",
   },
+  Cursed: {
+    ...globularBackdrop(
+      "oklch(0.19 0.04 179)",
+      "oklch(0.63 0.13 177 / 55%)",
+      "oklch(0.45 0.09 198 / 48%)",
+      "oklch(0.77 0.12 163 / 32%)",
+    ),
+    body: "bg-teal-600",
+    glow: "bg-teal-400/35",
+  },
+  Fortune: {
+    ...globularBackdrop(
+      "oklch(0.28 0.08 10)",
+      "oklch(0.82 0.12 52 / 56%)",
+      "oklch(0.56 0.18 24 / 40%)",
+      "oklch(0.61 0.15 7 / 48%)",
+    ),
+    body: "bg-rose-400",
+    glow: "bg-orange-300/35",
+  },
   Galaxy: {
     ...globularBackdrop(
       "oklch(0.15 0.08 276)",

@@ -34,12 +34,19 @@ test("home stats default to current season and switch to past seasons and all ti
   const latest = Math.max(...snapshot.items.flatMap((item) => item.sourceSeasonId === null ? [] : [item.sourceSeasonId]))
   const current = snapshot.items.find((item) => item.sourceSeasonId === latest)!
   const past = snapshot.items.find((item) => item.sourceSeasonId !== null && item.sourceSeasonId !== latest)!
-  // Different progress in each season catches all-time counts leaking into the default.
+  // Use the locker so the dashboard sees the same cache invalidation as a player.
+  await page.goto("/collection")
+  await page.getByRole("radio", { name: "Grid view", exact: true }).click()
+  await page.getByRole("button", { name: "Clear collection query" }).click()
   for (const item of [current, past]) {
-    const update = await page.request.put(`/api/v1/collection/${item.id}`, {
-      headers: { origin: baseURL! }, data: { owned: true, mastered: true },
-    })
-    expect(update.status()).toBe(200)
+    await page.getByRole("combobox", { name: "Search collection" }).fill(`${item.variant} ${item.baseName}`)
+    const tile = page.locator(`article[data-sprite-id="${item.id}"]`)
+    const capture = tile.getByRole("button", { name: /^Captured / })
+    const mastery = tile.getByRole("button", { name: /^Mastered / })
+    if (!item.owned) await capture.click()
+    if (!item.mastered) await mastery.click()
+    await expect(mastery).toHaveAttribute("aria-pressed", "true")
+    await expect(tile).toHaveAttribute("aria-busy", "false")
     item.owned = true
     item.mastered = true
   }

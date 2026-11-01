@@ -11,6 +11,8 @@ import backing7 from "@/assets/variant-backings/gummy.png"
 import backing8 from "@/assets/variant-backings/galaxy.png"
 import backing9 from "@/assets/variant-backings/holofoil.png"
 import backing10 from "@/assets/variant-backings/gem.png"
+import cursed from "@/assets/variant-backings/cursed.png"
+import fortune from "@/assets/variant-backings/fortune.png"
 
 const backings: Record<string, StaticImageData | undefined> = {
   "Gold": backing0,
@@ -24,6 +26,8 @@ const backings: Record<string, StaticImageData | undefined> = {
   "Galaxy": backing8,
   "Holofoil": backing9,
   "Gem": backing10,
+  Cursed: cursed,
+  Fortune: fortune,
 }
 
 /** Decorative layer; the parent supplies positioning, isolation and clipping. */
