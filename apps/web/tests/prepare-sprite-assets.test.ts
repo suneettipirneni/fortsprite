@@ -20,17 +20,20 @@ test("artwork preparation generates a stable registry and retains public images"
       await writeFile(path.join(directory, `assets/sprites/${name}.png`), artwork)
     }
     await writeFile(
-      path.join(directory, "public/sprites/catalog.json"),
+      path.join(directory, "assets/catalog.json"),
       JSON.stringify([
-        { id: "b", localPath: "/sprites/b.png" },
-        { id: "a", localPath: "/sprites/a.png" },
-        { id: "same-art", localPath: "/sprites/a.png" },
+        { id: "b", releaseStatus: "released", localPath: "/sprites/b.png" },
+        { id: "a", releaseStatus: "released", localPath: "/sprites/a.png" },
+        { id: "held", releaseStatus: "unreleased", localPath: "/sprites/held.png" },
+        { id: "same-art", releaseStatus: "released", localPath: "/sprites/a.png" },
       ]),
     )
     const prepare = () => execFileSync(process.execPath, [
       path.join(directory, "scripts/prepare-sprite-assets.mjs"),
     ])
     prepare()
+    const published = JSON.parse(await readFile(path.join(directory, "public/sprites/catalog.json"), "utf8"))
+    assert.deepEqual(published.map((item: { id: string }) => item.id), ["b", "a", "same-art"])
     const registryPath = path.join(directory, "lib/generated/sprite-artwork.ts")
     const registry = await readFile(registryPath, "utf8")
     assert.equal(registry, [
@@ -50,8 +53,8 @@ test("artwork preparation generates a stable registry and retains public images"
     prepare()
     assert.equal((await stat(registryPath)).mtimeMs, modified)
     assert.equal(await readFile(registryPath, "utf8"), registry)
-    await writeFile(path.join(directory, "public/sprites/catalog.json"), JSON.stringify([
-      { id: "b", localPath: "/sprites/b.png" },
+    await writeFile(path.join(directory, "assets/catalog.json"), JSON.stringify([
+      { id: "b", releaseStatus: "released", localPath: "/sprites/b.png" },
     ]))
     prepare()
     assert.doesNotMatch(await readFile(registryPath, "utf8"), /a\.png/)

@@ -16,7 +16,7 @@ The web app mounts Hono at `/api` through its Node.js route handler. It needs no
 
 ## Catalog artwork
 
-Development and production builds copy every catalog image from `apps/web/assets/sprites` into `apps/web/public/sprites`. The importer stores the catalog's local image paths in PostgreSQL. Missing or empty source files fail the build; entries without an image path use the placeholder.
+Development and production builds publish the released catalog entries and copy their images from `apps/web/assets/sprites` into `apps/web/public/sprites`. The importer stores the catalog's local image paths in PostgreSQL. Missing or empty source files fail the build; entries without an image path use the placeholder.
 
 After refreshing the catalog, commit the source images, run the catalog importer against the target database, and deploy the app so database paths and published assets stay in sync.
 

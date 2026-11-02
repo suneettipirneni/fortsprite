@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises"
 import { supplementalDustMetadata } from "../../api/src/catalog-metadata.ts"
 
-const catalogPath = new URL("../public/sprites/catalog.json", import.meta.url)
+const catalogPath = new URL("../assets/catalog.json", import.meta.url)
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"))
 let supplemented = 0
 for (const sprite of catalog) {

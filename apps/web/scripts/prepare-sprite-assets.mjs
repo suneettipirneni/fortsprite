@@ -25,8 +25,8 @@ const imagePathPattern =
 const imageExtensionPattern = /\.(?:png|webp|jpg|jpeg|svg)$/i
 
 const catalog = JSON.parse(
-  await readFile(path.join(publicDirectory, "catalog.json"), "utf8"),
-)
+  await readFile(path.join(appDirectory, "assets/catalog.json"), "utf8"),
+).filter((item) => item.releaseStatus === "released")
 const byPath = new Map()
 for (const item of catalog) {
   if (!item.localPath) continue
@@ -62,6 +62,7 @@ try {
     recursive: true,
     filter: (source) => !imageExtensionPattern.test(source),
   })
+  await writeFile(path.join(staged, "catalog.json"), JSON.stringify(catalog, null, 2) + "\n")
   for (const imagePath of imagePaths) {
     const relativePath = imagePath.slice("/sprites/".length)
     const target = path.join(staged, relativePath)

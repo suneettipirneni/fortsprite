@@ -167,7 +167,7 @@ test("current season is selected by default and multiple seasons can be shown", 
   await assertFits(page)
 })
 
-test("current season includes Transponder Snail and all Lil' Uzi Vert Jr. variants", async ({ page }, testInfo) => {
+test("current season includes Transponder Snail and only released Lil' Uzi Vert Jr. variants", async ({ page }, testInfo) => {
   await page.reload()
   await expect(queryChip(page, "Season", "C7 MS")).toBeVisible()
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
@@ -190,8 +190,9 @@ test("current season includes Transponder Snail and all Lil' Uzi Vert Jr. varian
   await search.fill("Transponder Snail")
   await expect(card.getByRole("button", { name: /^Captured / })).toHaveAttribute("aria-pressed", "true")
   await search.fill("Lil' Uzi Vert Jr.")
-  await expect(grid).toHaveAttribute("data-total-items", "3")
-  for (const variant of ["Base", "Cursed", "Fortune"]) {
+  await expect(grid).toHaveAttribute("data-total-items", "2")
+  expect((await snapshot(page)).items.some((item) => item.variant === "Cursed")).toBe(false)
+  for (const variant of ["Base", "Fortune"]) {
     await expect(page.getByRole("button", { name: new RegExp(`^Open ${variant} Lil' Uzi Vert Jr\\. details\\.`) })).toBeVisible()
   }
   await assertFits(page)
@@ -301,7 +302,6 @@ test("details separate variant bonuses from base abilities", async ({ page }, te
   await expect(page).toHaveTitle(/My collection/)
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   for (const [variant, baseName] of [
-    ["Cursed", "Chester"],
     ["Fortune", "Wayfinder"],
     ["Gold", "Vampire"],
     ["Trick or Treat", "Jonesy"],
@@ -345,7 +345,7 @@ test("details separate variant bonuses from base abilities", async ({ page }, te
     }
     await expect(page.locator("nextjs-dialog")).toHaveCount(0)
     await assertFits(page)
-    if (variant === "Cursed" || variant === "Fortune") {
+    if (variant === "Fortune") {
       await page.screenshot({ path: `/tmp/fortsprite-${variant.toLowerCase()}-${testInfo.project.name}.png` })
     }
     if (variant === "Trick or Treat") {

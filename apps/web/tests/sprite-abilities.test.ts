@@ -4,7 +4,7 @@ import { test } from "node:test"
 import { spriteAbilities, variantAbilities } from "../lib/sprite-abilities"
 
 type Description = Parameters<typeof spriteAbilities>[0]
-const catalog = JSON.parse(readFileSync(new URL("../public/sprites/catalog.json", import.meta.url), "utf8")) as (Description & { id: string })[]
+const catalog = JSON.parse(readFileSync(new URL("../assets/catalog.json", import.meta.url), "utf8")) as (Description & { id: string })[]
 
 test("every catalog variant includes its bonus exactly once in structured and combined descriptions", () => {
   for (const sprite of catalog) {

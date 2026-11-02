@@ -11,7 +11,7 @@ import {
 test("every catalog variant has an intentional visual style", async () => {
   const catalog = JSON.parse(
     await readFile(
-      new URL("../public/sprites/catalog.json", import.meta.url),
+      new URL("../assets/catalog.json", import.meta.url),
       "utf8",
     ),
   ) as { variant: string }[]

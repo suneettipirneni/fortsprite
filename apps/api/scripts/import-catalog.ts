@@ -17,7 +17,7 @@ try {
   const snapshotPath = positionals[0]
     ? resolve(positionals[0])
     : fileURLToPath(
-        new URL("../../web/public/sprites/catalog.json", import.meta.url),
+        new URL("../../web/assets/catalog.json", import.meta.url),
       )
   const snapshot: unknown = JSON.parse(await readFile(snapshotPath, "utf8"))
   const allowedRarities: unknown = values.rarities
