@@ -10,6 +10,7 @@ dist
 .env
 .env.*
 !.env.example
+/apps/web/public/sprites/catalog.json
 /apps/web/public/sprites/**/*.webp
 /apps/web/public/sprites/**/*.png
 /apps/web/public/sprites/**/*.jpg

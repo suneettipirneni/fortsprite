@@ -69,7 +69,7 @@ after(async () => {
 test("the checked-in snapshot matches the import schema", async () => {
   const snapshot = JSON.parse(
     await readFile(
-      new URL("../../web/public/sprites/catalog.json", import.meta.url),
+      new URL("../../web/assets/catalog.json", import.meta.url),
       "utf8",
     ),
   )

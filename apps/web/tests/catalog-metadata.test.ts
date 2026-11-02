@@ -28,7 +28,7 @@ test("Override costs never spill into other seasons, unknown families or unrevie
 })
 
 test("checked-in snapshot contains supplemental costs for every Override Sprite", () => {
-  const catalog = JSON.parse(readFileSync(new URL("../public/sprites/catalog.json", import.meta.url), "utf8"))
+  const catalog = JSON.parse(readFileSync(new URL("../assets/catalog.json", import.meta.url), "utf8"))
   const overrideSeason = catalog.filter((sprite: typeof overrideSprite) => sprite.sourceSeasonId === 42)
   assert.equal(overrideSeason.length, 162)
   for (const sprite of overrideSeason) {

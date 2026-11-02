@@ -2,7 +2,7 @@ import { mkdir, rename, stat, writeFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 
-import spriteCatalog from "../public/sprites/catalog.json" with { type: "json" }
+import spriteCatalog from "../assets/catalog.json" with { type: "json" }
 
 const appDirectory = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),

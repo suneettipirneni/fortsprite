@@ -8,7 +8,7 @@ const appDirectory = path.resolve(
 )
 const publicDirectory = path.join(appDirectory, "public")
 const sourceDirectory = path.join(appDirectory, "assets/sprites")
-const catalogPath = path.join(publicDirectory, "sprites/catalog.json")
+const catalogPath = path.join(appDirectory, "assets/catalog.json")
 const metadataPath = path.join(publicDirectory, "sprites/catalog-meta.json")
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"))
 const metadata = JSON.parse(await readFile(metadataPath, "utf8"))
@@ -90,7 +90,7 @@ const catalogSeasons = [
   ).values(),
 ].toSorted((left, right) => right.sourceSeasonId - left.sourceSeasonId)
 
-if (metadata.releasedCount !== catalog.length) {
+if (metadata.releasedCount !== catalog.filter((sprite) => sprite.releaseStatus === "released").length) {
   errors.push("catalog-meta.json: releasedCount does not match the catalog")
 }
 if (metadata.sourceVerifiedAt !== latestVerificationDate) {
