@@ -167,7 +167,7 @@ test("current season is selected by default and multiple seasons can be shown", 
   await assertFits(page)
 })
 
-test("current season includes Transponder Snail and only released Lil' Uzi Vert Jr. variants", async ({ page }, testInfo) => {
+test("current season includes Transponder Snail and hides Cursed and Lil' Uzi Vert Jr. variants", async ({ page }, testInfo) => {
   await page.reload()
   await expect(queryChip(page, "Season", "C7 MS")).toBeVisible()
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
@@ -190,11 +190,10 @@ test("current season includes Transponder Snail and only released Lil' Uzi Vert 
   await search.fill("Transponder Snail")
   await expect(card.getByRole("button", { name: /^Captured / })).toHaveAttribute("aria-pressed", "true")
   await search.fill("Lil' Uzi Vert Jr.")
-  await expect(grid).toHaveAttribute("data-total-items", "2")
-  expect((await snapshot(page)).items.some((item) => item.variant === "Cursed")).toBe(false)
-  for (const variant of ["Base", "Fortune"]) {
-    await expect(page.getByRole("button", { name: new RegExp(`^Open ${variant} Lil' Uzi Vert Jr\\. details\\.`) })).toBeVisible()
-  }
+  await expect(page.getByText("No Sprites match these filters", { exact: true })).toBeVisible()
+  const collection = await snapshot(page)
+  expect(collection.items.some((item) => item.variant === "Cursed" || item.baseName === "Lil' Uzi Vert Jr.")).toBe(false)
+  await page.screenshot({ path: `/tmp/fortsprite-unreleased-${testInfo.project.name}.png` })
   await assertFits(page)
 })
 
