@@ -1,0 +1,74 @@
+name: Verification
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verification-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Node 22 verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: fortsprite
+          POSTGRES_PASSWORD: ci-test-password
+          POSTGRES_DB: fortsprite_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fortsprite -d fortsprite_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # Disposable service credentials; never use repository/production secrets.
+      DATABASE_URL: postgresql://fortsprite:ci-test-password@localhost:5432/fortsprite_test
+      TEST_DATABASE_URL: postgresql://fortsprite:ci-test-password@localhost:5432/fortsprite_test
+      NODE_ENV: test
+      BETTER_AUTH_SECRET: fortsprite-ci-only-secret-never-use-in-production
+      BETTER_AUTH_URL: http://localhost:3000
+      WEB_ORIGIN: http://localhost:3000
+      PASSKEY_RP_ID: localhost
+      PASSKEY_ORIGIN: http://localhost:3000
+      NEXT_TELEMETRY_DISABLED: "1"
+      TURBO_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      # Reads the pinned packageManager version from package.json.
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Type check
+        run: pnpm typecheck
+      - name: Migrate isolated test database
+        run: pnpm --filter @fortsprite/api db:migrate
+      - name: Unit and database integration tests
+        run: pnpm test
+      - name: Production build with nonproduction configuration
+        run: pnpm build
+        env:
+          NODE_ENV: production
+          BETTER_AUTH_URL: https://fortsprite.test
+          WEB_ORIGIN: https://fortsprite.test
+          PASSKEY_RP_ID: fortsprite.test
+          PASSKEY_ORIGIN: https://fortsprite.test
+          SUPPORT_CONTACT_URL: mailto:support@example.test
