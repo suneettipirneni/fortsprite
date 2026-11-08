@@ -75,7 +75,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 2,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -98,7 +98,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/282-cursed-halfpeel%27d",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PeelyBones_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "re-pete",
@@ -142,7 +142,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 4,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -165,7 +165,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/284-cursed-re-pete",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Parrot_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "fortune-re-pete",
@@ -243,7 +243,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 7,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -266,7 +266,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/287-cursed-barry-o%27fish",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_BarrelOfFish_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "fortune-barry-ofish",
@@ -344,7 +344,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 10,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -367,7 +367,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/290-cursed-chester",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureChest_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "fortune-chester",
@@ -479,7 +479,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 14,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -502,7 +502,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/294-cursed-exmarks",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureMap_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "wayfinder",
@@ -546,7 +546,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 16,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -569,7 +569,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/296-cursed-wayfinder",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Compass_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "fortune-wayfinder",
@@ -781,7 +781,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 23,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -804,7 +804,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/303-cursed-lil%27-squibbly",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_SquibblySprite_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "fortune-lil-squibbly",
@@ -916,7 +916,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 27,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -939,7 +939,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/307-cursed-lil%27-flacko",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PlaymakerBrewery_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "lil-uzi-vert-jr",
@@ -950,7 +950,7 @@
     "variant": "Base",
     "sourceVariant": "Base",
     "rarity": "Legendary",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 28,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -972,7 +972,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/308-lil%27-uzi-vert-jr.",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_RookGecko_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "cursed-lil-uzi-vert-jr",
@@ -983,7 +983,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 29,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -1006,7 +1006,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/309-cursed-lil%27-uzi-vert-jr.",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_RookGecko_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "fortune-lil-uzi-vert-jr",
@@ -1017,7 +1017,7 @@
     "variant": "Fortune",
     "sourceVariant": "Fortune",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 30,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -1040,7 +1040,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/310-fortune-lil%27-uzi-vert-jr.",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_RookGecko_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "plundarrgh",
@@ -1084,7 +1084,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 32,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -1107,7 +1107,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/312-cursed-plundarrgh",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_CoinPile_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-08"
   },
   {
     "id": "fortune-plundarrgh",
