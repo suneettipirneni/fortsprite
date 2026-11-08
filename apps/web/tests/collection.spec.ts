@@ -167,11 +167,12 @@ test("current season is selected by default and multiple seasons can be shown", 
   await assertFits(page)
 })
 
-test("current season includes Transponder Snail and hides Cursed and Lil' Uzi Vert Jr. variants", async ({ page }, testInfo) => {
+test("current season includes released Cursed and Lil' Uzi Vert Jr. variants and holds Cursed Kelper", async ({ page }, testInfo) => {
   await page.reload()
   await expect(queryChip(page, "Season", "C7 MS")).toBeVisible()
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   const grid = page.getByTestId("virtualized-sprite-grid")
+  await expect(grid).toHaveAttribute("data-total-items", "34")
   const search = page.getByRole("combobox", { name: "Search collection", exact: true })
   await search.fill("Transponder Snail")
   await expect(grid).toHaveAttribute("data-total-items", "1")
@@ -190,10 +191,21 @@ test("current season includes Transponder Snail and hides Cursed and Lil' Uzi Ve
   await search.fill("Transponder Snail")
   await expect(card.getByRole("button", { name: /^Captured / })).toHaveAttribute("aria-pressed", "true")
   await search.fill("Lil' Uzi Vert Jr.")
-  await expect(page.getByText("No Sprites match these filters", { exact: true })).toBeVisible()
+  await expect(grid).toHaveAttribute("data-total-items", "3")
   const collection = await snapshot(page)
-  expect(collection.items.some((item) => item.variant === "Cursed" || item.baseName === "Lil' Uzi Vert Jr.")).toBe(false)
-  await page.screenshot({ path: `/tmp/fortsprite-unreleased-${testInfo.project.name}.png` })
+  const currentSeason = collection.items.filter((item) => item.sourceSeasonId === 43)
+  expect(currentSeason).toHaveLength(34)
+  expect(currentSeason.filter((item) => item.variant === "Cursed")).toHaveLength(10)
+  const uzi = currentSeason.filter((item) => item.baseName === "Lil' Uzi Vert Jr.")
+  expect(uzi.map((item) => item.variant).sort()).toEqual(["Base", "Cursed", "Fortune"])
+  for (const sprite of uzi) {
+    const portrait = page.locator(`article[data-sprite-id="${sprite.id}"] img`).first()
+    await expect.poll(() => portrait.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
+  }
+  await page.screenshot({ path: `/tmp/fortsprite-released-${testInfo.project.name}.png` })
+  expect(collection.items.some((item) => item.stableKey === "fortnite-gg:300")).toBe(false)
+  await search.fill("Cursed Kelper")
+  await expect(page.getByText("No Sprites match these filters", { exact: true })).toBeVisible()
   await assertFits(page)
 })
 
