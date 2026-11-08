@@ -102,7 +102,7 @@ const child = spawn(
   [next, "start", "--hostname", "localhost", "--port", "3003"],
   {
     cwd: webRoot,
-    env: environment,
+    env: { ...environment, NODE_EXTRA_CA_CERTS: certificatePath },
     stdio: "inherit",
   },
 )
