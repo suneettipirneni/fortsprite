@@ -681,7 +681,7 @@
     "variant": "Cursed",
     "sourceVariant": "Cursed",
     "rarity": "Special",
-    "releaseStatus": "unreleased",
+    "releaseStatus": "released",
     "displayOrder": 20,
     "season": "C7 MS",
     "sourceSeasonId": 43,
@@ -704,7 +704,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/300-cursed-kelper",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_UnbotheredFish_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-14"
   },
   {
     "id": "sweet-dreams",
