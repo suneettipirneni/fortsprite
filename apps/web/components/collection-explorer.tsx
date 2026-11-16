@@ -440,7 +440,7 @@ function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: Cata
                 ))}
               </ToggleGroup>
             ) : null}
-            <CollectionTracking fallback={<Button type="button" variant="outline" className="sm:ml-auto" disabled><ImageIcon aria-hidden="true" />Export image</Button>}>
+            <CollectionTracking fallback={<Button type="button" variant="outline" className="sm:ml-auto" disabled><ImageIcon aria-hidden="true" /><span>Export<span className="sr-only sm:not-sr-only"> image</span></span></Button>}>
               {(snapshot) => <CollectionImageExport items={snapshot.items} filters={{ query, capture, mastery, variants, rarities, seasons, sort }} usernamePromise={usernamePromise} />}
             </CollectionTracking>
           </div>

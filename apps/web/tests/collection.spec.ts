@@ -342,7 +342,7 @@ test("details separate variant bonuses from base abilities", async ({ page }, te
     await search.fill(`${variant} ${baseName}`)
     await expect(search).toHaveValue(`${variant} ${baseName}`)
     await expect(page.getByTestId("virtualized-sprite-grid")).toHaveAttribute("data-total-items", "1")
-    await page.getByRole("button", { name: new RegExp(`^Open ${baseName}, .*, ${variant} details\\.`) }).click()
+    await page.getByRole("button", { name: new RegExp(`^Open ${baseName}, ${variant}, .* details\\.`) }).click()
     const dialog = page.getByRole("dialog")
     const baseHeading = dialog.getByRole("heading", { name: `${baseName} abilities`, exact: true })
     await baseHeading.scrollIntoViewIfNeeded()

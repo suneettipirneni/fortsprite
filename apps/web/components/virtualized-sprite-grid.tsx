@@ -196,17 +196,17 @@ const SpriteGroupHeading = memo(function SpriteGroupHeading({
   const ids = new Set(items.map((item) => item.id))
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-2 border-b border-white/10 pb-3">
-      <h2 className="truncate text-lg font-semibold">{baseName}</h2>
+      <h2 className="min-w-0 break-words text-lg font-semibold">{baseName}</h2>
       <CollectionTracking fallback={<TrackingSkeleton className="h-6 w-40" />}>{(snapshot) => {
         const items = snapshot.items.filter((item) => ids.has(item.id))
         const total = items.length
         const captured = items.filter((item) => item.owned).length
         const mastered = items.filter((item) => item.mastered).length
         return <>
-          <Badge variant="captured" role="img" aria-label={`${captured} of ${total} variants captured`} className="shrink-0 font-normal tabular-nums">
+          <Badge variant={captured > 0 ? "captured" : "secondary"} role="img" aria-label={`${captured} of ${total} variants captured`} className="shrink-0 font-normal tabular-nums">
             <span className="font-semibold">{captured}</span><span aria-hidden="true">/</span><span>{total}</span><span>captured</span>
           </Badge>
-          <Badge variant="mastered" role="img" aria-label={`${mastered} of ${total} variants mastered`} className="shrink-0 font-normal tabular-nums">
+          <Badge variant={mastered > 0 ? "mastered" : "secondary"} role="img" aria-label={`${mastered} of ${total} variants mastered`} className="shrink-0 font-normal tabular-nums">
             <span className="font-semibold">{mastered}</span><span aria-hidden="true">/</span><span>{total}</span><span>mastered</span>
           </Badge>
         </>
