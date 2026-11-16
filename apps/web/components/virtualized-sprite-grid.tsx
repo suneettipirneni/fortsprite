@@ -203,10 +203,10 @@ const SpriteGroupHeading = memo(function SpriteGroupHeading({
         const captured = items.filter((item) => item.owned).length
         const mastered = items.filter((item) => item.mastered).length
         return <>
-          <Badge variant="captured" aria-label={`${captured} of ${total} variants captured`} className="shrink-0 font-normal tabular-nums">
+          <Badge variant="captured" role="img" aria-label={`${captured} of ${total} variants captured`} className="shrink-0 font-normal tabular-nums">
             <span className="font-semibold">{captured}</span><span aria-hidden="true">/</span><span>{total}</span><span>captured</span>
           </Badge>
-          <Badge variant="mastered" aria-label={`${mastered} of ${total} variants mastered`} className="shrink-0 font-normal tabular-nums">
+          <Badge variant="mastered" role="img" aria-label={`${mastered} of ${total} variants mastered`} className="shrink-0 font-normal tabular-nums">
             <span className="font-semibold">{mastered}</span><span aria-hidden="true">/</span><span>{total}</span><span>mastered</span>
           </Badge>
         </>

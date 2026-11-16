@@ -147,6 +147,7 @@ test("current season is selected by default and multiple seasons can be shown", 
   const grid = page.getByTestId("virtualized-sprite-grid")
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   await expect(queryChip(page, "Season", current.season!)).toBeVisible()
+  await expect(page.getByRole("button", { name: `Remove Season: ${current.season}`, exact: true })).toBeAttached()
   await expect(grid).toHaveAttribute(
     "data-total-items",
     String(collection.items.filter((item) => item.sourceSeasonId === currentSeasonId).length),
@@ -329,7 +330,7 @@ test("details separate variant bonuses from base abilities", async ({ page }, te
     await search.fill(`${variant} ${baseName}`)
     await expect(search).toHaveValue(`${variant} ${baseName}`)
     await expect(page.getByTestId("virtualized-sprite-grid")).toHaveAttribute("data-total-items", "1")
-    await page.getByRole("button", { name: new RegExp(`^Open ${variant} ${baseName} details\\.`) }).click()
+    await page.getByRole("button", { name: new RegExp(`^Open ${baseName}, .*, ${variant} details\\.`) }).click()
     const dialog = page.getByRole("dialog")
     const baseHeading = dialog.getByRole("heading", { name: `${baseName} abilities`, exact: true })
     await baseHeading.scrollIntoViewIfNeeded()
@@ -684,12 +685,12 @@ test("grouped view keeps each base Sprite and its variants in one section", asyn
   const virtualGroups = page.getByTestId("virtualized-sprite-groups")
   const section = page.getByRole("region", { name: first.baseName, exact: true })
   await expect(section.getByRole("heading", { name: first.baseName, exact: true, level: 2 })).toBeVisible()
-  const variantProgress = section.getByLabel(
-    `0 of ${expected.length} variants captured`,
-  )
+  const variantProgress = section.getByRole("img", {
+    name: `0 of ${expected.length} variants captured`,
+  })
   await expect(variantProgress).toBeVisible()
   await expect(
-    section.getByLabel(`0 of ${expected.length} variants mastered`),
+    section.getByRole("img", { name: `0 of ${expected.length} variants mastered` }),
   ).toBeVisible()
   await expect(virtualGroups).toHaveAttribute("data-total-groups", String(expectedGroupCount))
   expect(await page.locator("section").count()).toBeLessThan(expectedGroupCount)
@@ -714,7 +715,7 @@ test("grouped view keeps each base Sprite and its variants in one section", asyn
   await captured(page).click()
   await expect(captured(page)).toHaveAttribute("aria-pressed", "true")
   await expect(
-    section.getByLabel(`1 of ${expected.length} variants captured`),
+    section.getByRole("img", { name: `1 of ${expected.length} variants captured` }),
   ).toBeVisible()
   await expect(tile(page).getByRole("status")).toHaveCount(0)
   await assertPersisted(page, { owned: true, mastered: false })

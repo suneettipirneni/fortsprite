@@ -23,7 +23,7 @@ export default function SignInPage({
           <div className="flex w-full max-w-xs flex-col gap-7">
             <Link
               href="/"
-              aria-label="Homepage"
+              aria-label="FortSprite home"
               className="flex items-center gap-2 text-base font-semibold tracking-tight"
             >
               <FortSpriteIcon size={36} className="shrink-0 text-[#9cfab5]" />

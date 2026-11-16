@@ -86,7 +86,7 @@ export function SpriteTile({
                 setPreviewOpen(false)
                 details.openDetails(sprite, event.currentTarget)
               }}
-              aria-label={`Open ${sprite.variant} ${sprite.baseName} details. ${sprite.rarity} rarity.`}
+              aria-label={`Open ${sprite.baseName}, ${sprite.rarity}, ${sprite.variant} details.`}
               className={cn(
                 "group w-full min-w-0 overflow-hidden text-left outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring",
                 view === "list" ? "flex flex-1 items-center" : "block",
@@ -150,11 +150,11 @@ export function SpriteTile({
                     )}
                   >
                     {sprite.baseName}
-                  </h3>
+                  </h3>{" "}
                   <SpriteRarityBadge
                     rarity={sprite.rarity}
                     className="shrink-0 px-1.5 py-0.5 text-xs"
-                  />
+                  />{" "}
                 </div>
                 <p
                   className={cn(

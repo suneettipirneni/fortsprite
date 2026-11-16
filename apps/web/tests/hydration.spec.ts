@@ -26,8 +26,7 @@ test("streamed account menu waits for JavaScript while mobile tabs remain links"
     await route.continue()
   })
   const account = page.getByRole("button", {
-    name: "Account menu",
-    exact: true,
+    name: /^Account menu for /,
   })
   const navigation = page.getByRole("navigation", {
     name: "Mobile primary",

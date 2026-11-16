@@ -129,7 +129,7 @@ test("profile action preserves rejected edits and refreshes the header after a p
     "Your profile has been saved.",
   )
   await expect(
-    page.getByRole("button", { name: "Account menu", exact: true }),
+    page.getByRole("button", { name: /^Account menu for / }),
   ).toContainText(draftName)
   await expect(name).toBeEnabled()
   const saved = await page.request.get("/api/v1/me")
