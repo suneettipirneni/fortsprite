@@ -149,7 +149,7 @@ export function CollectionImageExportContent({ items, filters, usernamePromise, 
   const trigger = (
     <Button type="button" variant="outline" className="sm:ml-auto">
       <ImageIcon aria-hidden="true" />
-      Export image
+      <span>Export<span className="sr-only sm:not-sr-only"> image</span></span>
     </Button>
   )
   const options = (

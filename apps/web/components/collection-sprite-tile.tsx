@@ -86,7 +86,9 @@ export function SpriteTile({
                 setPreviewOpen(false)
                 details.openDetails(sprite, event.currentTarget)
               }}
-              aria-label={`Open ${sprite.baseName}, ${sprite.rarity}, ${sprite.variant} details.`}
+              aria-label={view === "grid"
+                ? `Open ${sprite.baseName}, ${sprite.variant}, ${sprite.rarity} details.`
+                : `Open ${sprite.baseName}, ${sprite.rarity}, ${sprite.variant} details.`}
               className={cn(
                 "group w-full min-w-0 overflow-hidden text-left outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring",
                 view === "list" ? "flex flex-1 items-center" : "block",
@@ -145,27 +147,37 @@ export function SpriteTile({
                 <div className="flex items-center justify-between gap-1 sm:gap-2">
                   <h3
                     className={cn(
-                      "min-w-0 flex-1 truncate font-semibold",
-                      view === "grid" ? "text-sm" : "text-base sm:text-sm",
+                      "min-w-0 font-semibold",
+                      view === "grid" ? "text-sm break-words" : "flex-1 truncate text-base sm:text-sm",
                     )}
                   >
                     {sprite.baseName}
                   </h3>{" "}
-                  <SpriteRarityBadge
-                    rarity={sprite.rarity}
-                    className="shrink-0 px-1.5 py-0.5 text-xs"
-                  />{" "}
+                  {view === "list" ? (
+                    <SpriteRarityBadge
+                      rarity={sprite.rarity}
+                      className="shrink-0 px-1.5 py-0.5 text-xs"
+                    />
+                  ) : null}{" "}
                 </div>
-                <p
-                  className={cn(
-                    "truncate text-foreground/65",
-                    view === "grid"
-                      ? "text-xs sm:text-sm"
-                      : "text-base sm:text-sm",
-                  )}
-                >
-                  {sprite.variant}
-                </p>
+                <div className="flex flex-wrap items-center justify-between gap-x-1.5 gap-y-1">
+                  <p
+                    className={cn(
+                      "min-w-0 text-foreground/65",
+                      view === "grid"
+                        ? "text-xs break-words sm:text-sm"
+                        : "truncate text-base sm:text-sm",
+                    )}
+                  >
+                    {sprite.variant}
+                  </p>{" "}
+                  {view === "grid" ? (
+                    <SpriteRarityBadge
+                      rarity={sprite.rarity}
+                      className="shrink-0 px-1.5 py-0.5 text-xs"
+                    />
+                  ) : null}
+                </div>
               </div>
             </button>
           </HoverCardTrigger>
