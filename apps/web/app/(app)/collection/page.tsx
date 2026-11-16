@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "My collection" }
 
 export default function CollectionPage() {
   return (
-    <div className="app-page grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:gap-8">
+    <div className="app-page grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:gap-8">
       <div>
         <h1
           id="collection-heading"

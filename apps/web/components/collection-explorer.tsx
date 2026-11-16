@@ -93,7 +93,7 @@ const monthNames = [
 function CollectionStatSkeleton({ field, total }: { field: "owned" | "mastered"; total: number }) {
   const label = field === "owned" ? "captured" : "mastered"
   return <div role="status" aria-label={`Loading ${label} progress`}>
-    <p className="text-base sm:text-sm"><span aria-hidden="true" className="inline-block h-[1.875rem] w-14 animate-pulse rounded-md bg-muted motion-reduce:animate-none sm:h-8" /> {label}</p>
+    <p className="text-sm"><span aria-hidden="true" className="inline-block h-8 w-14 animate-pulse rounded-md bg-muted motion-reduce:animate-none sm:h-8" /> {label}</p>
     <p className="mt-1 text-base text-muted-foreground sm:text-sm"><span aria-hidden="true" className="inline-block h-4 w-8 animate-pulse rounded bg-muted motion-reduce:animate-none sm:align-middle" />% of {total}</p>
     <ProgressBarSkeleton />
   </div>
@@ -339,16 +339,16 @@ function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: Cata
               (seasons.length === 0 || seasons.includes(item.sourceSeasonId)) && item[field]).length
             const percent = completionPercent(count, seasonSprites.length)
             return <>
-              <p className="text-base sm:text-sm"><span className="text-3xl font-semibold tracking-tight text-foreground">{count}</span>{" "}{field === "owned" ? "captured" : "mastered"}</p>
+              <p className="text-sm"><span className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">{count}</span>{" "}{field === "owned" ? "captured" : "mastered"}</p>
               <p className="mt-1 text-base text-muted-foreground sm:text-sm">{percent}% of {seasonSprites.length}</p>
-              <Progress value={percent} aria-label={`${field === "owned" ? "Captured" : "Mastered"} progress`} className="mt-3 h-1.5" />
+              <Progress value={percent} aria-label={`${field === "owned" ? "Captured" : "Mastered"} progress`} className="mt-2 h-1.5 sm:mt-3" />
             </>
           }}</CollectionTracking>
         </div>)}
       </div>
       <div
         data-testid="collection-content"
-        className="@container isolate flex min-w-0 flex-col gap-5 border-t border-white/10 pt-5 antialiased sm:col-span-2 sm:gap-6 sm:pt-8"
+        className="@container isolate flex min-w-0 flex-col gap-4 border-t border-white/10 pt-4 antialiased sm:col-span-2 sm:gap-6 sm:pt-8"
       >
         <div className={`flex flex-col gap-3 ${view === "grouped" ? "max-lg:pl-7" : ""}`}>
           <div className="grid min-w-0 gap-2 @2xl:grid-cols-[minmax(0,1fr)_11rem]">
@@ -397,16 +397,17 @@ function CollectionExplorerContent({ catalog, usernamePromise }: { catalog: Cata
                 if (isCollectionView(value)) saveCollectionView(value)
               }}
               aria-label="Collection view"
+              className="max-w-full flex-wrap @max-[16rem]:gap-2"
               variant="outline"
               spacing={0}
             >
-              <ToggleGroupItem value="list" aria-label="List view" className="group-data-[spacing=0]/toggle-group:px-1.5">
+              <ToggleGroupItem value="list" aria-label="List view" className="group-data-[spacing=0]/toggle-group:px-1.5 @max-[16rem]:rounded-lg! @max-[16rem]:border-l!">
                 <ListIcon aria-hidden="true" /> List
               </ToggleGroupItem>
-              <ToggleGroupItem value="grid" aria-label="Grid view" className="group-data-[spacing=0]/toggle-group:px-1.5">
+              <ToggleGroupItem value="grid" aria-label="Grid view" className="group-data-[spacing=0]/toggle-group:px-1.5 @max-[16rem]:rounded-lg! @max-[16rem]:border-l!">
                 <Grid2X2Icon aria-hidden="true" /> Grid
               </ToggleGroupItem>
-              <ToggleGroupItem value="grouped" aria-label="Grouped view" className="group-data-[spacing=0]/toggle-group:px-1.5">
+              <ToggleGroupItem value="grouped" aria-label="Grouped view" className="group-data-[spacing=0]/toggle-group:px-1.5 @max-[16rem]:rounded-lg! @max-[16rem]:border-l!">
                 <Rows3Icon aria-hidden="true" /> Grouped
               </ToggleGroupItem>
             </ToggleGroup>

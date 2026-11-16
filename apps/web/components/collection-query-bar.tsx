@@ -110,7 +110,7 @@ export function CollectionQueryBar({
     >
       <ComboboxChips
         ref={anchor}
-        className="grid min-h-(--control-height) grid-cols-[auto_minmax(0,1fr)_auto] gap-1 border-white/12 bg-background/28 px-1 py-0 shadow-sm"
+        className="grid min-h-(--control-height) grid-cols-[auto_minmax(0,1fr)] gap-1 @min-[16rem]:grid-cols-[auto_minmax(0,1fr)_auto] border-white/12 bg-background/28 px-1 py-0 shadow-sm"
       >
         <SearchIcon
           aria-hidden="true"
@@ -120,7 +120,9 @@ export function CollectionQueryBar({
           {tokens.map((token) => (
             <ComboboxChip
               key={token.id}
+              role="group"
               aria-label={`${token.groupLabel}: ${token.label}`}
+              removeLabel={`Remove ${token.groupLabel}: ${token.label}`}
               className="h-7 max-w-full gap-1.5 rounded-md border border-white/8 bg-white/8 px-2 text-sm"
             >
               <span className="hidden text-muted-foreground sm:inline">{token.groupLabel}</span>
@@ -135,7 +137,7 @@ export function CollectionQueryBar({
             className="h-7 min-w-0 basis-20 text-base sm:text-sm"
           />
         </div>
-        <div className="flex shrink-0 self-start">
+        <div className="col-start-2 flex shrink-0 justify-self-end self-start @min-[16rem]:col-start-auto">
           {query || tokens.length > 0 ? (
             <Button
               type="button"

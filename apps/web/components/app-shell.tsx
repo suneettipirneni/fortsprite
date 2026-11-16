@@ -48,11 +48,11 @@ function Brand() {
     <Link
       href="/"
       prefetch={true}
-      aria-label="Homepage"
-      className="flex shrink-0 items-center gap-2.5 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+      aria-label="FortSprite home"
+      className="flex min-w-0 items-center gap-2.5 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <FortSpriteIcon size={32} className="shrink-0 text-[#9cfab5]" />
-      <span className="locker-display text-lg text-foreground">FortSprite</span>
+      <span className="locker-display min-w-0 text-lg text-foreground [overflow-wrap:anywhere]">Fort<wbr />Sprite</span>
     </Link>
   )
 }
@@ -106,13 +106,13 @@ export function ProfileMenu({ viewer }: { viewer: Viewer }) {
         <Button
           type="button"
           variant="ghost"
-          className="gap-2"
-          aria-label="Account menu"
+          className="gap-2 max-sm:px-1"
+          aria-label={`Account menu for ${viewer.initials} ${viewer.displayName}`}
           disabled={!hydrated}
         >
-          <Avatar className="size-7 outline-1 -outline-offset-1 outline-white/10">
+          <Avatar aria-hidden="true" className="size-7 outline-1 -outline-offset-1 outline-white/10">
             <AvatarFallback>{viewer.initials}</AvatarFallback>
-          </Avatar>
+          </Avatar>{" "}
           <div className="hidden max-w-40 truncate text-sm sm:block">
             {viewer.displayName}
           </div>
