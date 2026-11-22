@@ -1,10 +1,8 @@
 # Sprite metadata sources
 
-The Treasure Hunters snapshot uses season 43 (`C7 MS`) and includes 42 released entries. Reviewed November 15, 2026 against Epic's v43.10 notes and Fortnite.GG's current collectible roster: Mini Miku and Squiplash now have Base, Fortune, and Cursed forms, and Zee has a Base form. Their source IDs are 321, 323, 324, 332, 334, 335, and 338. Cursed Kelper (`fortnite-gg:300`), released November 12, is also now marked released. The full catalog contains 321 released entries.
+The November 22, 2026 catalog includes 59 collectible Treasure Hunters entries (season 43, `C7 MS`) and 338 across all seasons. FortSprite marked 17 entries as released ahead of Epic’s scheduled 9 a.m. Eastern Captain’s Day event. These are the 14 Gold variants, including Gold Sir Oscar the Second, plus Oscar’s Base, Fortune, and Cursed forms. Fortnite.GG still marked those 17 entries as unreleased during the 8:10 a.m. roster check. [Epic event notice](https://communities.epicgames.com/thread/captains-day-oscar-november-22/eOQD) · [Fortnite.GG roster](https://fortnite.gg/sprites)
 
-All existing Sprite IDs and collection history are preserved. Transponder Snail, Sweet Dreams, and Zee have only Base entries. Treasure Hunters Gold variants and every Sir Oscar the Second form remain unreleased and are excluded. Existing ability and summon-cost metadata is unchanged; the raw current-season summon cost remains zero and the displayed cost unknown. [Epic v43.10 notes](https://communities.epicgames.com/thread/v43-10-fortnite-treasure-hunters-update-notes/CoOG) · [Fortnite.GG roster](https://fortnite.gg/sprites) · [Cursed Kelper](https://fortnite.gg/sprites/300-cursed-kelper)
-
-The new records retain Fortnite.GG detail-page provenance and include the reviewed Fortune/Cursed effects alongside each base ability. Mini Miku's base portrait is sourced from the corroborating [fnsprites.info tracker](https://www.fnsprites.info/) because its Fortnite.GG detail page could not be retrieved; `sourceImage` records that exact PNG source. The other six portraits come from Fortnite.GG. All seven images are bundled locally.
+Mini Miku's base portrait comes from fnsprites.info. Its catalog record links to the source PNG. [Mini Miku portrait](https://www.fnsprites.info/spriteimg/minimiku_basic.png)
 
 Fortnite.GG remains the primary source for identities, artwork, abilities,
 locations and season labels. CertiFried's [Sprite catalog audit](https://certifriedmultitool.com/sprites/info)

@@ -173,7 +173,7 @@ test("current season includes all released Treasure Hunters Sprites", async ({ p
   await expect(queryChip(page, "Season", "C7 MS")).toBeVisible()
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   const grid = page.getByTestId("virtualized-sprite-grid")
-  await expect(grid).toHaveAttribute("data-total-items", "42")
+  await expect(grid).toHaveAttribute("data-total-items", "59")
   const search = page.getByRole("combobox", { name: "Search collection", exact: true })
   await search.fill("Transponder Snail")
   await expect(grid).toHaveAttribute("data-total-items", "1")
@@ -192,13 +192,13 @@ test("current season includes all released Treasure Hunters Sprites", async ({ p
   await search.fill("Transponder Snail")
   await expect(card.getByRole("button", { name: /^Captured / })).toHaveAttribute("aria-pressed", "true")
   await search.fill("Lil' Uzi Vert Jr.")
-  await expect(grid).toHaveAttribute("data-total-items", "3")
+  await expect(grid).toHaveAttribute("data-total-items", "4")
   const collection = await snapshot(page)
   const currentSeason = collection.items.filter((item) => item.sourceSeasonId === 43)
-  expect(currentSeason).toHaveLength(42)
-  expect(currentSeason.filter((item) => item.variant === "Cursed")).toHaveLength(13)
+  expect(currentSeason).toHaveLength(59)
+  expect(currentSeason.filter((item) => item.variant === "Cursed")).toHaveLength(14)
   const uzi = currentSeason.filter((item) => item.baseName === "Lil' Uzi Vert Jr.")
-  expect(uzi.map((item) => item.variant).sort()).toEqual(["Base", "Cursed", "Fortune"])
+  expect(uzi.map((item) => item.variant).sort()).toEqual(["Base", "Cursed", "Fortune", "Gold"])
   for (const sprite of uzi) {
     const portrait = page.locator(`article[data-sprite-id="${sprite.id}"] img`).first()
     await expect.poll(() => portrait.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
@@ -212,18 +212,18 @@ test("current season includes all released Treasure Hunters Sprites", async ({ p
   await expect(grid).toHaveAttribute("data-total-items", "1")
   const kelperPortrait = page.locator(`article[data-sprite-id="${kelper.id}"] img`).first()
   await expect.poll(() => kelperPortrait.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
-  for (const baseName of ["Mini Miku", "Squiplash"]) {
+  for (const baseName of ["Mini Miku", "Squiplash", "Sir Oscar the Second"]) {
     const sprites = currentSeason.filter((item) => item.baseName === baseName)
-    expect(sprites.map((item) => item.variant).sort()).toEqual(["Base", "Cursed", "Fortune"])
+    expect(sprites.map((item) => item.variant).sort()).toEqual(["Base", "Cursed", "Fortune", "Gold"])
     await search.fill(baseName)
-    await expect(grid).toHaveAttribute("data-total-items", "3")
+    await expect(grid).toHaveAttribute("data-total-items", "4")
     for (const sprite of sprites) {
       const portrait = page.locator(`article[data-sprite-id="${sprite.id}"] img`).first()
       await expect.poll(() => portrait.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
     }
   }
   expect(currentSeason.find((item) => item.stableKey === "fortnite-gg:338")?.baseName).toBe("Zee")
-  expect(currentSeason.some((item) => item.variant === "Gold" || item.baseName === "Sir Oscar the Second")).toBe(false)
+  expect(currentSeason.filter((item) => item.variant === "Gold")).toHaveLength(14)
   await assertFits(page)
 })
 
