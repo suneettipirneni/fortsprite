@@ -170,7 +170,7 @@ test("current season is selected by default and multiple seasons can be shown", 
 
 test("current season includes all released Treasure Hunters Sprites", async ({ page }, testInfo) => {
   await page.reload()
-  await expect(queryChip(page, "Season", "C7 MS")).toBeVisible()
+  await expect(queryChip(page, "Season", "C7 Treasure Hunters")).toBeVisible()
   await page.getByRole("radio", { name: "Grid view", exact: true }).click()
   const grid = page.getByTestId("virtualized-sprite-grid")
   await expect(grid).toHaveAttribute("data-total-items", "59")

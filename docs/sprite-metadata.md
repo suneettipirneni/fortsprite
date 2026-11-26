@@ -1,6 +1,8 @@
 # Sprite metadata sources
 
-The November 22, 2026 catalog includes 59 collectible Treasure Hunters entries (season 43, `C7 MS`) and 338 across all seasons. FortSprite marked 17 entries as released ahead of Epic’s scheduled 9 a.m. Eastern Captain’s Day event. These are the 14 Gold variants, including Gold Sir Oscar the Second, plus Oscar’s Base, Fortune, and Cursed forms. Fortnite.GG still marked those 17 entries as unreleased during the 8:10 a.m. roster check. [Epic event notice](https://communities.epicgames.com/thread/captains-day-oscar-november-22/eOQD) · [Fortnite.GG roster](https://fortnite.gg/sprites)
+Reviewed November 26, 2026 against Fortnite.GG's full roster: all 338 entries are released, including 59 Treasure Hunters entries (season 43). No new released identities were found since November 22. The 14 Gold variants and all four Sir Oscar the Second forms are now explicitly collectible in the source roster. [Fortnite.GG roster](https://fortnite.gg/sprites) · [Epic Oscar event notice](https://communities.epicgames.com/thread/captains-day-oscar-november-22/eOQD)
+
+Updated the current season label from `C7 MS` to the source's `C7 Treasure Hunters`. Corrected six source names: Loot Hacker Bush, Bounty Hunter Crash Bandicoot, and Cheatmaster X-Ray, Onigiri, Vampire, and The Deer. The Bush and Crash Bandicoot source links now use their current names. Stable keys, IDs, slugs, variant categories, artwork, abilities, and resummon costs are preserved.
 
 Mini Miku's base portrait comes from fnsprites.info. Its catalog record links to the source PNG. [Mini Miku portrait](https://www.fnsprites.info/spriteimg/minimiku_basic.png)
 
