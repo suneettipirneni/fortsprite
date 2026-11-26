@@ -10,7 +10,7 @@
     "rarity": "Rare",
     "releaseStatus": "released",
     "displayOrder": 0,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/halfpeeld.webp",
     "description": "Marks eliminations on your map.",
@@ -30,7 +30,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/280-halfpeel%27d",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PeelyBones_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-halfpeeld",
@@ -43,7 +43,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 1,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-halfpeeld.webp",
     "description": "Reveals nearby chests. Marks eliminations on your map.",
@@ -64,7 +64,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/281-fortune-halfpeel%27d",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PeelyBones_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-halfpeeld",
@@ -77,7 +77,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 2,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-halfpeeld.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Marks eliminations on your map.",
@@ -98,7 +98,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/282-cursed-halfpeel%27d",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PeelyBones_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "re-pete",
@@ -111,7 +111,7 @@
     "rarity": "Rare",
     "releaseStatus": "released",
     "displayOrder": 3,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/re-pete.webp",
     "description": "Reload faster, with a chance to get ammo back when you reload.",
@@ -131,7 +131,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/283-re-pete",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Parrot_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-re-pete",
@@ -144,7 +144,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 4,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-re-pete.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Reload faster, with a chance to get ammo back when you reload.",
@@ -165,7 +165,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/284-cursed-re-pete",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Parrot_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-re-pete",
@@ -178,7 +178,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 5,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-re-pete.webp",
     "description": "Reveals nearby chests. Reload faster, with a chance to get ammo back when you reload.",
@@ -199,7 +199,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/285-fortune-re-pete",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Parrot_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "barry-ofish",
@@ -212,7 +212,7 @@
     "rarity": "Rare",
     "releaseStatus": "released",
     "displayOrder": 6,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/barry-ofish.webp",
     "description": "Uses less stamina when sprinting in water.",
@@ -232,7 +232,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/286-barry-o%27fish",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_BarrelOfFish_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-barry-ofish",
@@ -245,7 +245,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 7,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-barry-ofish.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Uses less stamina when sprinting in water.",
@@ -266,7 +266,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/287-cursed-barry-o%27fish",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_BarrelOfFish_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-barry-ofish",
@@ -279,7 +279,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 8,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-barry-ofish.webp",
     "description": "Reveals nearby chests. Uses less stamina when sprinting in water.",
@@ -300,7 +300,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/288-fortune-barry-o%27fish",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_BarrelOfFish_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "chester",
@@ -313,7 +313,7 @@
     "rarity": "Epic",
     "releaseStatus": "released",
     "displayOrder": 9,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/chester.webp",
     "description": "Treasure Chests can drop extra loot. Prevents fall damage.",
@@ -333,7 +333,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/289-chester",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureChest_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-chester",
@@ -346,7 +346,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 10,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-chester.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Treasure Chests can drop extra loot. Prevents fall damage.",
@@ -367,7 +367,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/290-cursed-chester",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureChest_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-chester",
@@ -380,7 +380,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 11,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-chester.webp",
     "description": "Reveals nearby chests. Treasure Chests can drop extra loot. Prevents fall damage.",
@@ -401,7 +401,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/291-fortune-chester",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureChest_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "exmarks",
@@ -414,7 +414,7 @@
     "rarity": "Epic",
     "releaseStatus": "released",
     "displayOrder": 12,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/exmarks.webp",
     "description": "Highlights nearby Treasure Maps and Wanted Posters.",
@@ -434,7 +434,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/292-exmarks",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureMap_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-exmarks",
@@ -447,7 +447,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 13,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-exmarks.webp",
     "description": "Reveals nearby chests. Highlights nearby Treasure Maps and Wanted Posters.",
@@ -468,7 +468,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/293-fortune-exmarks",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureMap_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-exmarks",
@@ -481,7 +481,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 14,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-exmarks.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Highlights nearby Treasure Maps and Wanted Posters.",
@@ -502,7 +502,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/294-cursed-exmarks",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureMap_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "wayfinder",
@@ -515,7 +515,7 @@
     "rarity": "Rare",
     "releaseStatus": "released",
     "displayOrder": 15,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/wayfinder.webp",
     "description": "Detects nearby Sprites and grants extra items from Buried Chests.",
@@ -535,7 +535,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/295-wayfinder",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Compass_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-wayfinder",
@@ -548,7 +548,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 16,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-wayfinder.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Detects nearby Sprites and grants extra items from Buried Chests.",
@@ -569,7 +569,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/296-cursed-wayfinder",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Compass_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-wayfinder",
@@ -582,7 +582,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 17,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-wayfinder.webp",
     "description": "Reveals nearby chests. Detects nearby Sprites and grants extra items from Buried Chests.",
@@ -603,7 +603,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/297-fortune-wayfinder",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Compass_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "kelper",
@@ -616,7 +616,7 @@
     "rarity": "Epic",
     "releaseStatus": "released",
     "displayOrder": 18,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/kelper.webp",
     "description": "Gradually restores health while you’re in water.",
@@ -636,7 +636,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/298-kelper",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_UnbotheredFish_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-kelper",
@@ -649,7 +649,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 19,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-kelper.webp",
     "description": "Reveals nearby chests. Gradually restores health while you’re in water.",
@@ -670,7 +670,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/299-fortune-kelper",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_UnbotheredFish_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-kelper",
@@ -683,7 +683,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 20,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-kelper.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Gradually restores health while you’re in water.",
@@ -704,7 +704,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/300-cursed-kelper",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_UnbotheredFish_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-15"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "sweet-dreams",
@@ -717,7 +717,7 @@
     "rarity": "Mythic",
     "releaseStatus": "released",
     "displayOrder": 21,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/sweet-dreams.webp",
     "description": "Grants a random item when it levels up, with a burst of Mythic loot at max level.",
@@ -737,7 +737,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/301-sweet-dreams",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_StarLight_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "lil-squibbly",
@@ -750,7 +750,7 @@
     "rarity": "Epic",
     "releaseStatus": "released",
     "displayOrder": 22,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/lil-squibbly.webp",
     "description": "Jump into a fishing hole to catch fish and collect bonus loot.",
@@ -770,7 +770,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/302-lil%27-squibbly",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_SquibblySprite_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-lil-squibbly",
@@ -783,7 +783,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 23,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-lil-squibbly.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Jump into a fishing hole to catch fish and collect bonus loot.",
@@ -804,7 +804,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/303-cursed-lil%27-squibbly",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_SquibblySprite_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-lil-squibbly",
@@ -817,7 +817,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 24,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-lil-squibbly.webp",
     "description": "Reveals nearby chests. Jump into a fishing hole to catch fish and collect bonus loot.",
@@ -838,7 +838,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/304-fortune-lil%27-squibbly",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_SquibblySprite_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "lil-flacko",
@@ -851,7 +851,7 @@
     "rarity": "Legendary",
     "releaseStatus": "released",
     "displayOrder": 25,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/lil-flacko.webp",
     "description": "Landing sends out a shockwave that knocks opponents back.",
@@ -871,7 +871,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/305-lil%27-flacko",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PlaymakerBrewery_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-lil-flacko",
@@ -884,7 +884,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 26,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-lil-flacko.webp",
     "description": "Reveals nearby chests. Landing sends out a shockwave that knocks opponents back.",
@@ -905,7 +905,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/306-fortune-lil%27-flacko",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PlaymakerBrewery_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-lil-flacko",
@@ -918,7 +918,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 27,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-lil-flacko.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Landing sends out a shockwave that knocks opponents back.",
@@ -939,7 +939,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/307-cursed-lil%27-flacko",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PlaymakerBrewery_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "lil-uzi-vert-jr",
@@ -952,7 +952,7 @@
     "rarity": "Legendary",
     "releaseStatus": "released",
     "displayOrder": 28,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/lil-uzi-vert-jr.webp",
     "description": "Creates a Chug Splash effect when you restore shields.",
@@ -972,7 +972,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/308-lil%27-uzi-vert-jr.",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_RookGecko_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-lil-uzi-vert-jr",
@@ -985,7 +985,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 29,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-lil-uzi-vert-jr.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Creates a Chug Splash effect when you restore shields.",
@@ -1006,7 +1006,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/309-cursed-lil%27-uzi-vert-jr.",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_RookGecko_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-lil-uzi-vert-jr",
@@ -1019,7 +1019,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 30,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-lil-uzi-vert-jr.webp",
     "description": "Reveals nearby chests. Creates a Chug Splash effect when you restore shields.",
@@ -1040,7 +1040,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/310-fortune-lil%27-uzi-vert-jr.",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_RookGecko_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "plundarrgh",
@@ -1053,7 +1053,7 @@
     "rarity": "Mythic",
     "releaseStatus": "released",
     "displayOrder": 31,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/plundarrgh.webp",
     "description": "Opening a chest increases movement and pickaxe speed.",
@@ -1073,7 +1073,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/311-plundarrgh",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_CoinPile_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-plundarrgh",
@@ -1086,7 +1086,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 32,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-plundarrgh.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Opening a chest increases movement and pickaxe speed.",
@@ -1107,7 +1107,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/312-cursed-plundarrgh",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_CoinPile_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-08"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-plundarrgh",
@@ -1120,7 +1120,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 33,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-plundarrgh.webp",
     "description": "Reveals nearby chests. Opening a chest increases movement and pickaxe speed.",
@@ -1141,7 +1141,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/313-fortune-plundarrgh",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_CoinPile_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "transponder-snail",
@@ -1154,7 +1154,7 @@
     "rarity": "Legendary",
     "releaseStatus": "released",
     "displayOrder": 34,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/transponder-snail.webp",
     "description": "Grants extra resources from pickups and shares some with teammates who also have this Sprite equipped.",
@@ -1174,7 +1174,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/314-transponder-snail",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_FeedJet_L.webp",
-    "sourceVerifiedAt": "2026-11-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "squiplash",
@@ -1187,7 +1187,7 @@
     "rarity": "Epic",
     "releaseStatus": "released",
     "displayOrder": 35,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/squiplash.webp",
     "description": "Releases healing smoke when your health is low.",
@@ -1207,7 +1207,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/321-squiplash",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PirateCalamari_L.webp",
-    "sourceVerifiedAt": "2026-11-15"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-squiplash",
@@ -1220,7 +1220,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 36,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-squiplash.webp",
     "description": "Reveals nearby chests. Releases healing smoke when your health is low.",
@@ -1241,7 +1241,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/323-fortune-squiplash",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PirateCalamari_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-15"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-squiplash",
@@ -1254,7 +1254,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 37,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-squiplash.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Releases healing smoke when your health is low.",
@@ -1275,7 +1275,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/324-cursed-squiplash",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PirateCalamari_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-15"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "mini-miku",
@@ -1288,7 +1288,7 @@
     "rarity": "Mythic",
     "releaseStatus": "released",
     "displayOrder": 38,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/mini-miku.png",
     "description": "Creates a Friendship Bubble when you emote with other players.",
@@ -1308,7 +1308,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/332-mini-miku",
     "sourceImage": "https://www.fnsprites.info/spriteimg/minimiku_basic.png",
-    "sourceVerifiedAt": "2026-11-15"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-mini-miku",
@@ -1321,7 +1321,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 39,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-mini-miku.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Creates a Friendship Bubble when you emote with other players.",
@@ -1342,7 +1342,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/334-cursed-mini-miku",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_LushlyZest_Cursed_ui_v1_1_Alpha_L.webp",
-    "sourceVerifiedAt": "2026-11-15"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-mini-miku",
@@ -1355,7 +1355,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 40,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-mini-miku.webp",
     "description": "Reveals nearby chests. Creates a Friendship Bubble when you emote with other players.",
@@ -1376,7 +1376,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/335-fortune-mini-miku",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_LushlyZest_Jeweled_ui_v1_1_Alpha_L.webp",
-    "sourceVerifiedAt": "2026-11-15"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "zee",
@@ -1389,7 +1389,7 @@
     "rarity": "Mythic",
     "releaseStatus": "released",
     "displayOrder": 41,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/zee.webp",
     "description": "Provides Zero Point dash charges that replenish over time.",
@@ -1409,7 +1409,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/338-zee",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_ZeroPointPiece_ui_v3_1_Alpha_L.webp",
-    "sourceVerifiedAt": "2026-11-15"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-halfpeeld",
@@ -1422,7 +1422,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 42,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-halfpeeld.webp",
     "description": "Gain 3x bonus XP from eliminations Marks eliminations on your map.",
@@ -1443,7 +1443,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/315-gold-halfpeel%27d",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PeelyBones_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-re-pete",
@@ -1456,7 +1456,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 43,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-re-pete.webp",
     "description": "Gain 3x bonus XP from eliminations Reload faster, with a chance to get ammo back when you reload.",
@@ -1477,7 +1477,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/316-gold-re-pete",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Parrot_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-barry-ofish",
@@ -1490,7 +1490,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 44,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-barry-ofish.webp",
     "description": "Gain 3x bonus XP from eliminations Uses less stamina when sprinting in water.",
@@ -1511,7 +1511,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/317-gold-barry-o%27fish",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_BarrelOfFish_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-chester",
@@ -1524,7 +1524,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 45,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-chester.webp",
     "description": "Gain 3x bonus XP from eliminations Treasure Chests can drop extra loot. Prevents fall damage.",
@@ -1545,7 +1545,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/318-gold-chester",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureChest_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-exmarks",
@@ -1558,7 +1558,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 46,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-exmarks.webp",
     "description": "Gain 3x bonus XP from eliminations Highlights nearby Treasure Maps and Wanted Posters.",
@@ -1579,7 +1579,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/319-gold-exmarks",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_TreasureMap_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-wayfinder",
@@ -1592,7 +1592,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 47,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-wayfinder.webp",
     "description": "Gain 3x bonus XP from eliminations Detects nearby Sprites and grants extra items from Buried Chests.",
@@ -1613,7 +1613,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/320-gold-wayfinder",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Compass_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-squiplash",
@@ -1626,7 +1626,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 48,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-squiplash.webp",
     "description": "Gain 3x bonus XP from eliminations Releases healing smoke when your health is low.",
@@ -1647,7 +1647,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/322-gold-squiplash",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PirateCalamari_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-kelper",
@@ -1660,7 +1660,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 49,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-kelper.webp",
     "description": "Gain 3x bonus XP from eliminations Gradually restores health while you’re in water.",
@@ -1681,7 +1681,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/325-gold-kelper",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_UnbotheredFish_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "sir-oscar-the-second",
@@ -1694,7 +1694,7 @@
     "rarity": "Legendary",
     "releaseStatus": "released",
     "displayOrder": 50,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/sir-oscar-the-second.webp",
     "description": "Deal more pickaxe damage and briefly move faster when your shield breaks.",
@@ -1714,7 +1714,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/326-sir-oscar-the-second",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WhiteTiger_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-sir-oscar-the-second",
@@ -1727,7 +1727,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 51,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-sir-oscar-the-second.webp",
     "description": "Gain 3x bonus XP from eliminations Deal more pickaxe damage and briefly move faster when your shield breaks.",
@@ -1748,7 +1748,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/327-gold-sir-oscar-the-second",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WhiteTiger_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "fortune-sir-oscar-the-second",
@@ -1761,7 +1761,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 52,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/fortune-sir-oscar-the-second.webp",
     "description": "Reveals nearby chests. Deal more pickaxe damage and briefly move faster when your shield breaks.",
@@ -1782,7 +1782,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/328-fortune-sir-oscar-the-second",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WhiteTiger_Jeweled_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "cursed-sir-oscar-the-second",
@@ -1795,7 +1795,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 53,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/cursed-sir-oscar-the-second.webp",
     "description": "Improves your chances of finding rare Sprite variants. Water damages you while it’s equipped. Deal more pickaxe damage and briefly move faster when your shield breaks.",
@@ -1816,7 +1816,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/329-cursed-sir-oscar-the-second",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WhiteTiger_Cursed_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-lil-flacko",
@@ -1829,7 +1829,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 54,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-lil-flacko.webp",
     "description": "Gain 3x bonus XP from eliminations Landing sends out a shockwave that knocks opponents back.",
@@ -1850,7 +1850,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/330-gold-lil%27-flacko",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_PlaymakerBrewery_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-lil-uzi-vert-jr",
@@ -1863,7 +1863,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 55,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-lil-uzi-vert-jr.webp",
     "description": "Gain 3x bonus XP from eliminations Creates a Chug Splash effect when you restore shields.",
@@ -1884,7 +1884,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/331-gold-lil%27-uzi-vert-jr.",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_RookGecko_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-mini-miku",
@@ -1897,7 +1897,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 56,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-mini-miku.webp",
     "description": "Gain 3x bonus XP from eliminations Creates a Friendship Bubble when you emote with other players.",
@@ -1918,7 +1918,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/333-gold-mini-miku",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_LushlyZest_LiquidGold_ui_v1_1_Alpha_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-plundarrgh",
@@ -1931,7 +1931,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 57,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-plundarrgh.webp",
     "description": "Gain 3x bonus XP from eliminations Opening a chest increases movement and pickaxe speed.",
@@ -1952,7 +1952,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/336-gold-plundarrgh",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_CoinPile_LiquidGold_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "gold-lil-squibbly",
@@ -1965,7 +1965,7 @@
     "rarity": "Special",
     "releaseStatus": "released",
     "displayOrder": 58,
-    "season": "C7 MS",
+    "season": "C7 Treasure Hunters",
     "sourceSeasonId": 43,
     "localPath": "/sprites/gold-lil-squibbly.webp",
     "description": "Gain 3x bonus XP from eliminations Jump into a fishing hole to catch fish and collect bonus loot.",
@@ -1986,7 +1986,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/337-gold-lil%27-squibbly",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_Squibbly_LiquidGold_ui_v1_1_Alpha_L.webp",
-    "sourceVerifiedAt": "2026-11-22"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "jonesy",
@@ -2561,7 +2561,7 @@
   {
     "id": "loot-hacker-bushranger",
     "stableKey": "fortnite-gg:105",
-    "name": "Loot Hacker Bushranger",
+    "name": "Loot Hacker Bush",
     "slug": "loot-hacker-bushranger",
     "baseName": "Bush",
     "variant": "Loot Hacker",
@@ -2587,9 +2587,9 @@
         "percent": "0"
       }
     ],
-    "sourcePage": "https://fortnite.gg/sprites/105-loot-hacker-bushranger-sprite",
+    "sourcePage": "https://fortnite.gg/sprites/105-loot-hacker-bush-sprite",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_BushRanger_Hacker_L.webp",
-    "sourceVerifiedAt": "2026-09-13",
+    "sourceVerifiedAt": "2026-11-26",
     "location": null
   },
   {
@@ -4676,7 +4676,7 @@
     "id": "cheat-master-x-ray",
     "slug": "cheat-master-x-ray",
     "stableKey": "fortnite-gg:94",
-    "name": "Cheat Master X-Ray",
+    "name": "Cheatmaster X-Ray",
     "baseName": "X-Ray",
     "variant": "Cheat Master",
     "sourceVariant": "Cheatmaster",
@@ -4705,7 +4705,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/94-cheatmaster-x-ray-sprite",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WinnerB_Cheatmaster_L.webp",
-    "sourceVerifiedAt": "2026-09-06"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "loot-hacker-x-ray",
@@ -4881,7 +4881,7 @@
     "id": "cheat-master-onigiri",
     "slug": "cheat-master-onigiri",
     "stableKey": "fortnite-gg:98",
-    "name": "Cheat Master Onigiri",
+    "name": "Cheatmaster Onigiri",
     "baseName": "Onigiri",
     "variant": "Cheat Master",
     "sourceVariant": "Cheatmaster",
@@ -4910,7 +4910,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/98-cheatmaster-onigiri-sprite",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_WinnerC_Cheatmaster_L.webp",
-    "sourceVerifiedAt": "2026-09-06"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "loot-hacker-onigiri",
@@ -5768,7 +5768,7 @@
     "id": "bounty-hunter-body-slam",
     "slug": "bounty-hunter-body-slam",
     "stableKey": "fortnite-gg:144",
-    "name": "Bounty Hunter Body Slam",
+    "name": "Bounty Hunter Crash Bandicoot",
     "baseName": "Crash Bandicoot",
     "variant": "Bounty Hunter",
     "sourceVariant": "Bounty Hunter",
@@ -5794,9 +5794,9 @@
         "percent": "0"
       }
     ],
-    "sourcePage": "https://fortnite.gg/sprites/144-bounty-hunter-body-slam-sprite",
+    "sourcePage": "https://fortnite.gg/sprites/144-bounty-hunter-crash-bandicoot-sprite",
     "sourceImage": "https://cdn.fn-api.cc/sprites/bodyslamsprite_variant_reaper/largeicon.png",
-    "sourceVerifiedAt": "2026-09-24"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "trick-or-treat-crash-bandicoot",
@@ -6555,7 +6555,7 @@
   {
     "id": "cheat-master-vampire",
     "stableKey": "fortnite-gg:227",
-    "name": "Cheat Master Vampire",
+    "name": "Cheatmaster Vampire",
     "slug": "cheat-master-vampire",
     "baseName": "Vampire",
     "variant": "Cheat Master",
@@ -6584,7 +6584,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/227-cheatmaster-vampire-sprite",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_HealthSiphon_Cheatmaster_L.webp",
-    "sourceVerifiedAt": "2026-10-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "loot-hacker-vampire",
@@ -6757,7 +6757,7 @@
   {
     "id": "cheat-master-the-deer",
     "stableKey": "fortnite-gg:250",
-    "name": "Cheat Master The Deer",
+    "name": "Cheatmaster The Deer",
     "slug": "cheat-master-the-deer",
     "baseName": "The Deer",
     "variant": "Cheat Master",
@@ -6786,7 +6786,7 @@
     ],
     "sourcePage": "https://fortnite.gg/sprites/250-cheatmaster-the-deer-sprite",
     "sourceImage": "https://fortnite.gg/img/x/sprites/icons/T_Icon_BR_Creature_Sprite_IncreasedMelee_Cheatmaster_L.webp",
-    "sourceVerifiedAt": "2026-10-01"
+    "sourceVerifiedAt": "2026-11-26"
   },
   {
     "id": "loot-hacker-the-deer",
